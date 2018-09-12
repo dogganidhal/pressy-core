@@ -5,21 +5,45 @@
   "main": "index.ts",
   "scripts": {
     "main": "nodemon",
-    "test": "test"
+    "prod": "set NODE_ENV=production && nodemon",
+    "dev": "set NODE_ENV=development && nodemon",
+    "test": "jest"
   },
   "author": "Nidhal DOGGA <dogga.nidhal@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@types/bcrypt": "^2.0.0",
+    "bcrypt": "^3.0.0",
     "debug": "^4.0.0",
     "express": "^4.16.3",
+    "pg": "^7.4.3",
     "reflect-metadata": "^0.1.12",
     "typedi": "^0.8.0",
+    "typeorm": "^0.2.7",
     "typescript-rest": "^1.7.0"
   },
   "devDependencies": {
     "@types/express": "^4.16.0",
+    "@types/jest": "^23.3.2",
+    "@types/node": "^10.9.4",
+    "jest": "^23.6.0",
     "nodemon": "^1.18.4",
+    "ts-jest": "^23.1.4",
     "ts-node": "^7.0.1",
     "typescript": "^3.0.3"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "tests/*",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }

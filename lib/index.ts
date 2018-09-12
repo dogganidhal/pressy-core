@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import API from "./api";
 import { UserController } from "./api/controllers";
 

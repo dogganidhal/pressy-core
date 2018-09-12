@@ -11,7 +11,7 @@ export default class API {
     this._middleware();
   }
   
-  private _config() {
+  private async _config() {
     
   }
 
