@@ -1,0 +1,21 @@
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  INACTIVE
+}
+
+type User {
+  id: Int!
+  firstName: String!
+  lastName: String!
+  email: String!
+  phone: String
+  created: Date!
+  status: UserStatus!
+},
+
+type Query {
+  course(id: Int!): Course
+  courses(topic: String): [Course]
+}

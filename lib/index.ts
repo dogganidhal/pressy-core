@@ -1,5 +1,5 @@
 import API from "./api";
-import { UserController } from "./api/v1/controllers/user-controller";
+import { UserController } from "./api/controllers";
 
 const port = process.env.PORT || 3000;
 const api = new API();

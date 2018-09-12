@@ -12,7 +12,7 @@ export default class API {
   }
   
   private _config() {
-
+    
   }
 
   private _middleware() {
