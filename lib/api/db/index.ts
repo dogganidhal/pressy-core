@@ -1,23 +1,14 @@
-import { createConnection, Connection } from "typeorm";
-import { Member } from "../entity";
+import { createConnection, Connection, ConnectionOptions } from "typeorm";
 import database from "../../../database";
 
 export async function connectToDatabase(): Promise<Connection> {
+  const databaseOptions: ConnectionOptions = {
+    ...database,
+    name: new Date().toUTCString()
+  }
   if (process.env.NODE_ENV == "development") {
-    return createConnection(database);
+    return createConnection(databaseOptions);
   }
   // TODO: Do something else for production
-  return createConnection({
-    type: "postgres",
-    host: "localhost",
-    port: 5432,
-    username: "root",
-    password: "",
-    database: "pressy",
-    entities: [
-        Member
-    ],
-    synchronize: true,
-    logging: false
-  });
+  return createConnection(database);
 }

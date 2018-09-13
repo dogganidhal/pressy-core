@@ -27,4 +27,10 @@ export class Member {
   @Column()
   public passwordHash?: string;
 
+  public static ACTIVE = 2;
+
+  public static SUSPENDED = 1;
+
+  public static UNACTIVE = 0;
+
 }
