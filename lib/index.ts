@@ -1,10 +1,10 @@
 import "reflect-metadata";
 import API from "./api";
-import { UserController } from "./api/controllers";
+import { MemberController } from "./api/controllers";
 
 const port = process.env.PORT || 3000;
 const api = new API();
 
-api.registerController(UserController);
+api.registerController(MemberController);
 
 api.run(port);

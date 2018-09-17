@@ -13,11 +13,11 @@ export default class API {
   }
   
   private async _config() {
-    this._express.use(bodyParser.text())
+    
   }
 
   private _middleware() {
-    
+    this._express.use(bodyParser.text());
   }
  
   public registerController(controller: any) {

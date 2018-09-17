@@ -1,18 +1,21 @@
-import { ConnectionManager, Repository, Connection } from "typeorm";
-import database from "../../../database";
-import { Member } from "../model/entity";
+import { ConnectionManager, Repository, Connection, FindOperator } from "typeorm";
+import bcrypt from "bcrypt";
+import { Member, MemberPasswordResetCode } from "../model/entity";
 import { connectToDatabase } from "../db";
-import { MemberRegistrationDTO } from "../model/dto";
+import { MemberRegistrationDTO, MemberPasswordResetRequestDTO } from "../model/dto";
+import { Exception } from "../errors";
+import DateUtils from "../utils";
 
 
-export default class UserRepository {
+export default class MemberRepository {
 
-  public static instance: UserRepository = new UserRepository();
+  public static instance: MemberRepository = new MemberRepository();
 
-  private _databaseRepositoryPromise: Promise<Repository<Member>>;
+  private _memberRepositoryPromise: Promise<Repository<Member>>;
+  private _resetCodeRepositoryPromise: Promise<Repository<MemberPasswordResetCode>>;
 
   constructor() {
-    this._databaseRepositoryPromise = new Promise((resolve, reject) => {
+    this._memberRepositoryPromise = new Promise((resolve, reject) => {
       connectToDatabase()
       .then(connection => {
         resolve(connection.getRepository(Member))
@@ -21,19 +24,54 @@ export default class UserRepository {
         reject(error);
       });
     });
+    this._resetCodeRepositoryPromise = new Promise((resolve, reject) => {
+      connectToDatabase()
+      .then(connection => {
+        resolve(connection.getRepository(MemberPasswordResetCode))
+      })
+      .catch(error => {
+        reject(error);
+      });
+    });
   }
 
-  public async getAllUsers(): Promise<Member[]> {
-    return (await this._databaseRepositoryPromise).find();
+  public async getAllMembers(): Promise<Member[]> {
+    return (await this._memberRepositoryPromise).find();
   }
 
-  public async getUserById(id: number): Promise<Member | undefined> {
-    return (await this._databaseRepositoryPromise).findOne(id);
+  public async getMemberById(id: number): Promise<Member | undefined> {
+    return (await this._memberRepositoryPromise).findOne(id);
   }
 
-  public async saveUser(memberDTO: MemberRegistrationDTO): Promise<Member> {
+  public async getMemberByEmail(email: string): Promise<Member | undefined> {
+    return (await this._memberRepositoryPromise).findOne({email: email});
+  }
+
+  public async createMember(memberDTO: MemberRegistrationDTO): Promise<Member> {
     const newMember = Member.create(memberDTO);
-    return (await this._databaseRepositoryPromise).save(newMember);
+    return (await this._memberRepositoryPromise).save(newMember);
+  }
+
+  public async resetPassword(code: string, resetPasswordRequest: MemberPasswordResetRequestDTO): Promise<Member> {
+    const passwordResetRequestCode = await (await (await this._resetCodeRepositoryPromise)).findOne(code, {relations: ["member"]});
+
+    if (passwordResetRequestCode == undefined)
+      throw new Exception.PasswordResetCodeNotFound(code);
+    if (passwordResetRequestCode!.expiryDate! < DateUtils.now())
+    throw new Exception.PasswordResetCodeExpired(code);
+
+    const member = passwordResetRequestCode!.member!;
+
+    if (!bcrypt.compareSync(resetPasswordRequest.oldPassword, member.passwordHash!))
+      throw new Exception.WrongPassword();
+
+    member.passwordHash = bcrypt.hashSync(resetPasswordRequest.newPassword, 10);
+    return (await this._memberRepositoryPromise).save(member);
+  }
+
+  public async createPasswordResetCode(member: Member): Promise<MemberPasswordResetCode> {
+    const code = MemberPasswordResetCode.create(member);
+    return (await this._resetCodeRepositoryPromise).save(code);
   }
 
 }
