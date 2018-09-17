@@ -17,6 +17,7 @@ export default class API {
   }
 
   private _middleware() {
+    this._express.use(bodyParser.text({type: 'application/json'}));
     this._express.use(bodyParser.text());
   }
  

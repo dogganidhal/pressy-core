@@ -2,8 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, PrimaryColumn, Uniqu
 import bcrypt from "bcrypt";
 import uuid from "uuid";
 import { MemberRegistrationDTO } from "../dto";
-import { JsonObject, JsonProperty } from "json2typescript";
-import DateUtils from "../../utils";
+import { DateUtils } from "../../utils";
 
 @Entity()
 export class Member {
@@ -74,6 +73,62 @@ export class MemberPasswordResetCode {
     memberReset.member = member;
 
     return memberReset;
+  }
+
+}
+
+@Entity()
+export class AccessToken {
+
+  @PrimaryColumn()
+  public code: string = "";
+
+  @Column({default: AccessToken.BASIC})
+  public privilege: number = AccessToken.BASIC;
+
+  @Column({default: DateUtils.addHours(1)})
+  public expiryDate: Date = DateUtils.addHours(1);
+
+  @ManyToOne(type => Member)
+  public member?: Member;
+
+  public static BASIC: number = 0;
+  public static PERSONAL: number = 1;
+  public static ALL: number = 4;
+
+  public static create(code: string, member: Member): AccessToken {
+    const accessToken = new AccessToken();
+    accessToken.code = code;
+    accessToken.member = member;
+    accessToken.expiryDate = DateUtils.addHours(1);
+    accessToken.privilege = AccessToken.PERSONAL;
+    return accessToken;
+  }
+
+}
+
+@Entity()
+export class RefreshToken {
+
+  @PrimaryColumn()
+  public code: string = "";
+
+  @Column({default: AccessToken.BASIC})
+  public privilege: number = AccessToken.BASIC;
+
+  @ManyToOne(type => Member)
+  public member?: Member;
+
+  public static BASIC: number = 0;
+  public static PERSONAL: number = 1;
+  public static ALL: number = 4;
+
+  public static create(code: string, member: Member): RefreshToken {
+    const refreshToken = new RefreshToken();
+    refreshToken.code = code;
+    refreshToken.member = member;
+    refreshToken.privilege = AccessToken.PERSONAL;
+    return refreshToken;
   }
 
 }

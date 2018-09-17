@@ -21,9 +21,24 @@ export namespace Exception {
     }
   }
 
+  interface TMemberIdentifier {
+    email?: string;
+    phone?: string
+  }
+
   export class MemberNotFound extends HttpError {
-    constructor(email: string) {
-      super('MemberNotFound', 404, `No registerd member with email '${email}' was found`);
+    constructor(ids: string | TMemberIdentifier) {
+      if (typeof ids == 'string') {
+        super('MemberNotFound', 404, `No registerd member with email '${ids}' was found`);
+      } else {
+        super('MemberNotFound', 404, `No registerd member with ${ids.email ? "email" : "phone"} '${ids.email ? ids.email : ids.phone}' was found`);
+      }
+    }
+  }
+
+  export class NeitherEmailNoPhone extends HttpError {
+    constructor() {
+      super('NeitherEmailNoPhone', 400, `Must Provide email or phone to login`);
     }
   }
 

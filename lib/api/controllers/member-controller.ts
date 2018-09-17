@@ -2,12 +2,14 @@ import {
   Path, GET, PathParam, POST,
   HttpError, Errors, Return 
 } from "typescript-rest";
-import { JsonConvert } from "json2typescript";
+import { JsonConvert, ValueCheckingMode } from "json2typescript";
 import MemberRepository from "../repositories";
-import { 
+import {
   MemberRegistrationDTO, MemberPasswordResetCodeDTO, 
   MemberPasswordResetCodeRequestDTO, 
-  MemberPasswordResetRequestDTO
+  MemberPasswordResetRequestDTO,
+  LoginRequestDTO,
+  LoginResponseDTO
 } from "../model/dto";
 import { Controller } from ".";
 import { Exception } from "../errors";
@@ -90,11 +92,35 @@ export class MemberController extends Controller {
       const newMember: MemberRegistrationDTO = convert
         .deserialize(jsonObject, MemberRegistrationDTO);
       
-      return this._repository.createMember(newMember);
+      await this._repository.createMember(newMember);
+
+      return newMember;
 
     } catch (error) {
       this.throw(new Errors.BadRequestError((error as Error).message));
+    }
 
+  }
+
+  @Path("/login/")
+  @POST
+  public async login() {
+
+    try {
+
+      const jsonObject = JSON.parse(this.currentRequest!.body);
+      const convert = new JsonConvert();
+      convert.valueCheckingMode = ValueCheckingMode.ALLOW_NULL;
+      const loginRequest = convert.deserialize(jsonObject, LoginRequestDTO);
+      
+      const [accessToken, refreshToken] = await this._repository.generateTokens(loginRequest);
+      return LoginResponseDTO.create(accessToken, refreshToken);
+
+    } catch (error) {
+      if (error instanceof Error)
+        this.throw(new Errors.BadRequestError(error.message));  
+      else if (error instanceof HttpError)
+        this.throw(error);
     }
 
   }
