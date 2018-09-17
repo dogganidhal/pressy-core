@@ -16,6 +16,7 @@
     "bcrypt": "^3.0.0",
     "debug": "^4.0.0",
     "express": "^4.16.3",
+    "json2typescript": "^1.0.6",
     "pg": "^7.4.3",
     "reflect-metadata": "^0.1.12",
     "typedi": "^0.8.0",

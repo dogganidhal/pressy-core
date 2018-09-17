@@ -1,5 +1,6 @@
 import express, { Application } from "express";
 import { Server } from "typescript-rest";
+import * as bodyParser from "body-parser";
 
 export default class API {
 
@@ -12,7 +13,7 @@ export default class API {
   }
   
   private async _config() {
-    
+    this._express.use(bodyParser.text())
   }
 
   private _middleware() {
