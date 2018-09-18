@@ -42,4 +42,34 @@ export namespace Exception {
     }
   }
 
+  export class UnauthorizedRequest extends HttpError {
+    constructor() {
+      super('UnauthorizedRequest', 403, `Access denied to requested resource`);
+    }
+  }
+
+  export class UnauthenticatedRequest extends HttpError {
+    constructor() {
+      super('UnauthenticatedRequest', 401, `Must provide auth token to access requested resource`);
+    }
+  }
+
+  export class AccessTokenNotFound extends HttpError {
+    constructor() {
+      super('AccessTokenNotFound', 401, `Access token not found`);
+    }
+  }
+
+  export class AccessTokenExpired extends HttpError {
+    constructor() {
+      super('AccessTokenExpired', 401, `Access token expired`);
+    }
+  }
+
+  export class InvalidAccessToken extends HttpError {
+    constructor() {
+      super('InvalidAccessToken', 401, `Access token not attributed`);
+    }
+  }
+
 }

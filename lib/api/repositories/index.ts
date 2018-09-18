@@ -1,10 +1,11 @@
 import { Repository } from "typeorm";
 import bcrypt from "bcrypt";
-import { Member, MemberPasswordResetCode, AccessToken, RefreshToken } from "../model/entity";
+import { Member, MemberPasswordResetCode, AccessToken, RefreshToken, AccessPrivilege } from "../model/entity";
 import { connectToDatabase } from "../db";
 import { MemberRegistrationDTO, MemberPasswordResetRequestDTO, LoginRequestDTO } from "../model/dto";
 import { Exception } from "../errors";
 import { DateUtils } from "../utils";
+import { access } from "fs";
 const TokenGenerator = require("uuid-token-generator");
 
 
@@ -122,6 +123,21 @@ export default class MemberRepository {
 
     return [accessToken, refreshToken];
 
+  }
+
+  public async authenticateMember(token: string, minimumPrivilege: AccessPrivilege): Promise<Member | undefined> {
+    const accessToken = await (await this._accessTokenRepositoryPromise).findOne(token, {relations: ["member"]});
+
+    if (!accessToken)
+      throw new Exception.AccessTokenNotFound();
+
+    if (accessToken.expiryDate < DateUtils.now())
+      throw new Exception.AccessTokenExpired();
+
+    if (accessToken.privilege < minimumPrivilege)
+      throw new Exception.UnauthorizedRequest();
+
+    return accessToken.member;
   }
 
 }

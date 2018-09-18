@@ -11,19 +11,22 @@ import {
   LoginRequestDTO,
   LoginResponseDTO
 } from "../model/dto";
-import { Controller } from ".";
+import { Controller, Authenticated } from ".";
 import { Exception } from "../errors";
+import { AccessPrivilege } from "../model/entity";
 
 @Path('/api/v1/member/')
 export class MemberController extends Controller {
 
   private _repository: MemberRepository = MemberRepository.instance;
 
+  @Authenticated(AccessPrivilege.SUPERUSER)
   @GET
   public async getAllMembers() {
     return await this._repository.getAllMembers();
   }
 
+  @Authenticated(AccessPrivilege.PERSONAL)
   @Path("/:id/")
   @GET
   public async getMemberInfos(@PathParam("id") id: number) {

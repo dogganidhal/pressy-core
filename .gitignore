@@ -1,4 +1,3 @@
 node_modules
 *.DS_Store
 tslint.json
-database.ts

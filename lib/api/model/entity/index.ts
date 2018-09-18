@@ -77,14 +77,20 @@ export class MemberPasswordResetCode {
 
 }
 
+export enum AccessPrivilege {
+  BASIC = 0,
+  PERSONAL = 1,
+  SUPERUSER = 4
+}
+
 @Entity()
 export class AccessToken {
 
   @PrimaryColumn()
   public code: string = "";
 
-  @Column({default: AccessToken.BASIC})
-  public privilege: number = AccessToken.BASIC;
+  @Column({default: AccessPrivilege.BASIC})
+  public privilege: number = AccessPrivilege.BASIC;
 
   @Column({default: DateUtils.addHours(1)})
   public expiryDate: Date = DateUtils.addHours(1);
@@ -92,16 +98,12 @@ export class AccessToken {
   @ManyToOne(type => Member)
   public member?: Member;
 
-  public static BASIC: number = 0;
-  public static PERSONAL: number = 1;
-  public static ALL: number = 4;
-
   public static create(code: string, member: Member): AccessToken {
     const accessToken = new AccessToken();
     accessToken.code = code;
     accessToken.member = member;
     accessToken.expiryDate = DateUtils.addHours(1);
-    accessToken.privilege = AccessToken.PERSONAL;
+    accessToken.privilege = AccessPrivilege.PERSONAL;
     return accessToken;
   }
 
@@ -113,21 +115,17 @@ export class RefreshToken {
   @PrimaryColumn()
   public code: string = "";
 
-  @Column({default: AccessToken.BASIC})
-  public privilege: number = AccessToken.BASIC;
+  @Column({default: AccessPrivilege.BASIC})
+  public privilege: number = AccessPrivilege.BASIC;
 
   @ManyToOne(type => Member)
   public member?: Member;
-
-  public static BASIC: number = 0;
-  public static PERSONAL: number = 1;
-  public static ALL: number = 4;
 
   public static create(code: string, member: Member): RefreshToken {
     const refreshToken = new RefreshToken();
     refreshToken.code = code;
     refreshToken.member = member;
-    refreshToken.privilege = AccessToken.PERSONAL;
+    refreshToken.privilege = AccessPrivilege.PERSONAL;
     return refreshToken;
   }
 
