@@ -35,7 +35,7 @@ export namespace JSONSerialization {
     public serialize(data: MemberStatus): string {
       switch (data) {
         case MemberStatus.ACTIVE: return "ACTIVE";
-        case MemberStatus.UNACTIVE: return "UNACTIVE";
+        case MemberStatus.INACTIVE: return "INACTIVE";
         case MemberStatus.SUSPENDED: return "SUSPENDED";
       }
     }
@@ -43,7 +43,7 @@ export namespace JSONSerialization {
     public deserialize(data: string): MemberStatus {
       switch (data) {
         case "ACTIVE": return MemberStatus.ACTIVE;
-        case "UNACTIVE": return MemberStatus.UNACTIVE;
+        case "INACTIVE": return MemberStatus.INACTIVE;
         case "SUSPENDED": return MemberStatus.SUSPENDED;
         default: return MemberStatus.ACTIVE;
       }

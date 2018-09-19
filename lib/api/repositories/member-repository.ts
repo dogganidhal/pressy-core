@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import bcrypt from "bcrypt";
-import { Member, MemberPasswordResetCode } from "../model/entity";
+import { Member, MemberPasswordResetCode, MemberActivationCode } from "../model/entity";
 import { AccessToken } from "../model/entity/auth";
 import { connectToDatabase } from "../db";
 import { MemberRegistrationDTO, MemberPasswordResetRequestDTO } from "../model/dto";
@@ -16,7 +16,7 @@ export class MemberRepository {
 
   private _memberRepositoryPromise: Promise<Repository<Member>>;
   private _resetCodeRepositoryPromise: Promise<Repository<MemberPasswordResetCode>>;
-  private _accessTokenRepositoryPromise: Promise<Repository<AccessToken>>;
+  private _activationCodeRepositoryPromise: Promise<Repository<MemberActivationCode>>;
 
   constructor() {
     this._memberRepositoryPromise = new Promise((resolve, reject) => {
@@ -37,15 +37,19 @@ export class MemberRepository {
         reject(error);
       });
     });
-    this._accessTokenRepositoryPromise = new Promise((resolve, reject) => {
+    this._activationCodeRepositoryPromise = new Promise((resolve, reject) => {
       connectToDatabase()
       .then(connection => {
-        resolve(connection.getRepository(AccessToken));
+        resolve(connection.getRepository(MemberActivationCode));
       })
       .catch(error => {
         reject(error);
       });
     });
+  }
+
+  public async saveMember(member: Member): Promise<Member> {
+    return (await this._memberRepositoryPromise).save(member);
   }
 
   public async getAllMembers(): Promise<Member[]> {
@@ -71,7 +75,7 @@ export class MemberRepository {
       throw new Exception.PhoneAlreadyExists(memberDTO.phone);
 
     const newMember = Member.create(memberDTO);
-    
+
     return (await this._memberRepositoryPromise).save(newMember);
   }
 
@@ -101,6 +105,24 @@ export class MemberRepository {
 
   public async deletePasswordResetCode(passwordResetCode: MemberPasswordResetCode): Promise<void> {
     (await this._resetCodeRepositoryPromise).delete(passwordResetCode);
+  }
+
+  public async createActivationCode(member: Member): Promise<MemberActivationCode> {
+
+    const activationCode = MemberActivationCode.create(member);
+    return (await this._activationCodeRepositoryPromise).save(activationCode);
+
+  }
+
+  public async getActivationCodeMember(code: string): Promise<Member> {
+
+    const activationCode = await (await this._activationCodeRepositoryPromise).findOne(code, {relations: ["member"]});
+
+    if (!activationCode)
+      throw new Exception.ActivationCodeNotFound(code);
+
+    return activationCode.member;
+
   }
 
 }

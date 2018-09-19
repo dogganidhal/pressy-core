@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, PrimaryColumn, OneToOne, JoinColumn } from "typeorm";
 import bcrypt from "bcrypt";
 import uuid from "uuid";
 import { MemberRegistrationDTO } from "../../dto";
 
 export enum MemberStatus {
-  UNACTIVE = 1,
+  INACTIVE = 1,
   SUSPENDED = 2,
   ACTIVE = 4
 }
@@ -37,7 +37,7 @@ export class Member {
   @CreateDateColumn()
   public created: Date;
 
-  @Column({default: MemberStatus.UNACTIVE})
+  @Column({default: MemberStatus.INACTIVE})
   public status: MemberStatus;
 
   @Column()
@@ -56,7 +56,7 @@ export class Member {
     member.email = memberDTO.email;
     member.phone = memberDTO.phone;
     member.passwordHash = bcrypt.hashSync(memberDTO.password, 10);
-    member.status = MemberStatus.UNACTIVE;
+    member.status = MemberStatus.INACTIVE;
     member.group = memberGroup;
     member.secret = uuid.v4().toString();
     return member;
@@ -76,6 +76,25 @@ export class Member {
 
   public static createSuperuser(memberDTO: MemberRegistrationDTO): Member {
     return Member.create(memberDTO, MemberGroup.SUPERUSER);
+  }
+
+}
+
+@Entity()
+export class MemberActivationCode {
+
+  @PrimaryColumn()
+  public code: string;
+
+  @OneToOne(type => Member)
+  @JoinColumn()
+  public member: Member;
+
+  public static create(member: Member): MemberActivationCode {
+    const activationCode = new MemberActivationCode();
+    activationCode.code = uuid.v4().toString();
+    activationCode.member = member;
+    return activationCode;
   }
 
 }

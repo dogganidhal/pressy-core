@@ -92,4 +92,10 @@ export namespace Exception {
     }
   }
 
+  export class ActivationCodeNotFound extends HttpError {
+    constructor(code: string) {
+      super('ActivationCodeNotFound', 401, `Activation code '${code}' was not found`);
+    }
+  }
+
 }

@@ -1,6 +1,6 @@
 import {
   Path, GET, POST,
-  HttpError, Errors 
+  HttpError, Errors, PathParam, Return 
 } from "typescript-rest";
 import { MemberRepository } from "../repositories";
 import {
@@ -10,7 +10,7 @@ import { Controller, Authenticated } from ".";
 import { AccessPrivilege } from "../model/entity/auth";
 import { HTTPUtils } from "../utils/http-utils";
 import { JSONSerialization } from "../utils/json-serialization";
-import { Member } from "../model/entity";
+import { Member, MemberStatus } from "../model/entity";
 
 @Path('/api/v1/member/')
 export class MemberController extends Controller {
@@ -37,8 +37,9 @@ export class MemberController extends Controller {
 
     try {
       const newMember: MemberRegistrationDTO = HTTPUtils.parseBody(this, MemberRegistrationDTO);
-      await this._memberRepository.createMember(newMember);
-
+      const member = await this._memberRepository.createMember(newMember);
+      const _ = this._memberRepository.createActivationCode(member);
+      // TODO: Send the activation URL by email !!
       return JSONSerialization.serializeObject(newMember);
     } catch (error) {
       if (error instanceof HttpError)
@@ -46,6 +47,27 @@ export class MemberController extends Controller {
       else
         this.throw(new Errors.BadRequestError((error as Error).message));
     }
+
+  }
+
+  @Path("/activate/:code/")
+  @GET
+  public async activateMember(@PathParam("code") code: string) {
+
+    try {
+      const member = await this._memberRepository.getActivationCodeMember(code);
+      member.status = MemberStatus.ACTIVE;
+      
+      await this._memberRepository.saveMember(member);
+
+      return new Return.RequestAccepted(`/api/v1/member/${member.id}`);
+    } catch (error) {
+      if (error instanceof HttpError)
+        this.throw(error);  
+      else
+        this.throw(new Errors.BadRequestError((error as Error).message));
+    }
+    
 
   }
 

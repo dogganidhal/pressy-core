@@ -1,5 +1,5 @@
 import { JsonObject, JsonProperty } from "json2typescript";
-import { MemberPasswordResetCode, MemberStatus, MemberGroup, Member } from "../entity";
+import { MemberStatus, MemberGroup, Member } from "../entity";
 import { AccessToken } from "../entity/auth";
 import { JSONSerialization } from "../../utils/json-serialization";
 
