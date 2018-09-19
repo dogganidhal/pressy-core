@@ -27,12 +27,8 @@ export namespace Exception {
   }
 
   export class MemberNotFound extends HttpError {
-    constructor(ids: string | TMemberIdentifier) {
-      if (typeof ids == 'string') {
-        super('MemberNotFound', 404, `No registerd member with email '${ids}' was found`);
-      } else {
-        super('MemberNotFound', 404, `No registerd member with ${ids.email ? "email" : "phone"} '${ids.email ? ids.email : ids.phone}' was found`);
-      }
+    constructor(email: string) {
+      super('MemberNotFound', 404, `No registerd member with email '${email}' was found`);
     }
   }
 
@@ -69,6 +65,12 @@ export namespace Exception {
   export class InvalidAccessToken extends HttpError {
     constructor() {
       super('InvalidAccessToken', 401, `Access token not attributed`);
+    }
+  }
+
+  export class RequiredFieldNotFound extends HttpError {
+    constructor(field: string) {
+      super('RequiredFieldNotFound', 400, `Required field ${field} is missing`);
     }
   }
 

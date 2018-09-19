@@ -1,8 +1,9 @@
 import { ContextRequest, ContextResponse, HttpError } from "typescript-rest";
 import { Request, Response } from "express";
-import { AccessPrivilege, Member } from "../model/entity";
+import { AccessPrivilege, Member, AccessToken } from "../model/entity";
 import { Exception } from "../errors";
-import MemberRepository from "../repositories";
+import { MemberRepository, AuthRepository } from "../repositories";
+import { Repository } from "typeorm";
 
 export abstract class Controller {
 
@@ -25,7 +26,7 @@ export abstract class Controller {
 
 }
 
-export function Authenticated<TController extends Controller>(minimumPrivilege: AccessPrivilege = AccessPrivilege.PERSONAL): (target: TController, property: string, propertyDescriptor: PropertyDescriptor) => void {
+export function Authenticated<TController extends Controller>(minimumPrivilege: AccessPrivilege = AccessPrivilege.BASIC): (target: TController, property: string, propertyDescriptor: PropertyDescriptor) => void {
 
   return function<TController extends Controller>(_: TController, __: string, propertyDescriptor: PropertyDescriptor) {
     var originalMethod: Function = propertyDescriptor.value;
@@ -47,7 +48,7 @@ export function Authenticated<TController extends Controller>(minimumPrivilege: 
       }
 
       try {
-        context.currentUser = await MemberRepository.instance.authenticateMember(token, minimumPrivilege);
+        context.currentUser = await AuthRepository.instance.decodeToken(token, minimumPrivilege);
       } catch (error) {
         context.throw(error as HttpError);
         return;

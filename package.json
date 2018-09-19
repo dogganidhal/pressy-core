@@ -14,9 +14,11 @@
   "dependencies": {
     "@types/bcrypt": "^2.0.0",
     "bcrypt": "^3.0.0",
+    "crypto": "^1.0.1",
     "debug": "^4.0.0",
     "express": "^4.16.3",
     "json2typescript": "^1.0.6",
+    "jsonwebtoken": "^8.3.0",
     "method-override": "^3.0.0",
     "pg": "^7.4.3",
     "reflect-metadata": "^0.1.12",
@@ -29,6 +31,7 @@
   "devDependencies": {
     "@types/express": "^4.16.0",
     "@types/jest": "^23.3.2",
+    "@types/jsonwebtoken": "^7.2.8",
     "@types/method-override": "0.0.31",
     "@types/node": "^10.9.4",
     "@types/uuid": "^3.4.4",

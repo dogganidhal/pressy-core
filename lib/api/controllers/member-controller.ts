@@ -1,36 +1,44 @@
-import { 
+import {
   Path, GET, PathParam, POST,
   HttpError, Errors, Return 
 } from "typescript-rest";
-import { JsonConvert, ValueCheckingMode } from "json2typescript";
-import MemberRepository from "../repositories";
+import { JsonConvert } from "json2typescript";
+import { MemberRepository, AuthRepository } from "../repositories";
 import {
   MemberRegistrationDTO, MemberPasswordResetCodeDTO, 
   MemberPasswordResetCodeRequestDTO, 
   MemberPasswordResetRequestDTO,
   LoginRequestDTO,
-  LoginResponseDTO
+  LoginResponseDTO,
+  MemberInfoDTO
 } from "../model/dto";
 import { Controller, Authenticated } from ".";
 import { Exception } from "../errors";
-import { AccessPrivilege } from "../model/entity";
+import { AccessPrivilege } from "../model/entity/auth";
+import { HTTPUtils } from "../utils/http-utils";
+import { JSONSerialization } from "../utils/json-serialization";
+import { Member } from "../model/entity";
 
 @Path('/api/v1/member/')
 export class MemberController extends Controller {
 
-  private _repository: MemberRepository = MemberRepository.instance;
+  private _memberRepository: MemberRepository = MemberRepository.instance;
+  private _authRepository: AuthRepository = AuthRepository.instance;
 
   @Authenticated(AccessPrivilege.SUPERUSER)
   @GET
   public async getAllMembers() {
-    return await this._repository.getAllMembers();
+    const members: Member[] = await this._memberRepository.getAllMembers();
+    return members.map(member => JSONSerialization.serializeObject(MemberInfoDTO.create(member)));
   }
 
-  @Authenticated(AccessPrivilege.PERSONAL)
+  @Authenticated(AccessPrivilege.BASIC)
   @Path("/:id/")
   @GET
   public async getMemberInfos(@PathParam("id") id: number) {
-    return await this._repository.getMemberById(id);
+    console.log(this.currentUser);
+    const member = await this._memberRepository.getMemberById(id);
+    return JSONSerialization.serializeObject(MemberInfoDTO.create(member!));
   }
 
   @Path("/reset/")
@@ -44,7 +52,7 @@ export class MemberController extends Controller {
       const resetCodeRequest = convert
         .deserialize(jsonObject, MemberPasswordResetCodeRequestDTO);
 
-      const member = await this._repository
+      const member = await this._memberRepository
         .getMemberByEmail(resetCodeRequest.email);
 
       if (member == undefined) {
@@ -52,9 +60,10 @@ export class MemberController extends Controller {
         return;
       }
       
-      const resetCode = await this._repository.createPasswordResetCode(member);
+      const resetCode = await this._memberRepository.createPasswordResetCode(member);
       const resetCodeDTO = MemberPasswordResetCodeDTO.create(resetCode);
 
+      // TODO: Return an empty "accepted" response, and call the email service
       return convert.serialize(resetCodeDTO);
 
     } catch (error) {
@@ -72,7 +81,8 @@ export class MemberController extends Controller {
       const jsonObject = JSON.parse(this.currentRequest!.body);
       const convert = new JsonConvert();
       const resetPasswordRequest = convert.deserialize(jsonObject, MemberPasswordResetRequestDTO);
-      const member = await this._repository.resetPassword(code, resetPasswordRequest);
+      const member = await this._memberRepository.resetPassword(code, resetPasswordRequest);
+      this._memberRepository.deletePasswordResetCode(resetPasswordRequest);
 
       return new Return.RequestAccepted(`/api/v1/member/${member.id}`);
 
@@ -89,16 +99,10 @@ export class MemberController extends Controller {
   public async createMember() {
 
     try {
-
-      const jsonObject = JSON.parse(this.currentRequest!.body);
-      const convert = new JsonConvert();
-      const newMember: MemberRegistrationDTO = convert
-        .deserialize(jsonObject, MemberRegistrationDTO);
-      
-      await this._repository.createMember(newMember);
+      const newMember: MemberRegistrationDTO = HTTPUtils.parseBody(this, MemberRegistrationDTO);
+      await this._memberRepository.createMember(newMember);
 
       return newMember;
-
     } catch (error) {
       this.throw(new Errors.BadRequestError((error as Error).message));
     }
@@ -111,15 +115,20 @@ export class MemberController extends Controller {
 
     try {
 
-      const jsonObject = JSON.parse(this.currentRequest!.body);
+      const loginRequest = HTTPUtils.parseBody(this, LoginRequestDTO);
+      const member = await this._memberRepository.getMemberByEmail(loginRequest.email!);
+
+      if (!member)
+        throw new Exception.MemberNotFound(loginRequest.email);
+
       const convert = new JsonConvert();
-      convert.valueCheckingMode = ValueCheckingMode.ALLOW_NULL;
-      const loginRequest = convert.deserialize(jsonObject, LoginRequestDTO);
+      const token = await this._authRepository.generateToken(member, AccessPrivilege.SUPERUSER);
+      const loginResponse = LoginResponseDTO.create(token);
       
-      const [accessToken, refreshToken] = await this._repository.generateTokens(loginRequest);
-      return LoginResponseDTO.create(accessToken, refreshToken);
+      return convert.serialize(loginResponse);
 
     } catch (error) {
+      console.log(error);
       if (error instanceof Error)
         this.throw(new Errors.BadRequestError(error.message));  
       else if (error instanceof HttpError)
