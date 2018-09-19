@@ -7,7 +7,8 @@
     "main": "nodemon",
     "prod": "set NODE_ENV=production && nodemon",
     "dev": "set NODE_ENV=development && nodemon",
-    "test": "jest"
+    "test": "jest",
+    "debug": "nodemon"
   },
   "author": "Nidhal DOGGA <dogga.nidhal@gmail.com>",
   "license": "ISC",

@@ -13,8 +13,7 @@ export namespace HTTPUtils {
       const jsonObject = typeof body === "string" ? JSON.parse(body) : body;
       return jsonConvert.deserialize(jsonObject, classReference);
     } catch (error) {
-      console.log(error);
-      throw new Exception.RequiredFieldNotFound("SOME_FUCKING_FIELD");
+      throw new Exception.RequiredFieldNotFound;
     }
   }
 

@@ -16,7 +16,7 @@ export class MemberRepository {
 
   private _memberRepositoryPromise: Promise<Repository<Member>>;
   private _resetCodeRepositoryPromise: Promise<Repository<MemberPasswordResetCode>>;
-  public _accessTokenRepositoryPromise: Promise<Repository<AccessToken>>;
+  private _accessTokenRepositoryPromise: Promise<Repository<AccessToken>>;
 
   constructor() {
     this._memberRepositoryPromise = new Promise((resolve, reject) => {
@@ -61,7 +61,17 @@ export class MemberRepository {
   }
 
   public async createMember(memberDTO: MemberRegistrationDTO): Promise<Member> {
+
+    const memberWithSameEmail = await (await this._memberRepositoryPromise).find({email: memberDTO.email});
+    if (memberWithSameEmail.length > 0)
+      throw new Exception.EmailAlreadyExists(memberDTO.email);
+
+    const memberWithSamePhone = await (await this._memberRepositoryPromise).find({phone: memberDTO.phone});
+    if (memberWithSamePhone.length > 0)
+      throw new Exception.PhoneAlreadyExists(memberDTO.phone);
+
     const newMember = Member.create(memberDTO);
+    
     return (await this._memberRepositoryPromise).save(newMember);
   }
 
@@ -79,6 +89,8 @@ export class MemberRepository {
       throw new Exception.WrongPassword();
 
     member.passwordHash = bcrypt.hashSync(resetPasswordRequest.newPassword, 10);
+
+    (await this._resetCodeRepositoryPromise).delete(passwordResetRequestCode);
     return (await this._memberRepositoryPromise).save(member);
   }
 

@@ -1,12 +1,12 @@
-import "fs";
 import "crypto";
 import { readFileSync } from "fs";
-import { Member, AccessToken, AccessPrivilege } from "../model/entity";
+import { Member, AccessToken, AccessPrivilege, MemberGroup } from "../model/entity";
 import { sign, decode } from "jsonwebtoken";
 import { Repository } from "typeorm";
 import { connectToDatabase } from "../db";
 import { Exception } from "../errors";
 import { MemberRepository } from "./member-repository";
+import { RefreshCredentialsRequestDTO } from "../model/dto";
 
 interface IAuthPayload {
   id: number;
@@ -33,12 +33,12 @@ export class AuthRepository {
     });
   }
 
-  public async generateToken(member: Member, privilege: AccessPrivilege = AccessPrivilege.BASIC): Promise<AccessToken> {
+  public async generateToken(member: Member): Promise<AccessToken> {
 
     const payload: IAuthPayload = {
       id: member.id,
       secret: member.secret,
-      privilege: privilege
+      privilege: member.group == MemberGroup.SUPERUSER ? AccessPrivilege.SUPERUSER : AccessPrivilege.BASIC
     };
 
     const token = sign(payload, this._signature, {expiresIn: 3600});
@@ -71,6 +71,30 @@ export class AuthRepository {
       throw new Exception.AccessTokenNotFound;
 
     return member;
+
+  }
+
+  public async createNewCredentials(request: RefreshCredentialsRequestDTO): Promise<AccessToken> {
+
+    var accessToken = await (await this._accessTokenRepositoryPromise).findOne({token: request.token});
+
+    if (!accessToken)
+      throw new Exception.AccessTokenNotFound;
+
+    if (accessToken.refreshToken != request.refreshToken)
+      throw new Exception.AccessTokenAndRefreshTokenDoNotMatch;
+
+    var payload: IAuthPayload;
+    const decodedPayload = decode(request.token);
+    payload = typeof decodedPayload === "string" ? JSON.parse(decodedPayload) : decodedPayload;
+    const newToken = AccessToken.create(
+      sign(payload, this._signature),
+      request.refreshToken
+    );
+
+    (await this._accessTokenRepositoryPromise).save(newToken);
+
+    return newToken;
 
   }
 

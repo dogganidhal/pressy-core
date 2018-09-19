@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express, { Application, Request, Response, NextFunction } from "express";
 import { Server } from "typescript-rest";
 import * as bodyParser from "body-parser";
 

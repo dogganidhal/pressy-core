@@ -76,14 +76,10 @@ export class MemberPasswordResetCodeDTO {
   @JsonProperty("code", String)
   public code: string = "";
 
-  @JsonProperty("member_id", Number)
-  public memberId: number = -1;
-
-  public static create(resetCode: MemberPasswordResetCode): MemberPasswordResetCodeDTO {
+  public static create(code: string): MemberPasswordResetCodeDTO {
     const resetCodeDTO = new MemberPasswordResetCodeDTO();
 
-    resetCodeDTO.code = resetCode.id!;
-    resetCodeDTO.memberId = resetCode.member!.id!;
+    resetCodeDTO.code = code;
 
     return resetCodeDTO;
   }
@@ -95,6 +91,12 @@ export class MemberPasswordResetCodeRequestDTO {
 
   @JsonProperty("email", String)
   public email: string = "";
+
+  public static create(email: string): MemberPasswordResetCodeRequestDTO {
+    const resetCodeRequest = new MemberPasswordResetCodeRequestDTO();
+    resetCodeRequest.email = email;
+    return resetCodeRequest;
+  }
 
 }
 
@@ -142,5 +144,16 @@ export class LoginResponseDTO {
     response.type = "Bearer";
     return response;
   }
+
+}
+
+@JsonObject
+export class RefreshCredentialsRequestDTO {
+
+  @JsonProperty("access_token", String)
+  public token: string = "";
+
+  @JsonProperty("refresh_token", String)
+  public refreshToken: string = "";
 
 }
