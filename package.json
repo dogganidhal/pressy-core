@@ -8,7 +8,8 @@
     "prod": "set NODE_ENV=production && nodemon",
     "dev": "set NODE_ENV=development && nodemon",
     "test": "jest",
-    "debug": "nodemon"
+    "debug": "nodemon",
+    "script": "ts-node"
   },
   "author": "Nidhal DOGGA <dogga.nidhal@gmail.com>",
   "license": "ISC",

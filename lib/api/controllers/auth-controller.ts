@@ -38,8 +38,7 @@ export class AuthController extends Controller {
       if (!bcrypt.compareSync(loginRequest.password, member.passwordHash))
         throw new Exception.WrongPassword;
 
-      const token = await this._authRepository.generateToken(member);
-      const loginResponse = LoginResponseDTO.create(token);
+      const loginResponse = await this._authRepository.generateToken(member);
       
       return JSONSerialization.serializeObject(loginResponse);
 
@@ -59,9 +58,7 @@ export class AuthController extends Controller {
     try {
 
       const refreshRequest = HTTPUtils.parseBody(this, RefreshCredentialsRequestDTO);
-      const credntials = await this._authRepository.createNewCredentials(refreshRequest);
-      
-      return LoginResponseDTO.create(credntials);
+      return await this._authRepository.createNewCredentials(refreshRequest);
 
     } catch (error) {
       if (error instanceof HttpError)

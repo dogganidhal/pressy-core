@@ -1,13 +1,13 @@
 import {
   Path, GET, POST,
-  HttpError, Errors, PathParam, Return 
+  HttpError, Errors, PathParam, Return, QueryParam 
 } from "typescript-rest";
 import { MemberRepository } from "../repositories";
 import {
   MemberRegistrationDTO,MemberInfoDTO
 } from "../model/dto";
 import { Controller, Authenticated } from ".";
-import { AccessPrivilege } from "../model/entity/auth";
+import { AccessPrivilege } from "../model";
 import { HTTPUtils } from "../utils/http-utils";
 import { JSONSerialization } from "../utils/json-serialization";
 import { Member, MemberStatus } from "../model/entity";
@@ -17,10 +17,11 @@ export class MemberController extends Controller {
 
   private _memberRepository: MemberRepository = MemberRepository.instance;
 
-  @Path("/all/")
   @Authenticated(AccessPrivilege.SUPERUSER)
+  @Path("/all")
   @GET
-  public async getAllMembers() {
+  public async getAllMembers(@QueryParam("g") group?: number, @QueryParam("q") query?: string) {
+    console.log({group: group, query: query});
     const members: Member[] = await this._memberRepository.getAllMembers();
     return members.map(member => JSONSerialization.serializeObject(MemberInfoDTO.create(member)));
   }
@@ -57,8 +58,9 @@ export class MemberController extends Controller {
     try {
       const member = await this._memberRepository.getActivationCodeMember(code);
       member.status = MemberStatus.ACTIVE;
-      
+
       await this._memberRepository.saveMember(member);
+      await this._memberRepository.deleteActivationCode(code);
 
       return new Return.RequestAccepted(`/api/v1/member/${member.id}`);
     } catch (error) {
@@ -67,7 +69,6 @@ export class MemberController extends Controller {
       else
         this.throw(new Errors.BadRequestError((error as Error).message));
     }
-    
 
   }
 

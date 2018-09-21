@@ -1,9 +1,8 @@
 import { Repository } from "typeorm";
 import bcrypt from "bcrypt";
-import { Member, MemberPasswordResetCode, MemberActivationCode } from "../model/entity";
-import { AccessToken } from "../model/entity/auth";
+import { Member, MemberPasswordResetCode, MemberActivationCode, MemberGroup } from "../model/entity";
 import { connectToDatabase } from "../db";
-import { MemberRegistrationDTO, MemberPasswordResetRequestDTO } from "../model/dto";
+import { MemberRegistrationDTO, MemberPasswordResetRequestDTO, MemberInfoDTO } from "../model/dto";
 import { Exception } from "../errors";
 import { DateUtils } from "../utils";
 
@@ -77,6 +76,7 @@ export class MemberRepository {
     const newMember = Member.create(memberDTO);
 
     return (await this._memberRepositoryPromise).save(newMember);
+
   }
 
   public async resetPassword(code: string, resetPasswordRequest: MemberPasswordResetRequestDTO): Promise<Member> {
@@ -123,6 +123,35 @@ export class MemberRepository {
 
     return activationCode.member;
 
+  }
+
+  public async deleteActivationCode(code: string): Promise<void> {
+    const activationCode = await (await this._activationCodeRepositoryPromise).findOne(code);
+    if (!activationCode)
+      throw new Exception.ActivationCodeNotFound(code);
+    await (await this._resetCodeRepositoryPromise)
+      .createQueryBuilder()
+      .delete()
+      .from(MemberActivationCode)
+      .where("code = :code", {code: code})
+      .execute();
+  }
+
+  public async createDriver(memberDTO: MemberRegistrationDTO) {
+
+    const memberWithSameEmail = await (await this._memberRepositoryPromise).find({email: memberDTO.email});
+    if (memberWithSameEmail.length > 0)
+      throw new Exception.EmailAlreadyExists(memberDTO.email);
+
+    const memberWithSamePhone = await (await this._memberRepositoryPromise).find({phone: memberDTO.phone});
+    if (memberWithSamePhone.length > 0)
+      throw new Exception.PhoneAlreadyExists(memberDTO.phone);
+
+    const newDriver = Member.create(memberDTO);
+    newDriver.group = MemberGroup.DRIVER;
+
+    return (await this._memberRepositoryPromise).save(newDriver);
+    
   }
 
 }

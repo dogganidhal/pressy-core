@@ -1,6 +1,5 @@
 import { JsonObject, JsonProperty } from "json2typescript";
 import { MemberStatus, MemberGroup, Member } from "../entity";
-import { AccessToken } from "../entity/auth";
 import { JSONSerialization } from "../../utils/json-serialization";
 
 @JsonObject
@@ -137,10 +136,10 @@ export class LoginResponseDTO {
   @JsonProperty("type", String)
   public type: string = "Bearer";
 
-  public static create(accessToken: AccessToken): LoginResponseDTO {
+  public static create(accessToken: string, refreshToken: string): LoginResponseDTO {
     const response = new LoginResponseDTO();
-    response.accessToken = accessToken.token;
-    response.refreshToken = accessToken.refreshToken;
+    response.accessToken = accessToken;
+    response.refreshToken = refreshToken;
     response.type = "Bearer";
     return response;
   }
@@ -149,9 +148,6 @@ export class LoginResponseDTO {
 
 @JsonObject
 export class RefreshCredentialsRequestDTO {
-
-  @JsonProperty("access_token", String)
-  public token: string = "";
 
   @JsonProperty("refresh_token", String)
   public refreshToken: string = "";

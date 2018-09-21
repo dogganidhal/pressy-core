@@ -64,7 +64,7 @@ export namespace Exception {
 
   export class InvalidAccessToken extends HttpError {
     constructor() {
-      super('InvalidAccessToken', 401, `Access token not attributed`);
+      super('InvalidAccessToken', 401, `Invalid access token`);
     }
   }
 

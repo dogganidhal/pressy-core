@@ -1,12 +1,11 @@
 import "crypto";
 import { readFileSync } from "fs";
-import { Member, AccessToken, AccessPrivilege, MemberGroup } from "../model/entity";
-import { sign, decode } from "jsonwebtoken";
-import { Repository } from "typeorm";
-import { connectToDatabase } from "../db";
+import { Member, MemberGroup } from "../model/entity";
+import { AccessPrivilege } from "../model";
+import { sign, SignOptions, verify, VerifyOptions } from "jsonwebtoken";
 import { Exception } from "../errors";
 import { MemberRepository } from "./member-repository";
-import { RefreshCredentialsRequestDTO } from "../model/dto";
+import { RefreshCredentialsRequestDTO, LoginResponseDTO } from "../model/dto";
 
 interface IAuthPayload {
   id: number;
@@ -18,22 +17,10 @@ export class AuthRepository {
 
   public static instance: AuthRepository = new AuthRepository();
 
-  private _signature: string = readFileSync("cer.key").toString();
-  private _accessTokenRepositoryPromise: Promise<Repository<AccessToken>>;
+  private _publicKey: string = readFileSync("secrets/public.key").toString();
+  private _privateKey: string = readFileSync("secrets/private.key").toString();
 
-  constructor() {
-    this._accessTokenRepositoryPromise = new Promise((resolve, reject) => {
-      connectToDatabase()
-      .then(connection => {
-        resolve(connection.getRepository(AccessToken));
-      })
-      .catch(error => {
-        reject(error);
-      })
-    });
-  }
-
-  public async generateToken(member: Member): Promise<AccessToken> {
+  public async generateToken(member: Member): Promise<LoginResponseDTO> {
 
     const payload: IAuthPayload = {
       id: member.id,
@@ -41,13 +28,16 @@ export class AuthRepository {
       privilege: member.group == MemberGroup.SUPERUSER ? AccessPrivilege.SUPERUSER : AccessPrivilege.BASIC
     };
 
-    const token = sign(payload, this._signature, {expiresIn: 3600});
-    const refreshToken = sign({...payload, token}, this._signature);
-    const accessToken = AccessToken.create(token, refreshToken);
+    const signOptions: SignOptions = {
+      audience: member.id.toString(),
+      issuer: "pressy",
+      algorithm: "RS256"
+    };
 
-    (await this._accessTokenRepositoryPromise).save(accessToken);
+    const token = sign(payload, this._privateKey, {...signOptions, expiresIn: "1h", subject: "access"});
+    const refreshToken = sign(payload, this._privateKey, {...signOptions, subject: "refresh"});
 
-    return accessToken;
+    return LoginResponseDTO.create(token, refreshToken);
 
   }
 
@@ -56,11 +46,16 @@ export class AuthRepository {
     var payload: IAuthPayload;
 
     try {
-      const decodedPayload = decode(token);
+
+      const decodedPayload = verify(token, this._publicKey);
       payload = typeof decodedPayload === "string" ? JSON.parse(decodedPayload) : decodedPayload;
+
     } catch (error) {
       throw new Exception.InvalidAccessToken;
     }
+
+    if (!payload)
+      throw new Exception.InvalidAccessToken;
 
     if (payload.privilege < minimumPrivilege) 
       throw new Exception.UnauthorizedRequest;
@@ -69,32 +64,34 @@ export class AuthRepository {
 
     if (!member)
       throw new Exception.AccessTokenNotFound;
+      
+    if (payload.privilege == AccessPrivilege.SUPERUSER && member.group != MemberGroup.SUPERUSER)
+      throw new Exception.UnauthorizedRequest;
 
     return member;
 
   }
 
-  public async createNewCredentials(request: RefreshCredentialsRequestDTO): Promise<AccessToken> {
+  public async createNewCredentials(request: RefreshCredentialsRequestDTO): Promise<LoginResponseDTO> {
 
-    var accessToken = await (await this._accessTokenRepositoryPromise).findOne({token: request.token});
+    try {
+      const verifyOptions: VerifyOptions = {
+        issuer: "pressy",
+        algorithms: ["RS256"],
+        subject: "refresh"
+      };
+      const decodedPayload = verify(request.refreshToken, this._publicKey, verifyOptions);
+      const payload: IAuthPayload = typeof decodedPayload === "string" ? JSON.parse(decodedPayload) : decodedPayload;
 
-    if (!accessToken)
-      throw new Exception.AccessTokenNotFound;
+      const signOptions: SignOptions = {
+        algorithm: "RS256",
+        expiresIn: "1h"
+      };
 
-    if (accessToken.refreshToken != request.refreshToken)
-      throw new Exception.AccessTokenAndRefreshTokenDoNotMatch;
-
-    var payload: IAuthPayload;
-    const decodedPayload = decode(request.token);
-    payload = typeof decodedPayload === "string" ? JSON.parse(decodedPayload) : decodedPayload;
-    const newToken = AccessToken.create(
-      sign(payload, this._signature),
-      request.refreshToken
-    );
-
-    (await this._accessTokenRepositoryPromise).save(newToken);
-
-    return newToken;
+      return LoginResponseDTO.create(sign(payload, this._privateKey, signOptions), request.refreshToken);
+    } catch (error) {
+      throw new Exception.InvalidAccessToken
+    }
 
   }
 

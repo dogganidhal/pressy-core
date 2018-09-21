@@ -1,4 +1,4 @@
-import { ContextRequest, ContextResponse, HttpError } from "typescript-rest";
+import { ContextRequest, ContextResponse, HttpError, Errors } from "typescript-rest";
 import { Request, Response } from "express";
 import { AccessPrivilege, Member } from "../model/entity";
 import { Exception } from "../errors";
@@ -49,7 +49,10 @@ export function Authenticated<TController extends Controller>(minimumPrivilege: 
       try {
         context.currentUser = await AuthRepository.instance.decodeToken(token, minimumPrivilege);
       } catch (error) {
-        context.throw(error as HttpError);
+        if (error instanceof HttpError)
+          context.throw(error as HttpError);
+        else
+          context.throw(new Errors.BadRequestError((error as Error).message));
         return;
       }
       
@@ -61,3 +64,5 @@ export function Authenticated<TController extends Controller>(minimumPrivilege: 
 }
 
 export * from "./member-controller";
+export * from "./auth-controller";
+export * from "./driver-controller";

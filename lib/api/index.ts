@@ -1,6 +1,10 @@
-import express, { Application, Request, Response, NextFunction } from "express";
+import express, { Application } from "express";
 import { Server } from "typescript-rest";
 import * as bodyParser from "body-parser";
+import { 
+  MemberController, AuthController, DriverController
+} from "../api/controllers";
+import { DocumentationController } from "./controllers/doc-controller";
 
 export default class API {
 
@@ -8,12 +12,15 @@ export default class API {
 
   constructor() {
     this._express = express();
-    this._config();
     this._middleware();
+    this._config();
   }
   
   private async _config() {
-    
+    this.registerController(DocumentationController);
+    this.registerController(DriverController);
+    this.registerController(MemberController);
+    this.registerController(AuthController);
   }
 
   private _middleware() {

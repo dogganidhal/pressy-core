@@ -6,7 +6,7 @@
   "password": "",
   "database": "pressy",
   "synchronize": true,
-  "logging": false,
+  "logging": true,
   "entities": [
      "lib/api/model/entity/**/*.ts"
   ],
@@ -15,5 +15,6 @@
   ],
   "subscribers": [
      "lib/api/subscriber/**/*.ts"
-  ]
+  ],
+  "logger": "file"
 }

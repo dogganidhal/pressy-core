@@ -1,6 +1,7 @@
 node_modules
 *.DS_Store
 tslint.json
-cer.key
+secrets
 .vscode
 playground.pgsql
+ormlogs.log
