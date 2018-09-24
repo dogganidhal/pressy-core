@@ -88,7 +88,13 @@ export class AuthRepository {
         expiresIn: "1h"
       };
 
-      return LoginResponseDTO.create(sign(payload, this._privateKey, signOptions), request.refreshToken);
+      const accessToken: IAuthPayload = {
+        id: payload.id,
+        secret: payload.secret,
+        privilege: payload.privilege
+      };
+
+      return LoginResponseDTO.create(sign({...accessToken, expiresIn: "1h"}, this._privateKey, signOptions), request.refreshToken);
     } catch (error) {
       throw new Exception.InvalidAccessToken
     }
