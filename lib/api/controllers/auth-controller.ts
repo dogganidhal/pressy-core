@@ -29,7 +29,7 @@ export class AuthController extends Controller {
 
     try {
 
-      const loginRequest = HTTPUtils.parseBody(this, LoginRequestDTO);
+      const loginRequest = HTTPUtils.parseBodyOfContoller(this, LoginRequestDTO);
       const member = await this._memberRepository.getMemberByEmail(loginRequest.email!);
 
       if (!member)
@@ -57,7 +57,7 @@ export class AuthController extends Controller {
 
     try {
 
-      const refreshRequest = HTTPUtils.parseBody(this, RefreshCredentialsRequestDTO);
+      const refreshRequest = HTTPUtils.parseBodyOfContoller(this, RefreshCredentialsRequestDTO);
       return await this._authRepository.createNewCredentials(refreshRequest);
 
     } catch (error) {
@@ -75,7 +75,7 @@ export class AuthController extends Controller {
 
     try {
 
-      const resetCodeRequest = HTTPUtils.parseBody(this, MemberPasswordResetCodeRequestDTO);
+      const resetCodeRequest = HTTPUtils.parseBodyOfContoller(this, MemberPasswordResetCodeRequestDTO);
 
       const member = await this._memberRepository
         .getMemberByEmail(resetCodeRequest.email);
@@ -103,7 +103,7 @@ export class AuthController extends Controller {
 
     try {
 
-      const resetPasswordRequest = HTTPUtils.parseBody(this, MemberPasswordResetRequestDTO);
+      const resetPasswordRequest = HTTPUtils.parseBodyOfContoller(this, MemberPasswordResetRequestDTO);
       const member = await this._memberRepository.resetPassword(code, resetPasswordRequest);
 
       return new Return.RequestAccepted(`/api/v1/member/${member.id}`);

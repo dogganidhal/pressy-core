@@ -41,4 +41,19 @@ export class DateUtils {
     return new Date();
   }
 
+  public static checkCreditCardExpiryDate(date: string) {
+    const [month, year] = date.split("/");
+      if (year == undefined || month == undefined)
+        throw new Error("Invalid credit card expiry date");
+      if (parseInt(month) > 12)
+        throw new Error(`Invalid month ${month}`);
+
+      
+      const expiryDate = new Date((parseInt(year) % 100) + 2000, parseInt(month) - 1);
+      const nowDate = new Date(DateUtils.now().getFullYear(), DateUtils.now().getMonth());
+
+      if (expiryDate <= nowDate)
+        throw new Error("Expired credit card");
+  }
+
 }

@@ -1,5 +1,8 @@
+import { DateUtils } from './date-utils';
 import { JsonConverter, JsonCustomConvert, JsonConvert } from "json2typescript";
-import { MemberStatus, AccessPrivilege, MemberGroup } from "../model/entity";
+import dateFormat from "dateformat";
+import { MemberStatus, MemberGroup } from "../model/entity";
+import { AccessPrivilege } from "../model";
 
 
 export namespace JSONSerialization {
@@ -14,6 +17,19 @@ export namespace JSONSerialization {
     }
     public deserialize(utc: string): Date {
         return new Date(utc);
+    }
+
+  }
+
+  @JsonConverter
+  export class CreditCardExpiryDateConvert implements JsonCustomConvert<Date> {
+
+    public serialize(date: Date): string {
+      return dateFormat(date, "mm/yy");
+    }
+    public deserialize(exp: string): Date {
+      const [month, year] = exp.split("/");
+      return new Date((parseInt(year) % 100) + 2000, parseInt(month) - 1);
     }
 
   }

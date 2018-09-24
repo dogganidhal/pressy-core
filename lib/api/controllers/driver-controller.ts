@@ -16,7 +16,7 @@ export class DriverController extends Controller {
   public async createDriver() {
 
     try {
-      const newDriver: MemberRegistrationDTO = HTTPUtils.parseBody(this, MemberRegistrationDTO);
+      const newDriver: MemberRegistrationDTO = HTTPUtils.parseBodyOfContoller(this, MemberRegistrationDTO);
       const member = await this._memberRepository.createDriver(newDriver);
       const _ = this._memberRepository.createActivationCode(member);
       // TODO: Send the activation URL by email !!

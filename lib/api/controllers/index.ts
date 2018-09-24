@@ -1,12 +1,13 @@
 import { ContextRequest, ContextResponse, HttpError, Errors } from "typescript-rest";
 import { Request, Response } from "express";
-import { AccessPrivilege, Member } from "../model/entity";
+import { Member } from "../model/entity";
+import { AccessPrivilege } from "../model";
 import { Exception } from "../errors";
 import { AuthRepository } from "../repositories";
 
 export abstract class Controller {
 
-  public currentUser?: Member;
+  public currentMember?: Member;
 
   @ContextRequest
   public currentRequest?: Request;
@@ -15,12 +16,19 @@ export abstract class Controller {
 
   public throw<TError extends HttpError>(error: TError) {
 
+    if (error instanceof HttpError) {
+      this.currentResponse!.status(error.statusCode);
+    } else {
+      this.currentResponse!.status(400);
+    }
+
     this.currentResponse!.setHeader('Content-Type', 'application/json');
-    this.currentResponse!.status(error.statusCode)
-      .send({
-        code: error.statusCode,
-        message: error.message
-      });
+    this.currentResponse!.status(error instanceof HttpError ? error.statusCode : 400);
+    this.currentResponse!.send({
+      code: error instanceof HttpError ? error.statusCode : 400,
+      message: error.message
+    });
+    
   }
 
 }
@@ -47,12 +55,9 @@ export function Authenticated<TController extends Controller>(minimumPrivilege: 
       }
 
       try {
-        context.currentUser = await AuthRepository.instance.decodeToken(token, minimumPrivilege);
+        context.currentMember = await AuthRepository.instance.decodeToken(token, minimumPrivilege);
       } catch (error) {
-        if (error instanceof HttpError)
-          context.throw(error as HttpError);
-        else
-          context.throw(new Errors.BadRequestError((error as Error).message));
+        context.throw(error);
         return;
       }
       

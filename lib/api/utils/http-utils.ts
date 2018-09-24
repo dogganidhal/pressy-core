@@ -7,9 +7,18 @@ export namespace HTTPUtils {
 
   const jsonConvert = new JsonConvert();
 
-  export function parseBody<TModel, TController extends Controller>(controller: TController, classReference: {new (): TModel}): TModel {
+  export function parseBodyOfContoller<TModel, TController extends Controller>(controller: TController, classReference: {new (): TModel}): TModel {
     try {
       const body = controller.currentRequest!.body;
+      const jsonObject = typeof body === "string" ? JSON.parse(body) : body;
+      return jsonConvert.deserialize(jsonObject, classReference);
+    } catch (error) {
+      throw new Exception.RequiredFieldNotFound;
+    }
+  }
+
+  export function parseBody<TModel>(body: object | string, classReference: {new (): TModel}): TModel {
+    try {
       const jsonObject = typeof body === "string" ? JSON.parse(body) : body;
       return jsonConvert.deserialize(jsonObject, classReference);
     } catch (error) {

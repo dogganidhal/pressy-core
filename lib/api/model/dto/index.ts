@@ -1,3 +1,4 @@
+import { PaymentAccount } from './../entity/members/payment-account';
 import { JsonObject, JsonProperty } from "json2typescript";
 import { MemberStatus, MemberGroup, Member } from "../entity";
 import { JSONSerialization } from "../../utils/json-serialization";
@@ -151,5 +152,41 @@ export class RefreshCredentialsRequestDTO {
 
   @JsonProperty("refresh_token", String)
   public refreshToken: string = "";
+
+}
+
+@JsonObject
+export class CreditCardDTO {
+
+  @JsonProperty("credit_card_number", String)
+  public creditCardNumber: string = "";
+
+  @JsonProperty("credit_card_owner_name", String)
+  public creditCardOwnerName: string = "";
+
+  @JsonProperty("credit_card_expiry_date", JSONSerialization.CreditCardExpiryDateConvert)
+  public creditCardExpiryDate: Date = new Date();
+
+  public static create(paymentAccount: PaymentAccount): CreditCardDTO {
+    const creditCard = new CreditCardDTO();
+    creditCard.creditCardNumber = paymentAccount.creditCardNumber;
+    creditCard.creditCardOwnerName = paymentAccount.creditCardOwnerName;
+    creditCard.creditCardExpiryDate = paymentAccount.creditExpiryDate;
+    return creditCard;
+  }
+
+}
+
+@JsonObject
+export class MobileDeviceDTO {
+
+  @JsonProperty("device_id", String)
+  public deviceId: string = "";
+
+  public static create(id: string): MobileDeviceDTO {
+    const device = new MobileDeviceDTO();
+    device.deviceId = id;
+    return device;
+  }
 
 }

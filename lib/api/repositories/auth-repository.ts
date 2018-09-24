@@ -51,7 +51,7 @@ export class AuthRepository {
       payload = typeof decodedPayload === "string" ? JSON.parse(decodedPayload) : decodedPayload;
 
     } catch (error) {
-      throw new Exception.InvalidAccessToken;
+      throw new Exception.InvalidAccessToken(error.message);
     }
 
     if (!payload)

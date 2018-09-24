@@ -1,3 +1,6 @@
+import { MobileDevice } from './../model/entity/members/device';
+import { PaymentAccount } from './../model/entity/members/payment-account';
+import { CreditCardDTO, MobileDeviceDTO } from './../model/dto/index';
 import { Repository } from "typeorm";
 import bcrypt from "bcrypt";
 import { Member, MemberPasswordResetCode, MemberActivationCode, MemberGroup } from "../model/entity";
@@ -5,8 +8,6 @@ import { connectToDatabase } from "../db";
 import { MemberRegistrationDTO, MemberPasswordResetRequestDTO, MemberInfoDTO } from "../model/dto";
 import { Exception } from "../errors";
 import { DateUtils } from "../utils";
-
-const TokenGenerator = require("uuid-token-generator");
 
 
 export class MemberRepository {
@@ -16,6 +17,8 @@ export class MemberRepository {
   private _memberRepositoryPromise: Promise<Repository<Member>>;
   private _resetCodeRepositoryPromise: Promise<Repository<MemberPasswordResetCode>>;
   private _activationCodeRepositoryPromise: Promise<Repository<MemberActivationCode>>;
+  private _paymentAccountRepositoryPromise: Promise<Repository<PaymentAccount>>;
+  private _mobileDeviceRepositoryPromise: Promise<Repository<MobileDevice>>;
 
   constructor() {
     this._memberRepositoryPromise = new Promise((resolve, reject) => {
@@ -40,6 +43,24 @@ export class MemberRepository {
       connectToDatabase()
       .then(connection => {
         resolve(connection.getRepository(MemberActivationCode));
+      })
+      .catch(error => {
+        reject(error);
+      });
+    });
+    this._paymentAccountRepositoryPromise = new Promise((resolve, reject) => {
+      connectToDatabase()
+      .then(connection => {
+        resolve(connection.getRepository(PaymentAccount));
+      })
+      .catch(error => {
+        reject(error);
+      });
+    });
+    this._mobileDeviceRepositoryPromise = new Promise((resolve, reject) => {
+      connectToDatabase()
+      .then(connection => {
+        resolve(connection.getRepository(MobileDevice));
       })
       .catch(error => {
         reject(error);
@@ -152,6 +173,36 @@ export class MemberRepository {
 
     return (await this._memberRepositoryPromise).save(newDriver);
     
+  }
+
+  public async getPaymentAccounts(member: Member): Promise<PaymentAccount[]> {
+    const repository = await this._paymentAccountRepositoryPromise;
+    return repository.find({member: member});
+  }
+
+  public async addPaymentAccount(member: Member, creditCardDTO: CreditCardDTO): Promise<PaymentAccount> {
+
+    const repository = await this._paymentAccountRepositoryPromise;
+    const paymentAccount = PaymentAccount.create(member, creditCardDTO);
+
+    return repository.save(paymentAccount);
+
+  }
+
+  public async getMobileDevices(member: Member): Promise<MobileDevice[]> {
+
+    const repository = await this._mobileDeviceRepositoryPromise;
+    return repository.find({member: member});
+
+  }
+
+  public async registerMobileDevice(member: Member, mobileDeviceDTO: MobileDeviceDTO): Promise<MobileDevice> {
+
+    const repository = await this._mobileDeviceRepositoryPromise;
+    const device = MobileDevice.create(member, mobileDeviceDTO.deviceId);
+
+    return repository.save(device);
+
   }
 
 }

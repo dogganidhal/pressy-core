@@ -63,8 +63,8 @@ export namespace Exception {
   }
 
   export class InvalidAccessToken extends HttpError {
-    constructor() {
-      super('InvalidAccessToken', 401, `Invalid access token`);
+    constructor(msg?: string) {
+      super('InvalidAccessToken', 401, `Invalid access token${msg ? " : " + msg : null}`);
     }
   }
 
@@ -95,6 +95,12 @@ export namespace Exception {
   export class ActivationCodeNotFound extends HttpError {
     constructor(code: string) {
       super('ActivationCodeNotFound', 401, `Activation code '${code}' was not found`);
+    }
+  }
+
+  export class InvalidCreditCardInformation extends HttpError {
+    constructor(msg?: string) {
+      super('InvalidCreditCardInformation', 400, `Invalid credit card information${msg ? " : " + msg : null}`);
     }
   }
 
