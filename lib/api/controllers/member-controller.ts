@@ -38,10 +38,10 @@ export class MemberController extends Controller {
   }
 
   @POST
-  public async createMember() {
+  public async createMember(@ContextRequest request: Request) {
 
     try {
-      const newMember: MemberRegistrationDTO = HTTPUtils.parseBodyOfContoller(this, MemberRegistrationDTO);
+      const newMember: MemberRegistrationDTO = HTTPUtils.parseBody(request.body, MemberRegistrationDTO);
       const member = await this._memberRepository.createMember(newMember);
       const _ = this._memberRepository.createActivationCode(member);
       // TODO: Send the activation URL by email !!

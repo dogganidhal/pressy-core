@@ -5,7 +5,6 @@ import {
 import { MemberRepository, AuthRepository } from "../repositories";
 import {
   LoginRequestDTO,
-  LoginResponseDTO,
   RefreshCredentialsRequestDTO,
   MemberPasswordResetRequestDTO,
   MemberPasswordResetCodeDTO,

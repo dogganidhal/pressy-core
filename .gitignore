@@ -5,3 +5,4 @@ secrets
 .vscode
 playground.pgsql
 ormlogs.log
+*.env

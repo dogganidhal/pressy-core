@@ -5,6 +5,7 @@ import {
   MemberController, AuthController, DriverController
 } from "../api/controllers";
 import { DocumentationController } from "./controllers/doc-controller";
+import { OrderController } from "./controllers/order-controller";
 
 export default class API {
 
@@ -21,6 +22,7 @@ export default class API {
     this.registerController(DriverController);
     this.registerController(MemberController);
     this.registerController(AuthController);
+    this.registerController(OrderController);
   }
 
   private _middleware() {
@@ -34,6 +36,10 @@ export default class API {
 
   public async run(port: number | string) {
     this._express.listen(port);
+  }
+
+  public getApp(): Application { 
+    return this._express;
   }
 
 }
