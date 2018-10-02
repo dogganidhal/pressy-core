@@ -1,9 +1,8 @@
 import { AddressDTO } from './../../api/model/dto/address';
 import { Address } from './../../api/model/entity/common/address';
-import fetch from 'node-fetch';
 import { Location } from '../../api/model/entity/common/location';
 import { LocationRepository } from '../../api/repositories/location-repository';
-import { RestClient, IRestResponse } from "typed-rest-client";
+import { RestClient } from "typed-rest-client";
 
 export interface ICoordinates {
   latitude: number;
@@ -69,8 +68,7 @@ ${coordinates.latitude},${coordinates.longitude}&key=${process.env.GMAPS_API_KEY
 
     const response = await this._restClient.get(url);
     const result: any = (await response.result as any);
-    console.log(result);
-    console.log(response.statusCode);
+    
     if (result == null || response.statusCode >= 400 || result.status != "OK")
       throw new Error(`Can't fetch address components for coordinates ${coordinates}`);
     

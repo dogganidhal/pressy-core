@@ -21,11 +21,6 @@ export namespace Exception {
     }
   }
 
-  interface TMemberIdentifier {
-    email?: string;
-    phone?: string
-  }
-
   export class MemberNotFound extends HttpError {
     constructor(email: string) {
       super('MemberNotFound', 404, `No registerd member with email '${email}' was found`);

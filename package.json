@@ -68,6 +68,6 @@
       "json",
       "node"
     ],
-    "setupTestFrameworkScriptFile": "<rootDir>/setup-tests.js"
+    "setupTestFrameworkScriptFile": "<rootDir>/setup-jest.js"
   }
 }

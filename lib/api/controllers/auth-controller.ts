@@ -42,10 +42,7 @@ export class AuthController extends Controller {
       return JSONSerialization.serializeObject(loginResponse);
 
     } catch (error) {
-      if (error instanceof Error)
-        this.throw(new Errors.BadRequestError(error.message));  
-      else if (error instanceof HttpError)
-        this.throw(error);
+      this.throw(error);
     }
 
   }

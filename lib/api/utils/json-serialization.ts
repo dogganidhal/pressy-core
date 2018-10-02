@@ -95,7 +95,7 @@ export namespace JSONSerialization {
     return convert.serialize(obj);
   }
 
-  export function deserializeObject<TModel>(json: object | string, classReference: {new (): TModel}): string {
+  export function deserializeObject<TModel>(json: object | string, classReference: {new (): TModel}): TModel {
     return convert.deserialize(typeof json == "string" ? JSON.parse(json) : json, classReference);
   }
 
