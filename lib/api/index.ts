@@ -6,6 +6,7 @@ import {
 } from "../api/controllers";
 import { DocumentationController } from "./controllers/doc-controller";
 import { OrderController } from "./controllers/order-controller";
+import { BookingController } from "./controllers/booking-controller";
 
 export default class API {
 
@@ -23,6 +24,7 @@ export default class API {
     this.registerController(MemberController);
     this.registerController(AuthController);
     this.registerController(OrderController);
+    this.registerController(BookingController);
   }
 
   private _middleware() {

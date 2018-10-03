@@ -1,3 +1,4 @@
+import { Slot } from './slot';
 import { Address } from './../common';
 import { Member } from './../members';
 import { 
@@ -8,6 +9,8 @@ import {
 } from "typeorm";
 import { OrderElement } from './order-element';
 import { CreateOrderRequestDTO } from '../../dto/order';
+import { SlotRepository } from '../../../repositories/slot-reponsitory';
+import { Exception } from '../../../errors';
 
 export enum OrderType {
   LIGHT = 1,
@@ -44,13 +47,18 @@ export class Order {
   @OneToMany(type => OrderElement, element => element.order)
   public elements: OrderElement[];
 
+  @OneToOne(type => Slot, {nullable: false})
+  @JoinColumn()
+  public pickupSlot: Slot;
+
+  @OneToOne(type => Slot, {nullable: false})
+  @JoinColumn()
+  public deliverySlot: Slot;
+
   public static async create(member: Member, createOrderDTO: CreateOrderRequestDTO): Promise<Order> {
 
     const order = new Order();
 
-    order.member = member;
-    // order.pickupAddress = createOrderDTO.pickupAddress;
-    // order
 
     return order;
     

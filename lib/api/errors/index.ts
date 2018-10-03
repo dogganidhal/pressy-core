@@ -99,4 +99,10 @@ export namespace Exception {
     }
   }
 
+  export class SlotNotFound extends HttpError {
+    constructor(slotId: number) {
+      super('SlotNotFound', 404, `No slot with id ${slotId} was found`);
+    }
+  }
+
 }

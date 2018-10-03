@@ -1,10 +1,9 @@
 import { MobileDevice } from './../model/entity/members/device';
 import { PaymentAccount } from './../model/entity/members/payment-account';
 import { CreditCardDTO, MobileDeviceDTO } from './../model/dto/index';
-import { Repository } from "typeorm";
+import { Repository, createConnection } from "typeorm";
 import bcrypt from "bcrypt";
 import { Member, MemberPasswordResetCode, MemberActivationCode, MemberGroup } from "../model/entity";
-import { connectToDatabase } from "../db";
 import { MemberRegistrationDTO, MemberPasswordResetRequestDTO, MemberInfoDTO } from "../model/dto";
 import { Exception } from "../errors";
 import { DateUtils } from "../utils";
@@ -22,7 +21,7 @@ export class MemberRepository {
 
   constructor() {
     this._memberRepositoryPromise = new Promise((resolve, reject) => {
-      connectToDatabase()
+      createConnection()
       .then(connection => {
         resolve(connection.getRepository(Member));
       })
@@ -31,7 +30,7 @@ export class MemberRepository {
       });
     });
     this._resetCodeRepositoryPromise = new Promise((resolve, reject) => {
-      connectToDatabase()
+      createConnection()
       .then(connection => {
         resolve(connection.getRepository(MemberPasswordResetCode));
       })
@@ -40,7 +39,7 @@ export class MemberRepository {
       });
     });
     this._activationCodeRepositoryPromise = new Promise((resolve, reject) => {
-      connectToDatabase()
+      createConnection()
       .then(connection => {
         resolve(connection.getRepository(MemberActivationCode));
       })
@@ -49,7 +48,7 @@ export class MemberRepository {
       });
     });
     this._paymentAccountRepositoryPromise = new Promise((resolve, reject) => {
-      connectToDatabase()
+      createConnection()
       .then(connection => {
         resolve(connection.getRepository(PaymentAccount));
       })
@@ -58,7 +57,7 @@ export class MemberRepository {
       });
     });
     this._mobileDeviceRepositoryPromise = new Promise((resolve, reject) => {
-      connectToDatabase()
+      createConnection()
       .then(connection => {
         resolve(connection.getRepository(MobileDevice));
       })

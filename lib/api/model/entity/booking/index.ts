@@ -1,0 +1,67 @@
+import { LocationRepository } from './../../../repositories/location-repository';
+import { CreateBookingRequestDTO } from './../../dto/booking';
+import { Address } from './../common/address';
+import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne } from "typeorm";
+import { Slot } from "../order/slot";
+import { Member } from '../members';
+import { SlotRepository } from '../../../repositories/slot-reponsitory';
+import { Exception } from '../../../errors';
+
+
+@Entity()
+export class Booking {
+
+  @PrimaryGeneratedColumn()
+  public id: number;
+
+  @OneToOne(type => Slot, {nullable: false})
+  @JoinColumn()
+  public pickupSlot: Slot;
+
+  @OneToOne(type => Slot, {nullable: false})
+  @JoinColumn()
+  public deliverySlot: Slot;
+
+  @OneToOne(type => Address, {nullable: false})
+  @JoinColumn()
+  public pickupAddress: Address;
+
+  @OneToOne(type => Address, {nullable: false})
+  @JoinColumn()
+  public deliveryAddress: Address;
+
+  @ManyToOne(type => Member, {nullable: false})
+  @JoinColumn()
+  public member: Member;
+
+
+  public static async create(member: Member, createBookingRequestDTO: CreateBookingRequestDTO): Promise<Booking> {
+
+    const booking = new Booking;
+
+    booking.pickupAddress = await Address.create(createBookingRequestDTO.pickupAddress);
+    booking.deliveryAddress = await Address.create(createBookingRequestDTO.deliveryAddress);
+
+    await LocationRepository.instance.saveNewAddress(booking.pickupAddress);
+    await LocationRepository.instance.saveNewAddress(booking.deliveryAddress);
+
+    const pickupSlot = await SlotRepository.instance.getSlotById(createBookingRequestDTO.pickupSlotId);
+
+    if (!pickupSlot)
+      throw new Exception.SlotNotFound(createBookingRequestDTO.pickupSlotId);
+
+    const deliverySlot = await SlotRepository.instance.getSlotById(createBookingRequestDTO.deliverySlotId);
+
+      if (!deliverySlot)
+        throw new Exception.SlotNotFound(createBookingRequestDTO.deliverySlotId);
+
+    booking.pickupSlot = pickupSlot;
+    booking.deliverySlot = deliverySlot;
+
+    booking.member = member;
+
+    return booking;
+
+  }
+
+}

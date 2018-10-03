@@ -2,9 +2,8 @@ import { Address } from './../model/entity/common/address';
 import { MobileDevice } from './../model/entity/members/device';
 import { PaymentAccount } from './../model/entity/members/payment-account';
 import { CreditCardDTO, MobileDeviceDTO } from './../model/dto/index';
-import { Repository } from "typeorm";
+import { Repository, createConnection } from "typeorm";
 import bcrypt from "bcrypt";
-import { connectToDatabase } from "../db";
 import {  } from "../model/dto";
 import { Exception } from "../errors";
 import { DateUtils } from "../utils";
@@ -21,7 +20,7 @@ export class LocationRepository {
 
   constructor() {
     this._locationRepositoryPromise = new Promise((resolve, reject) => {
-      connectToDatabase()
+      createConnection()
       .then(connection => {
         resolve(connection.getRepository(Location));
       })
@@ -30,7 +29,7 @@ export class LocationRepository {
       });
     });
     this._addressRepositoryPromise = new Promise((resolve, reject) => {
-      connectToDatabase()
+      createConnection()
       .then(connection => {
         resolve(connection.getRepository(Address));
       })

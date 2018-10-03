@@ -1,4 +1,4 @@
-import { JsonConvert } from "json2typescript";
+import { JsonConvert, ValueCheckingMode } from "json2typescript";
 import { Exception } from "../errors";
 import { Controller } from "../controllers";
 
@@ -6,6 +6,8 @@ import { Controller } from "../controllers";
 export namespace HTTPUtils {
 
   const jsonConvert = new JsonConvert();
+
+  jsonConvert.valueCheckingMode = ValueCheckingMode.ALLOW_NULL;
 
   export function parseBodyOfContoller<TModel, TController extends Controller>(controller: TController, classReference: {new (): TModel}): TModel {
     try {
@@ -22,6 +24,7 @@ export namespace HTTPUtils {
       const jsonObject = typeof body === "string" ? JSON.parse(body) : body;
       return jsonConvert.deserialize(jsonObject, classReference);
     } catch (error) {
+      console.log(error);
       throw new Exception.RequiredFieldNotFound;
     }
   }

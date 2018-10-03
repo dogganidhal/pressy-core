@@ -10,13 +10,14 @@ export class AddressLocationDTO {
   public latitude: number = Infinity;
 }
 
+@JsonObject
 export class CreateAddressDTO {
 
   @JsonProperty("place_id", String, true)
-  public placeId?: string;
+  public placeId?: string = undefined;
 
   @JsonProperty("location", AddressLocationDTO, true)
-  public location?: AddressLocationDTO;
+  public location?: AddressLocationDTO = undefined;
 
 }
 

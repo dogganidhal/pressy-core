@@ -36,4 +36,10 @@ export class CreateOrderRequestDTO {
   @JsonProperty("delivery_address", AddressDTO, true)
   public deliveryAddress?: AddressDTO = undefined;
 
+  @JsonProperty("pickup_slot_id", Number)
+  public pickupSlotId: number = -1;
+
+  @JsonProperty("delivery_slot_id", Number)
+  public deliverySlotId: number = -1;
+
 }

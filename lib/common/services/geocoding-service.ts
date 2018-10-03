@@ -1,4 +1,4 @@
-import { AddressDTO } from './../../api/model/dto/address';
+import { AddressDTO, CreateAddressDTO } from './../../api/model/dto/address';
 import { Address } from './../../api/model/entity/common/address';
 import { Location } from '../../api/model/entity/common/location';
 import { LocationRepository } from '../../api/repositories/location-repository';
@@ -27,6 +27,15 @@ export class GeocodingService {
   
   private _restClient: RestClient = new RestClient("PRESSY-REST-AGENT");
   private GOOGLE_SERVICES_URL = "https://maps.googleapis.com/maps/api";
+
+  public async getNormalizedAddress(createAddressDTO: CreateAddressDTO): Promise<AddressDTO> {
+
+    if (createAddressDTO.placeId != undefined)
+      return this.getAddressWithPlaceId(createAddressDTO.placeId!);
+    
+    return this.getAddressWithCoordinates(createAddressDTO.location!);
+
+  }
 
   public async getAddressWithPlaceId(placeId: string): Promise<AddressDTO> {
 

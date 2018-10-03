@@ -1,12 +1,12 @@
 {
   "name": "pressy-core",
   "version": "0.0.1",
-  "description": "Coeur du systeme pressy",
+  "description": "Cœur du système pressy",
   "main": "index.ts",
   "scripts": {
     "main": "nodemon",
     "prod": "set NODE_ENV=production && nodemon",
-    "dev": "set NODE_ENV=development && nodemon",
+    "dev": "export NODE_ENV=development && nodemon",
     "test": "jest --forceExit --detectOpenHandles",
     "debug": "nodemon",
     "script": "ts-node"
