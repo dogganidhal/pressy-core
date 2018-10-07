@@ -105,4 +105,10 @@ export namespace Exception {
     }
   }
 
+  export class InvalidSlotType extends HttpError {
+    constructor(slotType: number) {
+      super('InvalidSlotType', 400, `Invalid slot type '${slotType}'`);
+    }
+  }
+
 }

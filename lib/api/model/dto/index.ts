@@ -30,9 +30,6 @@ export class MemberInfoDTO {
   @JsonProperty("created", JSONSerialization.UTCDateConvert)
   public created: Date;
 
-  @JsonProperty("secret", String)
-  public secret: string;
-
   public static create(member: Member): MemberInfoDTO {
     const memberDTO = new MemberInfoDTO();
 
@@ -42,7 +39,6 @@ export class MemberInfoDTO {
     memberDTO.email = member.email;
     memberDTO.phone = member.phone;
     memberDTO.status = member.status;
-    memberDTO.secret = member.secret;
     memberDTO.group = member.group;
 
     return memberDTO;

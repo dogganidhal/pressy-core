@@ -37,17 +37,14 @@ export class Member {
   @CreateDateColumn()
   public created: Date;
 
-  @Column({default: MemberStatus.INACTIVE})
-  public status: MemberStatus;
+  @Column()
+  public status: MemberStatus = MemberStatus.INACTIVE;
 
   @Column()
   public passwordHash: string;
 
-  @Column({unique: true, nullable: false})
-  public secret: string;
-
-  @Column({default: MemberGroup.CUSTOMER})
-  public group: MemberGroup;
+  @Column()
+  public group: MemberGroup = MemberGroup.CUSTOMER;
 
   public static create(memberDTO: MemberRegistrationDTO, memberGroup: MemberGroup = MemberGroup.CUSTOMER): Member {
     const member: Member = new Member();
@@ -58,7 +55,6 @@ export class Member {
     member.passwordHash = bcrypt.hashSync(memberDTO.password, 10);
     member.status = MemberStatus.INACTIVE;
     member.group = memberGroup;
-    member.secret = uuid.v4().toString();
     return member;
   }
 

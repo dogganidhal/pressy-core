@@ -1,10 +1,10 @@
 import { LocationRepository } from './../../../repositories/location-repository';
 import { CreateBookingRequestDTO } from './../../dto/booking';
 import { Address } from './../common/address';
-import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne, CreateDateColumn } from "typeorm";
 import { Slot } from "../order/slot";
 import { Member } from '../members';
-import { SlotRepository } from '../../../repositories/slot-reponsitory';
+import { SlotRepository } from '../../../repositories/slot-repository';
 import { Exception } from '../../../errors';
 
 
@@ -14,11 +14,14 @@ export class Booking {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @OneToOne(type => Slot, {nullable: false})
+  @CreateDateColumn()
+  public created: Date;
+
+  @ManyToOne(type => Slot, {nullable: false})
   @JoinColumn()
   public pickupSlot: Slot;
 
-  @OneToOne(type => Slot, {nullable: false})
+  @ManyToOne(type => Slot, {nullable: false})
   @JoinColumn()
   public deliverySlot: Slot;
 
@@ -26,9 +29,9 @@ export class Booking {
   @JoinColumn()
   public pickupAddress: Address;
 
-  @OneToOne(type => Address, {nullable: false})
+  @OneToOne(type => Address, {nullable: true})
   @JoinColumn()
-  public deliveryAddress: Address;
+  public deliveryAddress?: Address;
 
   @ManyToOne(type => Member, {nullable: false})
   @JoinColumn()

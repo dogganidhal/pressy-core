@@ -1,37 +1,79 @@
 
 export class DateUtils {
+
+  public static dateByAddingTimeInterval(date: Date, timeinterval: number): Date {
+    const newDate = new Date;
+    newDate.setTime(date.getTime() + timeinterval);
+    return newDate;
+  }
+
+  public static addYears(date: Date, years: number): Date {
+    const newDate: Date = new Date(date);
+    newDate.setFullYear(newDate.getFullYear() + years);
+    return newDate;
+  }
   
-  public static addYears(years: number): Date {
+  public static addMonths(date: Date, months: number): Date {
+    const newDate: Date = new Date(date);
+    newDate.setMonth(newDate.getMonth() + months);
+    return newDate;
+  }
+  
+  public static addDays(date: Date, days: number): Date {
+    const newDate: Date = new Date(date);
+    newDate.setDate(newDate.getDate() + days);
+    return newDate;
+  }
+  
+  public static addHours(date: Date, hours: number): Date {
+    const newDate: Date = new Date(date);
+    newDate.setHours(newDate.getHours() + hours);
+    return newDate;
+  }
+  
+  public static addMinutes(date: Date, minutes: number): Date {
+    const newDate: Date = new Date(date);
+    newDate.setMinutes(newDate.getMinutes() + minutes);
+    return newDate;
+  }
+  
+  public static addSeconds(date: Date, seconds: number): Date {
+    const newDate: Date = new Date(date);
+    newDate.setSeconds(newDate.getSeconds() + seconds);
+    return newDate;
+  }
+  
+  public static addYearsFromNow(years: number): Date {
     const newDate: Date = new Date();
     newDate.setFullYear(newDate.getFullYear() + years);
     return newDate;
   }
   
-  public static addMonths(months: number): Date {
+  public static addMonthsFromNow(months: number): Date {
     const newDate: Date = new Date();
     newDate.setMonth(newDate.getMonth() + months);
     return newDate;
   }
   
-  public static addDays(days: number): Date {
+  public static addDaysFromNow(days: number): Date {
     const newDate: Date = new Date();
     newDate.setDate(newDate.getDate() + days);
     return newDate;
   }
   
-  public static addHours(hours: number): Date {
+  public static addHoursFromNow(hours: number): Date {
     const newDate: Date = new Date();
     newDate.setHours(newDate.getHours() + hours);
     return newDate;
   }
   
-  public static addMinutes(minutes: number): Date {
+  public static addMinutesFromNow(minutes: number): Date {
     const newDate: Date = new Date();
     newDate.setMinutes(newDate.getMinutes() + minutes);
     return newDate;
   }
   
-  public static addSeconds(seconds: number): Date {
+  public static addSecondsFromNow(seconds: number): Date {
     const newDate: Date = new Date();
     newDate.setSeconds(newDate.getSeconds() + seconds);
     return newDate;

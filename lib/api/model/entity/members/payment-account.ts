@@ -17,10 +17,10 @@ export class PaymentAccount {
   @Column({unique: true})
   public creditCardNumber: string;
 
-  @Column()
+  @Column({nullable: false})
   public creditCardOwnerName: string;
 
-  @Column()
+  @Column({nullable: false})
   public creditExpiryDate: Date;
 
   public static create(member: Member, creditCardDTO: CreditCardDTO): PaymentAccount {

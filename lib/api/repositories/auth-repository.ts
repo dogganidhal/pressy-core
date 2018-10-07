@@ -9,7 +9,6 @@ import { RefreshCredentialsRequestDTO, LoginResponseDTO } from "../model/dto";
 
 interface IAuthPayload {
   id: number;
-  secret: string,
   privilege: number
 }
 
@@ -24,7 +23,6 @@ export class AuthRepository {
 
     const payload: IAuthPayload = {
       id: member.id,
-      secret: member.secret,
       privilege: member.group == MemberGroup.SUPERUSER ? AccessPrivilege.SUPERUSER : AccessPrivilege.BASIC
     };
 
@@ -90,7 +88,6 @@ export class AuthRepository {
 
       const accessToken: IAuthPayload = {
         id: payload.id,
-        secret: payload.secret,
         privilege: payload.privilege
       };
 
