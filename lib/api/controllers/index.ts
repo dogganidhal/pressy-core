@@ -19,7 +19,7 @@ export abstract class Controller {
     this.currentResponse!.setHeader('Content-Type', 'application/json');
     this.currentResponse!.status(error.statusCode);
     this.currentResponse!.send({
-      status_code: error.statusCode,
+      status_code: error.statusCode || 400,
       message: error.message
     });
     

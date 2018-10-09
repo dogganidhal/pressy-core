@@ -1,4 +1,5 @@
 import { JsonObject, JsonProperty } from "json2typescript";
+import { Address } from "../entity/common";
 
 @JsonObject
 export class AddressLocationDTO {
@@ -8,6 +9,7 @@ export class AddressLocationDTO {
 
   @JsonProperty("latitude", Number)
   public latitude: number = Infinity;
+
 }
 
 @JsonObject
@@ -44,5 +46,24 @@ export class AddressDTO {
 
   @JsonProperty("location", AddressLocationDTO)
   public location?: AddressLocationDTO = undefined;
+
+  public static create(address: Address): AddressDTO {
+
+    const addressDTO = new AddressDTO;
+
+    addressDTO.city = address.city;
+    addressDTO.country = address.country;
+    addressDTO.formattedAddress = address.formattedAddress;
+    addressDTO.streetName = address.streetName;
+    addressDTO.streetNumber = address.streetNumber;
+    addressDTO.zipcode = address.zipCode;
+    addressDTO.location = {
+      longitude: address.location.longitude!,
+      latitude: address.location.latitude!
+    };
+
+    return addressDTO;
+
+  }
 
 }

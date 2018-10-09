@@ -43,7 +43,11 @@ export class Booking {
     const booking = new Booking;
 
     booking.pickupAddress = await Address.create(createBookingRequestDTO.pickupAddress);
-    booking.deliveryAddress = await Address.create(createBookingRequestDTO.deliveryAddress);
+    
+    if (createBookingRequestDTO.deliveryAddress != undefined)
+      booking.deliveryAddress = await Address.create(createBookingRequestDTO.deliveryAddress);
+    else
+      booking.deliveryAddress = booking.pickupAddress;
 
     await LocationRepository.instance.saveNewAddress(booking.pickupAddress);
     await LocationRepository.instance.saveNewAddress(booking.deliveryAddress);

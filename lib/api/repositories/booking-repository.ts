@@ -5,6 +5,7 @@ import { CreditCardDTO, MobileDeviceDTO } from './../model/dto/index';
 import { Repository, createConnection } from "typeorm";
 import {  } from "../model/dto";
 import { Order } from '../model/entity/order';
+import { Member } from '../model/entity';
 
 
 export class BookingRepository  {
@@ -30,6 +31,21 @@ export class BookingRepository  {
     const repository = await this._bookingRepositoryPromise;
     await repository.save(booking);
 
+  }
+
+  public async getBookingsForMember(member: Member): Promise<Booking[]> {
+
+    const repository = await this._bookingRepositoryPromise;
+    const bookings = await repository.find({
+      where: {member: member},
+      relations: [
+        "pickupAddress", "deliveryAddress", 
+        "pickupSlot", "deliverySlot", "member",
+        "pickupAddress.location", "deliveryAddress.location"
+      ]
+    });
+    return bookings;
+    
   }
 
   
