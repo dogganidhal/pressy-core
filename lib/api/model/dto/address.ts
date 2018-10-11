@@ -44,7 +44,7 @@ export class AddressDTO {
   @JsonProperty("formatted_address", String)
   public formattedAddress: string = "";
 
-  @JsonProperty("location", AddressLocationDTO)
+  @JsonProperty("location", AddressLocationDTO, true)
   public location?: AddressLocationDTO = undefined;
 
   public static create(address: Address): AddressDTO {
@@ -57,10 +57,13 @@ export class AddressDTO {
     addressDTO.streetName = address.streetName;
     addressDTO.streetNumber = address.streetNumber;
     addressDTO.zipcode = address.zipCode;
-    addressDTO.location = {
-      longitude: address.location.longitude!,
-      latitude: address.location.latitude!
-    };
+    
+    if (address.location.latitude && address.location.longitude) {
+      const locationDTO = new AddressLocationDTO;
+      locationDTO.latitude = address.location.latitude;
+      locationDTO.longitude = address.location.longitude;
+      addressDTO.location = locationDTO;
+    }
 
     return addressDTO;
 

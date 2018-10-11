@@ -46,9 +46,10 @@ export class BookingController extends Controller {
     try {
 
       const bookings = await this._bookingRepository.getBookingsForMember(this.currentMember!);
-      const s = bookings.map(booking => JSONSerialization.serializeObject(BookingDTO.create(booking)));
-      console.log(s);
-      return s;
+
+      const bookingDTOs = bookings.map(booking => BookingDTO.create(booking));
+
+      return JSONSerialization.serializeObject(bookingDTOs);
 
     } catch (error) {
       console.log(error);

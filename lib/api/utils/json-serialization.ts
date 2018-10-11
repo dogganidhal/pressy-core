@@ -1,5 +1,5 @@
 import { DateUtils } from './date-utils';
-import { JsonConverter, JsonCustomConvert, JsonConvert } from "json2typescript";
+import { JsonConverter, JsonCustomConvert, JsonConvert, OperationMode, ValueCheckingMode } from "json2typescript";
 import dateFormat from "dateformat";
 import { MemberStatus, MemberGroup } from "../model/entity";
 import { AccessPrivilege } from "../model";
@@ -8,6 +8,8 @@ import { AccessPrivilege } from "../model";
 export namespace JSONSerialization {
 
   const convert: JsonConvert = new JsonConvert();
+
+  convert.valueCheckingMode = ValueCheckingMode.ALLOW_NULL;
 
   @JsonConverter
   export class UTCDateConvert implements JsonCustomConvert<Date> {
