@@ -111,4 +111,10 @@ export namespace Exception {
     }
   }
 
+  export class InvalidDate extends HttpError {
+    constructor(dateString: string) {
+      super('InvalidDate', 400, `Invalid date string '${dateString}'`);
+    }
+  }
+
 }

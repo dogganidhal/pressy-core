@@ -46,7 +46,6 @@ export class BookingController extends Controller {
     try {
 
       const bookings = await this._bookingRepository.getBookingsForMember(this.currentMember!);
-
       const bookingDTOs = bookings.map(booking => BookingDTO.create(booking));
 
       return JSONSerialization.serializeObject(bookingDTOs);
@@ -69,7 +68,22 @@ export class BookingController extends Controller {
     if (type < SlotType.LIGHT || type > SlotType.EXPRESS)
       this.throw(new Exception.InvalidSlotType(type))
 
-    const slots = await SlotRepository.instance.searchSlots(type, new Date(from), new Date(to));
+    const startDate = new Date(from);
+
+    if (isNaN(startDate.getTime())) {
+      this.throw(new Exception.InvalidDate(from));
+      return;
+    }
+      
+
+    const endDate = new Date(to);
+
+    if (isNaN(endDate.getTime())) {
+      this.throw(new Exception.InvalidDate(to));
+      return;
+    }
+
+    const slots = await SlotRepository.instance.searchSlots(type, startDate, endDate);
 
     return slots;
 

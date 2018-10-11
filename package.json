@@ -4,12 +4,10 @@
   "description": "Cœur du système pressy",
   "main": "index.ts",
   "scripts": {
-    "main": "nodemon",
-    "prod": "set NODE_ENV=production && nodemon",
-    "dev": "export NODE_ENV=development && nodemon",
-    "test": "jest --forceExit --detectOpenHandles",
-    "debug": "nodemon",
-    "script": "ts-node"
+    "start": "node --inspect-brk=3333 ./node_modules/ts-node/dist/bin.js lib/index.ts",
+    "dev": "./node_modules/nodemon/bin/nodemon.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "author": "Nidhal DOGGA <dogga.nidhal@gmail.com>",
   "license": "ISC",
