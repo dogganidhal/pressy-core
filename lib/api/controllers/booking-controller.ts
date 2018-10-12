@@ -61,13 +61,25 @@ export class BookingController extends Controller {
   @Path("/slots")
   @GET
   public async getSlots(
-    @QueryParam("type") type: number = SlotType.LIGHT, 
+    @QueryParam("types") typeString: string, 
     @QueryParam("from") from: string = DateUtils.now().toISOString(),
     @QueryParam("to") to: string = DateUtils.addDaysFromNow(7).toISOString()
   ) {
 
-    if (type < SlotType.LIGHT || type > SlotType.EXPRESS)
-      this.throw(new Exception.InvalidSlotType(type))
+    var invalidSlotType: SlotType | undefined = undefined;
+
+    const types = typeString.split(",").map(char => {
+      const type = parseInt(char);
+      if (type < SlotType.LIGHT || type > SlotType.EXPRESS) {
+        invalidSlotType = type;
+      }  
+      return type;
+    });
+
+    if (invalidSlotType) {
+      this.throw(new Exception.InvalidSlotType(invalidSlotType));
+      return;
+    }
 
     const startDate = new Date(from);
 
@@ -75,7 +87,6 @@ export class BookingController extends Controller {
       this.throw(new Exception.InvalidDate(from));
       return;
     }
-      
 
     const endDate = new Date(to);
 
@@ -84,7 +95,7 @@ export class BookingController extends Controller {
       return;
     }
 
-    const slots = await this._slotsRepository.searchSlots(type, startDate, endDate);
+    const slots = await this._slotsRepository.searchSlots(types, startDate, endDate);
 
     return slots;
 

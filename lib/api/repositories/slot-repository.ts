@@ -30,15 +30,22 @@ export class SlotRepository  {
 
   }
 
-  public async searchSlots(type: SlotType, from: Date, to: Date): Promise<Slot[]> {
-
-    const durationInMinutes = Slot.getDurationInMinutes(type);
+  public async searchSlots(types: SlotType[], from: Date, to: Date): Promise<Slot[]> {
+    
     const repository = await this._slotRepositoryPromise;
-    const slots = await repository.createQueryBuilder()
-      .where("type = :type", {type: type})
-      .andWhere("startdate >= :startDate", {startDate: from})
-      .andWhere("startdate <= :safeStartDate", {safeStartDate: DateUtils.dateBySubsctractingTimeInterval(to, durationInMinutes * 1000000)})
-      .execute();
+    const queryBuilder = repository.createQueryBuilder()
+      .where("startdate >= :startDate", {startDate: from});
+    
+    types.forEach(type => {
+    
+      const durationInMinutes = Slot.getDurationInMinutes(type);
+      queryBuilder
+        .andWhere("type = :type", {type: type})
+        .orWhere("startdate <= :safeStartDate", {safeStartDate: DateUtils.dateBySubsctractingTimeInterval(to, durationInMinutes * 1000000)});
+
+    });
+
+    const slots = await queryBuilder.execute();
 
     return slots;
 
