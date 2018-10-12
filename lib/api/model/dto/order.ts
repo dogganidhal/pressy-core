@@ -1,6 +1,5 @@
 import { JsonObject, JsonProperty } from "json2typescript";
 import { OrderElementType } from "../entity/order/order-element";
-import { OrderType } from "../entity/order";
 import { AddressDTO } from "./address";
 
 
@@ -27,19 +26,7 @@ export class CreateOrderRequestDTO {
   @JsonProperty("elements", [OrderElementDTO])
   public elements: OrderElementDTO[] = [];
 
-  @JsonProperty("type", Number)
-  public type: OrderType = OrderType.LIGHT;
-
-  @JsonProperty("pickup_address", AddressDTO)
-  public pickupAddress: AddressDTO = new AddressDTO;
-
-  @JsonProperty("delivery_address", AddressDTO, true)
-  public deliveryAddress?: AddressDTO = undefined;
-
-  @JsonProperty("pickup_slot_id", Number)
-  public pickupSlotId: number = -1;
-
-  @JsonProperty("delivery_slot_id", Number)
-  public deliverySlotId: number = -1;
+  @JsonProperty("booking_id", Number)
+  public bookingId: number = -1;
 
 }

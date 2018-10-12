@@ -37,7 +37,7 @@ export class SlotRepository  {
     const slots = await repository.createQueryBuilder()
       .where("type = :type", {type: type})
       .andWhere("startdate >= :startDate", {startDate: from})
-      .andWhere("startdate <= :safeStartDate", {safeStartDate: DateUtils.dateByAddingTimeInterval(from, durationInMinutes * 1000000)})
+      .andWhere("startdate <= :safeStartDate", {safeStartDate: DateUtils.dateBySubsctractingTimeInterval(to, durationInMinutes * 1000000)})
       .execute();
 
     return slots;

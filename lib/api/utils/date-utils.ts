@@ -7,6 +7,12 @@ export class DateUtils {
     return newDate;
   }
 
+  public static dateBySubsctractingTimeInterval(date: Date, timeinterval: number): Date {
+    const newDate = new Date;
+    newDate.setTime(date.getTime() - timeinterval);
+    return newDate;
+  }
+
   public static addYears(date: Date, years: number): Date {
     const newDate: Date = new Date(date);
     newDate.setFullYear(newDate.getFullYear() + years);

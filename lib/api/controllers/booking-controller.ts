@@ -18,6 +18,7 @@ import { JSONSerialization } from '../utils/json-serialization';
 export class BookingController extends Controller {
 
   private _bookingRepository: BookingRepository = BookingRepository.instance;
+  private _slotsRepository: SlotRepository = SlotRepository.instance;
 
   @Authenticated()
   @POST
@@ -83,7 +84,7 @@ export class BookingController extends Controller {
       return;
     }
 
-    const slots = await SlotRepository.instance.searchSlots(type, startDate, endDate);
+    const slots = await this._slotsRepository.searchSlots(type, startDate, endDate);
 
     return slots;
 
