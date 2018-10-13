@@ -66,17 +66,11 @@ export class BookingController extends Controller {
     @QueryParam("to") to: string = DateUtils.addDaysFromNow(7).toISOString()
   ) {
 
-    var invalidSlotType: SlotType | undefined = undefined;
+    var types: SlotType[];
 
-    const types = typeString.split(",").map(char => {
-      const type = parseInt(char);
-      if (type < SlotType.LIGHT || type > SlotType.EXPRESS) {
-        invalidSlotType = type;
-      }  
-      return type;
-    });
-
-    if (invalidSlotType) {
+    try {
+      types = this._parseSlotTypesFromString(typeString);
+    } catch (invalidSlotType) {
       this.throw(new Exception.InvalidSlotType(invalidSlotType));
       return;
     }
@@ -99,6 +93,17 @@ export class BookingController extends Controller {
 
     return slots;
 
+  }
+
+  private _parseSlotTypesFromString(string: string): SlotType[] {
+    const types: SlotType[] = string.split(",").map(char => {
+      const type = parseInt(char);
+      if (type < SlotType.LIGHT || type > SlotType.EXPRESS) {
+        throw type;
+      }
+      return type;
+    });
+    return types.filter((type, index) => types.indexOf(type) == index);
   }
 
 }
