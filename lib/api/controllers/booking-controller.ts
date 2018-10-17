@@ -11,6 +11,7 @@ import { CreateBookingRequestDTO, BookingDTO } from "../../common/model/dto/book
 import { Member } from "../../common/model/entity";
 import { Booking } from "../../common/model/entity/booking";
 import { SlotType } from "../../common/model/entity/order/slot";
+import { SlotDTO } from "../../common/model/dto/slot";
 
 
 @Path('/api/v1/booking/')
@@ -89,8 +90,9 @@ export class BookingController extends Controller {
     }
 
     const slots = await this._slotsRepository.searchSlots(types, startDate, endDate);
+    const slotDTOs = slots.map(slot => SlotDTO.create(slot));
 
-    return slots;
+    return JSONSerialization.serializeObject(slotDTOs);
 
   }
 

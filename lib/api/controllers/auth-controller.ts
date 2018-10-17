@@ -2,18 +2,18 @@ import {
   Path, POST,
   HttpError, Errors, Return, PathParam 
 } from "typescript-rest";
-import { MemberRepository, AuthRepository } from "../repositories";
+import { MemberRepository, AuthRepository } from "../../common/repositories";
 import {
   LoginRequestDTO,
   RefreshCredentialsRequestDTO,
   MemberPasswordResetRequestDTO,
   MemberPasswordResetCodeDTO,
   MemberPasswordResetCodeRequestDTO
-} from "../model/dto";
+} from "../../common/model/dto";
 import { Controller } from ".";
-import { Exception } from "../errors";
-import { HTTPUtils } from "../utils/http-utils";
-import { JSONSerialization } from "../utils/json-serialization";
+import { Exception } from "../../common/errors";
+import { HTTPUtils } from "../../common/utils/http-utils";
+import { JSONSerialization } from "../../common/utils/json-serialization";
 import bcrypt from "bcrypt";
 
 @Path('/api/v1/auth/')

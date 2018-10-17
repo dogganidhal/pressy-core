@@ -1,19 +1,19 @@
-import { CreditCardDTO, MobileDeviceDTO } from './../model/dto/index';
+import { CreditCardDTO, MobileDeviceDTO } from './../../common/model/dto/index';
 import {
   Path, GET, POST,
   HttpError, Errors, PathParam, Return, QueryParam, ContextRequest 
 } from "typescript-rest";
-import { MemberRepository } from "../repositories";
+import { MemberRepository } from "../../common/repositories";
 import {
   MemberRegistrationDTO,MemberInfoDTO
-} from "../model/dto";
+} from "../../common/model/dto";
 import { Controller, Authenticated } from ".";
-import { AccessPrivilege } from "../model";
-import { HTTPUtils } from "../utils/http-utils";
-import { JSONSerialization } from "../utils/json-serialization";
-import { Member, MemberStatus } from "../model/entity";
-import { Exception } from '../errors';
-import { DateUtils } from '../utils';
+import { AccessPrivilege } from "../../common/model";
+import { HTTPUtils } from "../../common/utils/http-utils";
+import { JSONSerialization } from "../../common/utils/json-serialization";
+import { Member, MemberStatus } from "../../common/model/entity";
+import { Exception } from '../../common/errors';
+import { DateUtils } from '../../common/utils';
 import { Request } from 'express';
 
 @Path('/api/v1/member/')

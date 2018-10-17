@@ -1,9 +1,9 @@
-import { ContextRequest, ContextResponse, HttpError, Errors } from "typescript-rest";
+import { ContextRequest, ContextResponse, HttpError } from "typescript-rest";
 import { Request, Response } from "express";
-import { Member } from "../model/entity";
-import { AccessPrivilege } from "../model";
-import { Exception } from "../errors";
-import { AuthRepository } from "../repositories";
+import { Member } from "../../common/model/entity";
+import { AccessPrivilege } from "../../common/model";
+import { Exception } from "../../common/errors";
+import { AuthRepository } from "../../common/repositories";
 
 export abstract class Controller {
 

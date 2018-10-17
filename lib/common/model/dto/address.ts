@@ -25,7 +25,7 @@ export class AddressLocationDTO {
 @JsonObject
 export class CreateAddressDTO {
 
-  @JsonProperty("place_id", String, true)
+  @JsonProperty("placeId", String, true)
   public placeId?: string = undefined;
 
   @JsonProperty("location", AddressLocationDTO, true)
@@ -36,10 +36,10 @@ export class CreateAddressDTO {
 @JsonObject
 export class AddressDTO {
 
-  @JsonProperty("street_name", String)
+  @JsonProperty("streetName", String)
   public streetName: string = "";
 
-  @JsonProperty("street_number", String)
+  @JsonProperty("streetNumber", String)
   public streetNumber: string = "";
 
   @JsonProperty("city", String)
@@ -51,7 +51,7 @@ export class AddressDTO {
   @JsonProperty("zipcode", String)
   public zipcode: string = "";
 
-  @JsonProperty("formatted_address", String)
+  @JsonProperty("formattedAddress", String)
   public formattedAddress: string = "";
 
   @JsonProperty("location", AddressLocationDTO, true)

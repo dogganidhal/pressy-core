@@ -13,7 +13,7 @@ export class SlotDTO {
   @JsonProperty("type", Number)
   public type: SlotType = SlotType.LIGHT;
 
-  @JsonProperty("start_date", JSONSerialization.UTCDateConvert)
+  @JsonProperty("startDate", JSONSerialization.UTCDateConvert)
   public startDate: Date = DateUtils.now();
 
   public static create(slot: Slot): SlotDTO {

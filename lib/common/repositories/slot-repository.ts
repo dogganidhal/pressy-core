@@ -1,6 +1,6 @@
 import { SlotType } from './../model/entity/order/slot';
 import { Slot } from '../model/entity/order/slot';
-import { Repository, Brackets } from "typeorm";
+import { Repository, Brackets, getConnectionManager, getManager } from "typeorm";
 import { createConnection } from 'typeorm';
 import { DateUtils } from '../utils';
 
@@ -31,7 +31,7 @@ export class SlotRepository  {
   }
 
   public async searchSlots(types: SlotType[], from: Date, to: Date): Promise<Slot[]> {
-    
+
     const repository = await this._slotRepositoryPromise;
     const queryBuilder = repository.createQueryBuilder()
       .where("startdate >= :startDate", {startDate: from})
@@ -42,9 +42,6 @@ export class SlotRepository  {
           subqb.orWhere(new Brackets((typeqb) => {
 
             const safeStartDate = DateUtils.dateBySubsctractingTimeInterval(to, durationInMinutes * 1000000);
-            const parameters: any = {};
-
-            Object.defineProperty(parameters, `safeStartDate_${type}`, {value: safeStartDate});
 
             typeqb.where(`type = ${type}`)
             typeqb.andWhere(`startdate <= '${safeStartDate.toISOString()}'::DATE`);
@@ -54,7 +51,7 @@ export class SlotRepository  {
 
       }));
     
-    const slots = await queryBuilder.execute();
+    const slots = await queryBuilder.getMany();
 
     return slots;
 

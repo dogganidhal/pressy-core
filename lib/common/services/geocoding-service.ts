@@ -1,7 +1,7 @@
-import { AddressDTO, CreateAddressDTO } from './../../api/model/dto/address';
-import { Address } from './../../api/model/entity/common/address';
-import { Location } from '../../api/model/entity/common/location';
-import { LocationRepository } from '../../api/repositories/location-repository';
+import { AddressDTO, CreateAddressDTO } from './../model/dto/address';
+import { Address } from './../model/entity/common/address';
+import { Location } from '../model/entity/common/location';
+import { LocationRepository } from '../repositories/location-repository';
 import { RestClient } from "typed-rest-client";
 
 export interface ICoordinates {

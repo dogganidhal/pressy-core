@@ -9,10 +9,10 @@ export class MemberInfoDTO {
   @JsonProperty("id", Number)
   public id: number;
 
-  @JsonProperty("first_name", String)
+  @JsonProperty("firstName", String)
   public firstName: string;
 
-  @JsonProperty("last_name", String)
+  @JsonProperty("lastName", String)
   public lastName: string;
 
   @JsonProperty("email", String)

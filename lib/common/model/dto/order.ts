@@ -6,7 +6,7 @@ import { AddressDTO } from "./address";
 @JsonObject
 export class OrderElementDTO {
 
-  @JsonProperty("order_id", Number, true)
+  @JsonProperty("orderId", Number, true)
   public orderId?: number = undefined;
 
   @JsonProperty("type", Number)
@@ -26,7 +26,7 @@ export class CreateOrderRequestDTO {
   @JsonProperty("elements", [OrderElementDTO])
   public elements: OrderElementDTO[] = [];
 
-  @JsonProperty("booking_id", Number)
+  @JsonProperty("bookingId", Number)
   public bookingId: number = -1;
 
 }

@@ -9,7 +9,7 @@
     "synchronize": false,
     "logging": true,
     "entities": [
-       "lib/api/model/entity/**/*.ts"
+       "lib/common/model/entity/**/*.ts"
     ],
     "migrations": [
        "lib/api/migration/**/*.ts"

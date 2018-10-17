@@ -1,10 +1,10 @@
 import { Path, POST, HttpError, Errors } from "typescript-rest";
-import { MemberRepository } from "../repositories";
-import { MemberRegistrationDTO } from "../model/dto";
+import { MemberRepository } from "../../common/repositories";
+import { MemberRegistrationDTO } from "../../common/model/dto";
 import { Controller, Authenticated } from ".";
-import { AccessPrivilege } from "../model";
-import { HTTPUtils } from "../utils/http-utils";
-import { JSONSerialization } from "../utils/json-serialization";
+import { AccessPrivilege } from "../../common/model";
+import { HTTPUtils } from "../../common/utils/http-utils";
+import { JSONSerialization } from "../../common/utils/json-serialization";
 
 @Path("/api/v1/driver/")
 export class DriverController extends Controller {

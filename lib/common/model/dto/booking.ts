@@ -8,16 +8,16 @@ import { Booking } from "../entity/booking";
 @JsonObject
 export class CreateBookingRequestDTO {
 
-  @JsonProperty("pickup_slot_id", Number)
+  @JsonProperty("pickupSlotId", Number)
   public pickupSlotId: number = -1;
 
-  @JsonProperty("delivery_slot_id", Number)
+  @JsonProperty("deliverySlotId", Number)
   public deliverySlotId: number = -1;
 
-  @JsonProperty("pickup_address", CreateAddressDTO)
+  @JsonProperty("pickupAddress", CreateAddressDTO)
   public pickupAddress: CreateAddressDTO = new CreateAddressDTO;
 
-  @JsonProperty("delivery_address", CreateAddressDTO, true)
+  @JsonProperty("deliveryAddress", CreateAddressDTO, true)
   public deliveryAddress?: CreateAddressDTO = undefined;
 
 }
@@ -28,16 +28,16 @@ export class BookingDTO {
   @JsonProperty("id", Number)
   public id: number = -1;
 
-  @JsonProperty("pickup_slot", SlotDTO)
+  @JsonProperty("pickupSlot", SlotDTO)
   public pickupSlot: SlotDTO = new SlotDTO;
 
-  @JsonProperty("delivery_slot", SlotDTO)
+  @JsonProperty("deliverySlot", SlotDTO)
   public deliverySlot: SlotDTO = new SlotDTO;
 
-  @JsonProperty("pickup_address", AddressDTO)
+  @JsonProperty("pickupAddress", AddressDTO)
   public PickupAddress: AddressDTO = new AddressDTO;
 
-  @JsonProperty("delivery_address", AddressDTO)
+  @JsonProperty("deliveryAddress", AddressDTO)
   public deliveryAddress: AddressDTO = new AddressDTO;
 
   @JsonProperty("member", MemberInfoDTO)
