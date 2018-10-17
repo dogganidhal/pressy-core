@@ -24,15 +24,6 @@ export class OrderController extends Controller {
     
     return JSONSerialization.serializeObject(address);
 
-    // try {
-      
-    //   const orderDTO: CreateOrderRequestDTO = HTTPUtils.parseBody(request.body, CreateOrderRequestDTO);
-
-
-    // } catch (error) {
-    //   this.throw(error);
-    // }
-
   }
 
 }

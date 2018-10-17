@@ -1,17 +1,16 @@
-import { BookingDTO } from './../model/dto/booking';
-import { BookingRepository } from './../repositories/booking-repository';
-import { Booking } from './../model/entity/booking/index';
 import { Path, POST, ContextRequest, GET, QueryParam, Return } from "typescript-rest";
 import { Controller, Authenticated } from ".";
 import { Request } from "express";
-import { Member } from '../model/entity';
-import { HTTPUtils } from '../utils/http-utils';
-import { CreateBookingRequestDTO } from '../model/dto/booking';
-import { DateUtils } from '../utils';
-import { SlotRepository } from '../repositories/slot-repository';
-import { Exception } from '../errors';
-import { SlotType } from '../model/entity/order/slot';
-import { JSONSerialization } from '../utils/json-serialization';
+import { Exception } from '../../common/errors';
+import { BookingRepository } from '../../common/repositories/booking-repository';
+import { SlotRepository } from '../../common/repositories/slot-repository';
+import { HTTPUtils } from '../../common/utils/http-utils';
+import { JSONSerialization } from '../../common/utils/json-serialization';
+import { DateUtils } from '../../common/utils';
+import { CreateBookingRequestDTO, BookingDTO } from "../../common/model/dto/booking";
+import { Member } from "../../common/model/entity";
+import { Booking } from "../../common/model/entity/booking";
+import { SlotType } from "../../common/model/entity/order/slot";
 
 
 @Path('/api/v1/booking/')
