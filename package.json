@@ -33,7 +33,10 @@
     "typeorm": "^0.2.7",
     "typescript-rest": "^1.7.0",
     "uuid": "^3.3.2",
-    "uuid-token-generator": "^1.0.0"
+    "uuid-token-generator": "^1.0.0",
+    "ts-node": "^7.0.1",
+    "dotenv": "^6.0.0",
+    "typescript": "^3.0.3"
   },
   "devDependencies": {
     "@types/dateformat": "^1.0.1",
@@ -48,14 +51,11 @@
     "@types/superagent": "^3.8.4",
     "@types/supertest": "^2.0.6",
     "@types/uuid": "^3.4.4",
-    "dotenv": "^6.0.0",
     "jest": "^23.6.0",
     "nodemon": "^1.18.4",
     "superagent": "^4.0.0-beta.5",
     "supertest": "^3.3.0",
-    "ts-jest": "^23.1.4",
-    "ts-node": "^7.0.1",
-    "typescript": "^3.0.3"
+    "ts-jest": "^23.1.4"
   },
   "jest": {
     "verbose": true,
