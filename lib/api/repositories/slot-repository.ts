@@ -41,8 +41,13 @@ export class SlotRepository  {
           const durationInMinutes = Slot.getDurationInMinutes(type);
           subqb.orWhere(new Brackets((typeqb) => {
 
+            const safeStartDate = DateUtils.dateBySubsctractingTimeInterval(to, durationInMinutes * 1000000);
+            const parameters: any = {};
+
+            Object.defineProperty(parameters, `safeStartDate_${type}`, {value: safeStartDate});
+
             typeqb.where(`type = ${type}`)
-            typeqb.andWhere("startdate <= :safeStartDate", {safeStartDate: DateUtils.dateBySubsctractingTimeInterval(to, durationInMinutes * 1000000)});
+            typeqb.andWhere(`startdate <= '${safeStartDate.toISOString()}'::DATE`);
 
           }));
         }
