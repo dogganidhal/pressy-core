@@ -1,0 +1,2 @@
+web: npm run prod
+local: npm run dev
