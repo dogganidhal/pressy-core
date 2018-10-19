@@ -49,10 +49,10 @@ export class MemberInfoDTO {
 @JsonObject
 export class MemberRegistrationDTO {
 
-  @JsonProperty("first_name", String)
+  @JsonProperty("firstName", String)
   public firstName: string = "";
 
-  @JsonProperty("last_name", String)
+  @JsonProperty("lastName", String)
   public lastName: string = "";
 
   @JsonProperty("email", String)
@@ -99,10 +99,10 @@ export class MemberPasswordResetCodeRequestDTO {
 @JsonObject
 export class MemberPasswordResetRequestDTO {
 
-  @JsonProperty("old_password", String)
+  @JsonProperty("oldPassword", String)
   public oldPassword: string = "";
 
-  @JsonProperty("new_password", String)
+  @JsonProperty("newPassword", String)
   public newPassword: string = "";
 
 }
@@ -121,13 +121,13 @@ export class LoginRequestDTO {
 @JsonObject
 export class LoginResponseDTO {
 
-  @JsonProperty("access_token", String)
+  @JsonProperty("accessToken", String)
   public accessToken: string = "";
 
-  @JsonProperty("refresh_token", String)
+  @JsonProperty("refreshToken", String)
   public refreshToken: string = "";
 
-  @JsonProperty("expires_in", Number)
+  @JsonProperty("expiresIn", Number)
   public expiresIn: number = 3600;
 
   @JsonProperty("type", String)
@@ -154,13 +154,13 @@ export class RefreshCredentialsRequestDTO {
 @JsonObject
 export class CreditCardDTO {
 
-  @JsonProperty("credit_card_number", String)
+  @JsonProperty("creditCardNumber", String)
   public creditCardNumber: string = "";
 
-  @JsonProperty("credit_card_owner_name", String)
+  @JsonProperty("creditCardOwnerName", String)
   public creditCardOwnerName: string = "";
 
-  @JsonProperty("credit_card_expiry_date", JSONSerialization.CreditCardExpiryDateConvert)
+  @JsonProperty("creditCardExpiryDate", JSONSerialization.CreditCardExpiryDateConvert)
   public creditCardExpiryDate: Date = new Date();
 
   public static create(paymentAccount: PaymentAccount): CreditCardDTO {
@@ -176,7 +176,7 @@ export class CreditCardDTO {
 @JsonObject
 export class MobileDeviceDTO {
 
-  @JsonProperty("device_id", String)
+  @JsonProperty("deviceId", String)
   public deviceId: string = "";
 
   public static create(id: string): MobileDeviceDTO {
