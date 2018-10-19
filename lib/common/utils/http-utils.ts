@@ -1,6 +1,6 @@
 import { JsonConvert, ValueCheckingMode } from "json2typescript";
 import { Exception } from "../errors";
-import { Controller } from "../base-controller";
+import { Controller } from "../controller";
 
 
 export namespace HTTPUtils {
