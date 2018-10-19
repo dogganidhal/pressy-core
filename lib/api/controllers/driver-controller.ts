@@ -1,7 +1,7 @@
 import { Path, POST, HttpError, Errors } from "typescript-rest";
 import { MemberRepository } from "../../common/repositories";
 import { MemberRegistrationDTO } from "../../common/model/dto";
-import { Controller, Authenticated } from ".";
+import { Controller, Authenticated } from "../../common/controller";
 import { AccessPrivilege } from "../../common/model";
 import { HTTPUtils } from "../../common/utils/http-utils";
 import { JSONSerialization } from "../../common/utils/json-serialization";

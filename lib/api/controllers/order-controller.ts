@@ -1,7 +1,7 @@
 import {
   Path, POST, ContextRequest 
 } from "typescript-rest";
-import { Controller } from ".";
+import { Controller, Authenticated } from "../../common/controller";
 import { JSONSerialization } from "../../common/utils/json-serialization";
 import { Request } from "express";
 import { GeocodingService } from '../../common/services/geocoding-service';

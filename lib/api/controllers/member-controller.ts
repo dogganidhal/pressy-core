@@ -7,7 +7,7 @@ import { MemberRepository } from "../../common/repositories";
 import {
   MemberRegistrationDTO,MemberInfoDTO
 } from "../../common/model/dto";
-import { Controller, Authenticated } from ".";
+import { Controller, Authenticated } from "../../common/controller";
 import { AccessPrivilege } from "../../common/model";
 import { HTTPUtils } from "../../common/utils/http-utils";
 import { JSONSerialization } from "../../common/utils/json-serialization";

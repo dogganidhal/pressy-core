@@ -1,7 +1,7 @@
-import { LoginResponseDTO } from './../lib/api/model/dto/index';
+import { LoginResponseDTO } from './../lib/common/model/dto/index';
 import API from "../lib/api";
 import request from "supertest";
-import { JSONSerialization } from '../lib/api/utils/json-serialization';
+import { JSONSerialization } from '../lib/common/utils/json-serialization';
 
 describe("Testing Authentication Endpoints", () => {
 

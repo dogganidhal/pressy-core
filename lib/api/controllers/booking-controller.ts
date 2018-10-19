@@ -1,5 +1,5 @@
 import { Path, POST, ContextRequest, GET, QueryParam, Return } from "typescript-rest";
-import { Controller, Authenticated } from ".";
+import { Controller, Authenticated } from "../../common/controller";
 import { Request } from "express";
 import { Exception } from '../../common/errors';
 import { BookingRepository } from '../../common/repositories/booking-repository';

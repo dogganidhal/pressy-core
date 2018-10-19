@@ -1,4 +1,4 @@
-import { Controller } from ".";
+import { Controller } from "../../common/controller";
 import { Path, GET } from "typescript-rest";
 
 

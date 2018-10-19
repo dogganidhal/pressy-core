@@ -10,7 +10,7 @@ import {
   MemberPasswordResetCodeDTO,
   MemberPasswordResetCodeRequestDTO
 } from "../../common/model/dto";
-import { Controller } from ".";
+import { Controller } from "../../common/controller";
 import { Exception } from "../../common/errors";
 import { HTTPUtils } from "../../common/utils/http-utils";
 import { JSONSerialization } from "../../common/utils/json-serialization";

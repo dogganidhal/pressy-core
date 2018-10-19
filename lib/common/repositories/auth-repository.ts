@@ -16,8 +16,8 @@ export class AuthRepository {
 
   public static instance: AuthRepository = new AuthRepository();
 
-  private _publicKey: string = readFileSync("secrets/public.key").toString();
-  private _privateKey: string = readFileSync("secrets/private.key").toString();
+  private _publicKey: string = process.env.AUTH_PUKEY!;
+  private _privateKey: string = process.env.AUTH_PRKEY!;
 
   public async generateToken(member: Member): Promise<LoginResponseDTO> {
 
