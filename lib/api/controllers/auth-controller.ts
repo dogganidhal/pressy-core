@@ -15,6 +15,7 @@ import { Exception } from "../../common/errors";
 import { HTTPUtils } from "../../common/utils/http-utils";
 import { JSONSerialization } from "../../common/utils/json-serialization";
 import bcrypt from "bcrypt";
+import { Member } from "../../common/model/entity";
 
 @Path('/api/v1/auth/')
 export class AuthController extends Controller {
@@ -29,17 +30,24 @@ export class AuthController extends Controller {
     try {
 
       const loginRequest = HTTPUtils.parseBodyOfContoller(this, LoginRequestDTO);
-      const member = await this._memberRepository.getMemberByEmail(loginRequest.email!);
+      var passwordHash: string;
 
-      if (!member)
-        throw new Exception.MemberNotFound(loginRequest.email);
+      try {
+        
+        const member = await this._memberRepository.getMemberByEmail(loginRequest.email);
+        if (!member)
+          throw ""
 
-      if (!bcrypt.compareSync(loginRequest.password, member.passwordHash))
-        throw new Exception.WrongPassword;
+          if (!bcrypt.compareSync(loginRequest.password, member.passwordHash))
+          throw new Exception.WrongPassword;
+  
+        const loginResponse = await this._authRepository.generateToken(member);
+        
+        return JSONSerialization.serializeObject(loginResponse);
 
-      const loginResponse = await this._authRepository.generateToken(member);
-      
-      return JSONSerialization.serializeObject(loginResponse);
+      } catch (error) {
+        throw new Exception.MemberNotFound(loginRequest.email); 
+      }
 
     } catch (error) {
       this.throw(error);

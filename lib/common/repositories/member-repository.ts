@@ -80,7 +80,7 @@ export class MemberRepository {
   }
 
   public async getMemberByEmail(email: string): Promise<Member | undefined> {
-    return (await this._memberRepositoryPromise).findOne({email: email});
+    return (await this._memberRepositoryPromise).findOneOrFail({email: email});
   }
 
   public async createMember(memberDTO: MemberRegistrationDTO): Promise<Member> {

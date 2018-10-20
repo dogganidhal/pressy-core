@@ -1,20 +1,18 @@
-import { LoginResponseDTO } from './../lib/common/model/dto/index';
-import API from "../lib/api";
+import { HttpError } from 'typescript-rest';
+import { LoginResponseDTO } from '../../lib/common/model/dto/index';
+import API from "../../lib/api";
 import request from "supertest";
-import { JSONSerialization } from '../lib/common/utils/json-serialization';
+import { JSONSerialization } from '../../lib/common/utils/json-serialization';
 
 describe("Testing Authentication Endpoints", () => {
 
-  var api: API;
+  const api: API = new API;
 
-  beforeAll(() => {
-    api = new API;
-  });
-
-  test("Returns access credentials when correct user and password were introduced", (done) => {
+  it("Returns access credentials when correct user and password were introduced", async (done) => {
 
     request(api.getApp())
     .post("/api/v1/auth/login")
+    .set("Content-Type", "application/json")
     .send({email: "dogga.nidhal@gmail.com", password: "test"})
     .expect(200, (error, response) => {
 
@@ -33,18 +31,21 @@ describe("Testing Authentication Endpoints", () => {
 
   });
 
-  test("Returns an error when a non-existing email was introduced", (done) => {
+  it("Returns an error when a non-existing email was introduced", async (done) => {
 
     request(api.getApp())
     .post("/api/v1/auth/login")
     .send({email: "not.found@email.com", password: ""})
-    .expect(404, (error, response) => {
+    .expect(404, (_, response) => {
 
-      console.log(response.body);
-
-      expect(error).not.toBeNull();
+      expect(response.body).not.toBeNull();
       expect(response.status).toEqual(404);
+      
+      const error = response.body as HttpError;
 
+      expect(error.statusCode).toEqual(404);
+      expect(error.message).not.toBeNull();
+      
       done();
 
     });

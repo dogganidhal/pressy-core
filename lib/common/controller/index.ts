@@ -17,11 +17,11 @@ export abstract class Controller {
   public throw<TError extends HttpError>(error: TError) {
 
     this.currentResponse!.setHeader('Content-Type', 'application/json');
-    this.currentResponse!.status(error.statusCode);
-    this.currentResponse!.send({
-      status_code: error.statusCode || 400,
-      message: error.message
-    });
+    this.currentResponse!.status(error.statusCode)
+      .send({
+        statusCode: error.statusCode || 400,
+        message: error.message
+      });
     
   }
 

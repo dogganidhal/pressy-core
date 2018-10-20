@@ -8,7 +8,7 @@
     "dev": "set NODE_ENV=development && ./node_modules/nodemon/bin/nodemon.js",
     "prod": "NODE_ENV=production ts-node lib/index.ts",
     "debug": "node --inspect-brk=3333 ./node_modules/ts-node/dist/bin.js lib/index.ts && ./node_modules/nodemon/bin/nodemon.js",
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch"
   },
   "author": "Nidhal DOGGA <dogga.nidhal@gmail.com>",
