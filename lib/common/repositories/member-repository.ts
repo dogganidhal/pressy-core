@@ -1,12 +1,12 @@
-import { MobileDevice } from './../model/entity/members/device';
-import { PaymentAccount } from './../model/entity/members/payment-account';
+import { MobileDevice } from './../model/entity/users/device';
+import { PaymentAccount } from './../model/entity/users/payment-account';
 import { CreditCardDTO, MobileDeviceDTO } from './../model/dto/index';
 import { Repository, createConnection } from "typeorm";
 import bcrypt from "bcrypt";
-import { Member, MemberPasswordResetCode, MemberActivationCode, MemberGroup } from "../model/entity";
 import { MemberRegistrationDTO, MemberPasswordResetRequestDTO, MemberInfoDTO } from "../model/dto";
 import { Exception } from "../errors";
 import { DateUtils } from "../utils";
+import { Member, MemberPasswordResetCode, MemberActivationCode, MemberGroup } from '../model/entity/users';
 
 
 export class MemberRepository {

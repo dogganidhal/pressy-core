@@ -1,6 +1,5 @@
 import "crypto";
-import { readFileSync } from "fs";
-import { Member, MemberGroup } from "../model/entity";
+import { Member, MemberGroup } from "../model/entity/users";
 import { AccessPrivilege } from "../model";
 import { sign, SignOptions, verify, VerifyOptions } from "jsonwebtoken";
 import { Exception } from "../errors";

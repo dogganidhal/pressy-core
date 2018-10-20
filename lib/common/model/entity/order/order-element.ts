@@ -1,17 +1,10 @@
-import { CreateOrderRequestDTO } from './../../dto/order';
-import { Order } from './order';
-import { Address } from '../common';
-import { Member } from '../members';
+import { Booking } from './../booking';
 import { 
   Entity, PrimaryGeneratedColumn, 
-  ManyToOne, JoinColumn, 
-  CreateDateColumn,
-  OneToOne,
-  Column,
-  OneToMany
+  ManyToOne, JoinColumn, Column,
 } from "typeorm";
 
-export enum OrderElementType {
+export enum ElementType {
   SHIRT = 1,
   TSHIRT = 2,
   PANT = 4,
@@ -21,17 +14,17 @@ export enum OrderElementType {
 }
 
 @Entity()
-export class OrderElement {
+export class Element {
 
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @ManyToOne(type => Order)
+  @ManyToOne(type => Booking)
   @JoinColumn()
-  public order: Order;
+  public booking: Booking;
 
   @Column()
-  public type: OrderElementType
+  public type: ElementType
 
   @Column({nullable: true})
   public color: string;

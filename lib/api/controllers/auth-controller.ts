@@ -15,7 +15,6 @@ import { Exception } from "../../common/errors";
 import { HTTPUtils } from "../../common/utils/http-utils";
 import { JSONSerialization } from "../../common/utils/json-serialization";
 import bcrypt from "bcrypt";
-import { Member } from "../../common/model/entity";
 
 @Path('/api/v1/auth/')
 export class AuthController extends Controller {

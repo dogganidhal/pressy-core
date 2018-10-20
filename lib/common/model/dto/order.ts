@@ -1,6 +1,5 @@
 import { JsonObject, JsonProperty } from "json2typescript";
-import { OrderElementType } from "../entity/order/order-element";
-import { AddressDTO } from "./address";
+import { ElementType } from "../entity/order/order-element";
 
 
 @JsonObject
@@ -10,7 +9,7 @@ export class OrderElementDTO {
   public orderId?: number = undefined;
 
   @JsonProperty("type", Number)
-  public type: OrderElementType = OrderElementType.PANT;
+  public type: ElementType = ElementType.PANT;
 
   @JsonProperty("color", String, true)
   public color: string = "";

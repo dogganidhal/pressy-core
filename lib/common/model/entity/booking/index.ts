@@ -1,11 +1,21 @@
 import { LocationRepository } from './../../../repositories/location-repository';
 import { CreateBookingRequestDTO } from './../../dto/booking';
 import { Address } from './../common/address';
-import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne, CreateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne, CreateDateColumn, OneToMany, Column } from "typeorm";
 import { Slot } from "../order/slot";
-import { Member } from '../members';
+import { Member } from '../users';
 import { SlotRepository } from '../../../repositories/slot-repository';
 import { Exception } from '../../../errors';
+import { Element } from '../order/order-element';
+
+
+export enum BookingStatus {
+  VALIDATED = 0,
+  TRANSIT_PICKUP = 1,
+  TREATMENT = 2,
+  TRANSIT_DELIVERY = 3,
+  DELIVERED = 4
+}
 
 
 @Entity()
@@ -37,6 +47,11 @@ export class Booking {
   @JoinColumn()
   public member: Member;
 
+  @OneToMany(type => Element, element => element.booking, {nullable: false})
+  public elements: Element[];
+
+  @Column({nullable: false})
+  public status: BookingStatus = BookingStatus.VALIDATED;
 
   public static async create(member: Member, createBookingRequestDTO: CreateBookingRequestDTO): Promise<Booking> {
 
