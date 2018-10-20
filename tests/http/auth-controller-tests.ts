@@ -1,5 +1,5 @@
 import { HttpError } from 'typescript-rest';
-import { LoginResponseDTO } from '../../lib/common/model/dto/index';
+import { LoginResponseDTO } from '../../lib/common/model/dto/member';
 import API from "../../lib/api";
 import request from "supertest";
 import { JSONSerialization } from '../../lib/common/utils/json-serialization';

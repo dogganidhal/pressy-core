@@ -1,4 +1,4 @@
-import { CreditCardDTO, MobileDeviceDTO } from './../../common/model/dto/index';
+import { CreditCardDTO, MobileDeviceDTO } from '../../common/model/dto/member';
 import {
   Path, GET, POST,
   HttpError, Errors, PathParam, Return, QueryParam, ContextRequest 
@@ -6,12 +6,12 @@ import {
 import { MemberRepository } from "../../common/repositories";
 import {
   MemberRegistrationDTO,MemberInfoDTO
-} from "../../common/model/dto";
+} from "../../common/model/dto/member";
 import { Controller, Authenticated } from "../../common/controller";
 import { AccessPrivilege } from "../../common/model";
 import { HTTPUtils } from "../../common/utils/http-utils";
 import { JSONSerialization } from "../../common/utils/json-serialization";
-import { Member, MemberStatus } from "../../common/model/entity";
+import { Member, MemberStatus } from "../../common/model/entity/users/member";
 import { Exception } from '../../common/errors';
 import { DateUtils } from '../../common/utils';
 import { Request } from 'express';

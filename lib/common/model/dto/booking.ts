@@ -1,7 +1,7 @@
 import { JsonObject, JsonProperty } from "json2typescript";
 import { CreateAddressDTO, AddressDTO } from "./address";
 import { SlotDTO } from "./slot";
-import { MemberInfoDTO } from ".";
+import { MemberInfoDTO } from "./member";
 import { Booking } from "../entity/booking";
 
 

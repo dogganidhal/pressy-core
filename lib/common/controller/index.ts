@@ -1,6 +1,6 @@
 import { ContextRequest, ContextResponse, HttpError } from "typescript-rest";
 import { Request, Response } from "express";
-import { Member } from "../model/entity/users";
+import { Member } from "../model/entity/users/member";
 import { AccessPrivilege } from "../model";
 import { Exception } from "../errors";
 import { AuthRepository } from "../repositories";

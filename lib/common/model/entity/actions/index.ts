@@ -1,4 +1,4 @@
-import { Member } from './../users';
+import { Member } from './../users/member';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 
 export enum ActionVerb {

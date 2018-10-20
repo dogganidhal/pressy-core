@@ -1,11 +1,6 @@
 import { Booking } from './../model/entity/booking/index';
-import { MobileDevice } from './../model/entity/members/device';
-import { PaymentAccount } from './../model/entity/members/payment-account';
-import { CreditCardDTO, MobileDeviceDTO } from './../model/dto/index';
 import { Repository, createConnection } from "typeorm";
-import {  } from "../model/dto";
-import { Order } from '../model/entity/order';
-import { Member } from '../model/entity';
+import { Member } from '../model/entity/users/member';
 
 
 export class BookingRepository  {

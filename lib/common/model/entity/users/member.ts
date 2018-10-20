@@ -1,7 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, PrimaryColumn, OneToOne, JoinColumn } from "typeorm";
 import bcrypt from "bcrypt";
 import uuid from "uuid";
-import { MemberRegistrationDTO } from "../../dto";
+import { MemberRegistrationDTO } from "../../dto/member";
+import { Person } from "./person";
 
 export enum MemberStatus {
   INACTIVE = 1,
@@ -22,56 +23,25 @@ export class Member {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column({nullable: false})
-  public firstName: string;
-
-  @Column({nullable: false})
-  public lastName: string;
-
-  @Column({unique: true, nullable: false})
-  public email: string;
-
-  @Column({unique: true, nullable: false})
-  public phone: string;
-
-  @CreateDateColumn()
-  public created: Date;
+  @OneToOne(type => Person)
+  public person: Person;
 
   @Column()
   public status: MemberStatus = MemberStatus.INACTIVE;
 
   @Column()
-  public passwordHash: string;
-
-  @Column()
   public group: MemberGroup = MemberGroup.CUSTOMER;
 
   public static create(memberDTO: MemberRegistrationDTO, memberGroup: MemberGroup = MemberGroup.CUSTOMER): Member {
+    
     const member: Member = new Member();
-    member.firstName = memberDTO.firstName;
-    member.lastName = memberDTO.lastName;
-    member.email = memberDTO.email;
-    member.phone = memberDTO.phone;
-    member.passwordHash = bcrypt.hashSync(memberDTO.password, 10);
+    
+    member.person = Person.create(memberDTO);
     member.status = MemberStatus.INACTIVE;
     member.group = memberGroup;
+
     return member;
-  }
 
-  public static createCustomer(memberDTO: MemberRegistrationDTO): Member {
-    return Member.create(memberDTO, MemberGroup.CUSTOMER);
-  }
-
-  public static createDriver(memberDTO: MemberRegistrationDTO): Member {
-    return Member.create(memberDTO, MemberGroup.DRIVER);
-  }
-
-  public static createLaundry(memberDTO: MemberRegistrationDTO): Member {
-    return Member.create(memberDTO, MemberGroup.LAUNDRY);
-  }
-
-  public static createSuperuser(memberDTO: MemberRegistrationDTO): Member {
-    return Member.create(memberDTO, MemberGroup.SUPERUSER);
   }
 
 }

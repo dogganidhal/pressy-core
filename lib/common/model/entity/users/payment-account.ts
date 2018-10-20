@@ -1,5 +1,5 @@
 import uuid from 'uuid';
-import { CreditCardDTO } from './../../dto/index';
+import { CreditCardDTO } from '../../dto/member';
 import { Member } from './member';
 import { Entity, PrimaryColumn, OneToOne, JoinColumn, Column, ManyToOne } from "typeorm";
 

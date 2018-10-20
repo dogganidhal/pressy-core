@@ -1,10 +1,10 @@
 import "crypto";
-import { Member, MemberGroup } from "../model/entity/users";
+import { Member, MemberGroup } from "../model/entity/users/member";
 import { AccessPrivilege } from "../model";
 import { sign, SignOptions, verify, VerifyOptions } from "jsonwebtoken";
 import { Exception } from "../errors";
 import { MemberRepository } from "./member-repository";
-import { RefreshCredentialsRequestDTO, LoginResponseDTO } from "../model/dto";
+import { RefreshCredentialsRequestDTO, LoginResponseDTO } from "../model/dto/member";
 
 interface IAuthPayload {
   id: number;

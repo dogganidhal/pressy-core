@@ -9,7 +9,7 @@ import {
   MemberPasswordResetRequestDTO,
   MemberPasswordResetCodeDTO,
   MemberPasswordResetCodeRequestDTO
-} from "../../common/model/dto";
+} from "../../common/model/dto/member";
 import { Controller } from "../../common/controller";
 import { Exception } from "../../common/errors";
 import { HTTPUtils } from "../../common/utils/http-utils";
@@ -37,7 +37,7 @@ export class AuthController extends Controller {
         if (!member)
           throw ""
 
-          if (!bcrypt.compareSync(loginRequest.password, member.passwordHash))
+          if (!bcrypt.compareSync(loginRequest.password, member.person.passwordHash))
           throw new Exception.WrongPassword;
   
         const loginResponse = await this._authRepository.generateToken(member);

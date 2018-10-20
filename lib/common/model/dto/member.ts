@@ -1,7 +1,7 @@
-import { PaymentAccount } from './../entity/members/payment-account';
 import { JsonObject, JsonProperty } from "json2typescript";
-import { MemberStatus, MemberGroup, Member } from "../entity";
 import { JSONSerialization } from "../../utils/json-serialization";
+import { MemberStatus, MemberGroup, Member } from "../entity/users/member";
+import { PaymentAccount } from "../entity/users/payment-account";
 
 @JsonObject
 export class MemberInfoDTO {
@@ -34,10 +34,10 @@ export class MemberInfoDTO {
     const memberDTO = new MemberInfoDTO();
 
     memberDTO.id = member.id;
-    memberDTO.firstName = member.firstName;
-    memberDTO.lastName = member.lastName;
-    memberDTO.email = member.email;
-    memberDTO.phone = member.phone;
+    memberDTO.firstName = member.person.firstName;
+    memberDTO.lastName = member.person.lastName;
+    memberDTO.email = member.person.email;
+    memberDTO.phone = member.person.phone;
     memberDTO.status = member.status;
     memberDTO.group = member.group;
 

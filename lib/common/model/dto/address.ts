@@ -1,5 +1,5 @@
 import { JsonObject, JsonProperty } from "json2typescript";
-import { Address } from "../entity/common";
+import { Address } from "../entity/common/address";
 import { Location } from "../entity/common/location";
 
 @JsonObject
