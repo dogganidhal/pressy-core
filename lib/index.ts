@@ -14,12 +14,12 @@ if (process.env.NODE_ENV === "development") {
 
     const config = parse(process.env.DATABASE_URL);
 
+    console.log(config);
+
     process.env.TYPEORM_USERNAME = config.user!;
     process.env.TYPEORM_PASSWORD = config.password!;
     process.env.TYPEORM_DATABASE = config.database!;
     process.env.TYPEORM_PORT = `${config.port!}`;
-
-    console.log(process.env);
 
   }
   
