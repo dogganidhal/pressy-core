@@ -11,7 +11,7 @@ import { Controller, Authenticated } from "../../common/controller";
 import { AccessPrivilege } from "../../common/model";
 import { HTTPUtils } from "../../common/utils/http-utils";
 import { JSONSerialization } from "../../common/utils/json-serialization";
-import { Member, MemberStatus } from "../../common/model/entity";
+import { Member, MemberStatus } from "../../common/model/entity/users/member";
 import { Exception } from '../../common/errors';
 import { DateUtils } from '../../common/utils';
 import { Request } from 'express';

@@ -1,7 +1,7 @@
-import { PaymentAccount } from './../entity/members/payment-account';
 import { JsonObject, JsonProperty } from "json2typescript";
-import { MemberStatus, MemberGroup, Member } from "../entity";
 import { JSONSerialization } from "../../utils/json-serialization";
+import { MemberStatus, MemberGroup, Member } from "../entity/users";
+import { PaymentAccount } from "../entity/users/payment-account";
 
 @JsonObject
 export class MemberInfoDTO {

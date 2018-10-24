@@ -1,8 +1,7 @@
-import { DateUtils } from './date-utils';
 import { JsonConverter, JsonCustomConvert, JsonConvert, OperationMode, ValueCheckingMode } from "json2typescript";
 import dateFormat from "dateformat";
-import { MemberStatus, MemberGroup } from "../model/entity";
 import { AccessPrivilege } from "../model";
+import { MemberStatus, MemberGroup } from "../model/entity/users";
 
 
 export namespace JSONSerialization {
