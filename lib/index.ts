@@ -4,12 +4,9 @@ import { parse } from "pg-connection-string";
 
 // Load the environment variables declared in .env to "process.env"
 // Development only, production should have environment variables set on the host dyno.
-console.log(process.env);
 if (process.env.NODE_ENV === "development") {
   
   require('dotenv').load({path: ".env"});
-
-  
     
 } else {
 

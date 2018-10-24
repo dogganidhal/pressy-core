@@ -1,3 +1,4 @@
+import { PersonStatus } from './../../common/model/entity/users/person';
 import { CreditCardDTO, MobileDeviceDTO } from '../../common/model/dto/member';
 import {
   Path, GET, POST,
@@ -11,15 +12,17 @@ import { Controller, Authenticated } from "../../common/controller";
 import { AccessPrivilege } from "../../common/model";
 import { HTTPUtils } from "../../common/utils/http-utils";
 import { JSONSerialization } from "../../common/utils/json-serialization";
-import { Member, MemberStatus } from "../../common/model/entity/users/member";
+import { Member } from "../../common/model/entity/users/member";
 import { Exception } from '../../common/errors';
 import { DateUtils } from '../../common/utils';
 import { Request } from 'express';
+import { PersonRepository } from '../../common/repositories/person-repository';
 
 @Path('/api/v1/member/')
 export class MemberController extends Controller {
 
   private _memberRepository: MemberRepository = MemberRepository.instance;
+  private _personRepository: PersonRepository = PersonRepository.instance;
 
   @Authenticated(AccessPrivilege.SUPERUSER)
   @Path("/all")
@@ -43,7 +46,7 @@ export class MemberController extends Controller {
     try {
       const newMember: MemberRegistrationDTO = HTTPUtils.parseBody(request.body, MemberRegistrationDTO);
       const member = await this._memberRepository.createMember(newMember);
-      const _ = this._memberRepository.createActivationCode(member);
+      const _ = this._personRepository.createActivationCode(member.person);
       // TODO: Send the activation URL by email !!
       return JSONSerialization.serializeObject(newMember);
     } catch (error) {
@@ -60,11 +63,11 @@ export class MemberController extends Controller {
   public async activateMember(@PathParam("code") code: string) {
 
     try {
-      const member = await this._memberRepository.getActivationCodeMember(code);
-      member.status = MemberStatus.ACTIVE;
+      const person = await this._personRepository.getActivationCodePerson(code);
+      person.status = PersonStatus.ACTIVE;
 
-      await this._memberRepository.saveMember(member);
-      await this._memberRepository.deleteActivationCode(code);
+      await this._personRepository.savePerson(person);
+      await this._personRepository.deleteActivationCode(code);
 
       return new Return.RequestAccepted(`/api/v1/member/`);
     } catch (error) {

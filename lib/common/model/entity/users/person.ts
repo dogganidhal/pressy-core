@@ -3,6 +3,14 @@ import bcrypt from 'bcrypt';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
 import { MemberRegistrationDTO } from "../../dto/member";
 
+
+export enum PersonStatus {
+  INACTIVE = 1,
+  SUSPENDED = 2,
+  ACTIVE = 4
+}
+
+
 @Entity()
 export class Person {
 
@@ -23,6 +31,9 @@ export class Person {
 
   @CreateDateColumn()
   public created: Date = DateUtils.now();
+
+  @Column({nullable: false, default: PersonStatus.INACTIVE})
+  public status: PersonStatus = PersonStatus.INACTIVE;
 
   @Column()
   public passwordHash: string;

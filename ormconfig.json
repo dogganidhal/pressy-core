@@ -1,0 +1,21 @@
+[
+  {
+    "type": "postgres",
+    "logging": true,
+    "synchronize": true,
+    "entities": [
+      "lib/common/model/entity/**/*"
+    ],
+    "subscribers": [
+      "lib/common/model/subscribers/**/*"
+    ],
+    "migrations": [
+      "lib/common/model/subscribers/**/*"
+    ],
+    "cli": {
+      "entitiesDir": "lib/common/model/entity",
+      "migrationsDir": "lib/common/model/migrations",
+      "subscribersDir": "lib/common/model/subscribers"
+    }
+  }
+]

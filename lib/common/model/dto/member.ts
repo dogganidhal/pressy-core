@@ -1,6 +1,6 @@
 import { JsonObject, JsonProperty } from "json2typescript";
 import { JSONSerialization } from "../../utils/json-serialization";
-import { MemberStatus, MemberGroup, Member } from "../entity/users/member";
+import { Member } from "../entity/users/member";
 import { PaymentAccount } from "../entity/users/payment-account";
 
 @JsonObject
@@ -21,12 +21,6 @@ export class MemberInfoDTO {
   @JsonProperty("phone", String)
   public phone: string;
 
-  @JsonProperty("status", JSONSerialization.MemberStatusConverter)
-  public status: MemberStatus;
-
-  @JsonProperty("group", JSONSerialization.MemberGroupConverter)
-  public group: MemberGroup;
-
   @JsonProperty("created", JSONSerialization.UTCDateConvert)
   public created: Date;
 
@@ -38,8 +32,6 @@ export class MemberInfoDTO {
     memberDTO.lastName = member.person.lastName;
     memberDTO.email = member.person.email;
     memberDTO.phone = member.person.phone;
-    memberDTO.status = member.status;
-    memberDTO.group = member.group;
 
     return memberDTO;
   }
@@ -97,7 +89,7 @@ export class MemberPasswordResetCodeRequestDTO {
 }
 
 @JsonObject
-export class MemberPasswordResetRequestDTO {
+export class PersonPasswordResetRequestDTO {
 
   @JsonProperty("oldPassword", String)
   public oldPassword: string = "";

@@ -1,5 +1,5 @@
 import { Member } from './../users/member';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 
 export enum ActionVerb {
   // TODO: To be continued
@@ -22,6 +22,7 @@ export class Action {
   public verb: ActionVerb;
 
   @ManyToOne(type => Member, {nullable: false})
+  @JoinColumn()
   public doer: Member;
 
   @Column({nullable: false})

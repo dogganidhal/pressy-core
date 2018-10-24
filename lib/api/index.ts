@@ -7,6 +7,7 @@ import {
 import { DocumentationController } from "./controllers/doc-controller";
 import { OrderController } from "./controllers/order-controller";
 import { BookingController } from "./controllers/booking-controller";
+import { DB } from "../common/db";
 
 export default class API {
 
@@ -19,6 +20,7 @@ export default class API {
   }
   
   private async _config() {
+    DB.configureConnectionOptions();
     this.registerController(DocumentationController);
     this.registerController(DriverController);
     this.registerController(MemberController);

@@ -6,7 +6,7 @@ import { MemberRepository, AuthRepository } from "../../common/repositories";
 import {
   LoginRequestDTO,
   RefreshCredentialsRequestDTO,
-  MemberPasswordResetRequestDTO,
+  PersonPasswordResetRequestDTO,
   MemberPasswordResetCodeDTO,
   MemberPasswordResetCodeRequestDTO
 } from "../../common/model/dto/member";
@@ -15,11 +15,13 @@ import { Exception } from "../../common/errors";
 import { HTTPUtils } from "../../common/utils/http-utils";
 import { JSONSerialization } from "../../common/utils/json-serialization";
 import bcrypt from "bcrypt";
+import { PersonRepository } from "../../common/repositories/person-repository";
 
 @Path('/api/v1/auth/')
 export class AuthController extends Controller {
 
   private _memberRepository: MemberRepository = MemberRepository.instance;
+  private _personRepository: PersonRepository = PersonRepository.instance;
   private _authRepository: AuthRepository = AuthRepository.instance;
 
   @Path("/login/")
@@ -80,15 +82,15 @@ export class AuthController extends Controller {
 
       const resetCodeRequest = HTTPUtils.parseBodyOfContoller(this, MemberPasswordResetCodeRequestDTO);
 
-      const member = await this._memberRepository
-        .getMemberByEmail(resetCodeRequest.email);
+      const person = await this._personRepository
+        .getPersonByEmail(resetCodeRequest.email);
 
-      if (member == undefined) {
+      if (person == undefined) {
         this.throw(new Exception.MemberNotFound(resetCodeRequest.email!));
         return;
       }
       
-      const resetCode = await this._memberRepository.createPasswordResetCode(member);
+      const resetCode = await this._personRepository.createPasswordResetCode(person);
       const resetCodeDTO = MemberPasswordResetCodeDTO.create(resetCode.id!);
 
       // TODO: Return an empty "accepted" response, and call the email service
@@ -106,10 +108,10 @@ export class AuthController extends Controller {
 
     try {
 
-      const resetPasswordRequest = HTTPUtils.parseBodyOfContoller(this, MemberPasswordResetRequestDTO);
-      const member = await this._memberRepository.resetPassword(code, resetPasswordRequest);
+      const resetPasswordRequest = HTTPUtils.parseBodyOfContoller(this, PersonPasswordResetRequestDTO);
+      const person = await this._personRepository.resetPassword(code, resetPasswordRequest);
 
-      return new Return.RequestAccepted(`/api/v1/member/${member.id}`);
+      return new Return.RequestAccepted(`/api/v1/member/${person.id}`);
 
     } catch (error) {
       if (error instanceof Error) 
