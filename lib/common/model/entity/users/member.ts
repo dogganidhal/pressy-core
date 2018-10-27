@@ -1,20 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, PrimaryColumn, OneToOne, JoinColumn } from "typeorm";
-import bcrypt from "bcrypt";
 import uuid from "uuid";
-import { MemberRegistrationDTO } from "../../dto";
-
-export enum MemberStatus {
-  INACTIVE = 1,
-  SUSPENDED = 2,
-  ACTIVE = 4
-}
-
-export enum MemberGroup {
-  CUSTOMER = 1,
-  DRIVER = 2,
-  LAUNDRY = 4,
-  SUPERUSER = 8
-}
+import { MemberRegistrationDTO } from "../../dto/member";
+import { Person } from "./person";
 
 @Entity()
 export class Member {
@@ -22,74 +9,35 @@ export class Member {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column({nullable: false})
-  public firstName: string;
+  @OneToOne(type => Person)
+  @JoinColumn()
+  public person: Person;
 
-  @Column({nullable: false})
-  public lastName: string;
-
-  @Column({unique: true, nullable: false})
-  public email: string;
-
-  @Column({unique: true, nullable: false})
-  public phone: string;
-
-  @CreateDateColumn()
-  public created: Date;
-
-  @Column()
-  public status: MemberStatus = MemberStatus.INACTIVE;
-
-  @Column()
-  public passwordHash: string;
-
-  @Column()
-  public group: MemberGroup = MemberGroup.CUSTOMER;
-
-  public static create(memberDTO: MemberRegistrationDTO, memberGroup: MemberGroup = MemberGroup.CUSTOMER): Member {
+  public static create(memberDTO: MemberRegistrationDTO): Member {
+    
     const member: Member = new Member();
-    member.firstName = memberDTO.firstName;
-    member.lastName = memberDTO.lastName;
-    member.email = memberDTO.email;
-    member.phone = memberDTO.phone;
-    member.passwordHash = bcrypt.hashSync(memberDTO.password, 10);
-    member.status = MemberStatus.INACTIVE;
-    member.group = memberGroup;
+    member.person = Person.create(memberDTO);
+
     return member;
-  }
 
-  public static createCustomer(memberDTO: MemberRegistrationDTO): Member {
-    return Member.create(memberDTO, MemberGroup.CUSTOMER);
-  }
-
-  public static createDriver(memberDTO: MemberRegistrationDTO): Member {
-    return Member.create(memberDTO, MemberGroup.DRIVER);
-  }
-
-  public static createLaundry(memberDTO: MemberRegistrationDTO): Member {
-    return Member.create(memberDTO, MemberGroup.LAUNDRY);
-  }
-
-  public static createSuperuser(memberDTO: MemberRegistrationDTO): Member {
-    return Member.create(memberDTO, MemberGroup.SUPERUSER);
   }
 
 }
 
 @Entity()
-export class MemberActivationCode {
+export class PersonActivationCode {
 
   @PrimaryColumn()
   public code: string;
 
-  @OneToOne(type => Member)
+  @OneToOne(type => Person)
   @JoinColumn()
-  public member: Member;
+  public person: Person;
 
-  public static create(member: Member): MemberActivationCode {
-    const activationCode = new MemberActivationCode();
+  public static create(person: Person): PersonActivationCode {
+    const activationCode = new PersonActivationCode();
     activationCode.code = uuid.v4().toString();
-    activationCode.member = member;
+    activationCode.person = person;
     return activationCode;
   }
 

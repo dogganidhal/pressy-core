@@ -1,0 +1,14 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "root",
+  "password": "",
+  "database": "pressy",
+  "logging": true,
+  "logger": "file",
+  "synchronize": false,
+  "entities": [
+      "lib/common/model/entity/**/*"
+  ]
+}

@@ -13,21 +13,13 @@ export class LocationRepository {
   constructor() {
     this._locationRepositoryPromise = new Promise((resolve, reject) => {
       createConnection()
-      .then(connection => {
-        resolve(connection.getRepository(Location));
-      })
-      .catch(error => {
-        reject(error);
-      });
+      .then(connection => resolve(connection.getRepository(Location)))
+      .catch(error => reject(error));
     });
     this._addressRepositoryPromise = new Promise((resolve, reject) => {
       createConnection()
-      .then(connection => {
-        resolve(connection.getRepository(Address));
-      })
-      .catch(error => {
-        reject(error);
-      });
+      .then(connection => resolve(connection.getRepository(Address)))
+      .catch(error => reject(error));
     });
   }
 

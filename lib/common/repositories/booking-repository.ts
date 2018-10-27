@@ -1,6 +1,6 @@
 import { Booking } from './../model/entity/booking/index';
 import { Repository, createConnection } from "typeorm";
-import { Member } from '../model/entity/users';
+import { Member } from '../model/entity/users/member';
 
 
 export class BookingRepository  {

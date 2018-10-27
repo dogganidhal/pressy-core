@@ -1,10 +1,15 @@
+import { Person } from './../model/entity/users/person';
 import "crypto";
-import { Member, MemberGroup } from "../model/entity/users";
-import { AccessPrivilege } from "../model";
+import { Member } from "../model/entity/users/member";
 import { sign, SignOptions, verify, VerifyOptions } from "jsonwebtoken";
 import { Exception } from "../errors";
 import { MemberRepository } from "./member-repository";
-import { RefreshCredentialsRequestDTO, LoginResponseDTO } from "../model/dto";
+import { RefreshCredentialsRequestDTO, LoginResponseDTO } from "../model/dto/member";
+import { getConfig } from "../../config";
+
+export enum AuthPrivilege {
+  BASIC, SUPERUSER
+}
 
 interface IAuthPayload {
   id: number;
@@ -15,18 +20,18 @@ export class AuthRepository {
 
   public static instance: AuthRepository = new AuthRepository();
 
-  private _publicKey: string = process.env.AUTH_PUKEY!;
-  private _privateKey: string = process.env.AUTH_PRKEY!;
+  private _publicKey: string = getConfig().authenticationPublicKey;
+  private _privateKey: string = getConfig().authenticationPrivateKey;
 
-  public async generateToken(member: Member): Promise<LoginResponseDTO> {
+  public async generateToken(person: Person, privilege: AuthPrivilege = AuthPrivilege.SUPERUSER): Promise<LoginResponseDTO> {
 
     const payload: IAuthPayload = {
-      id: member.id,
-      privilege: member.group == MemberGroup.SUPERUSER ? AccessPrivilege.SUPERUSER : AccessPrivilege.BASIC
+      id: person.id,
+      privilege: AuthPrivilege.BASIC
     };
 
     const signOptions: SignOptions = {
-      audience: member.id.toString(),
+      audience: person.id.toString(),
       issuer: "pressy",
       algorithm: "RS256"
     };
@@ -38,7 +43,7 @@ export class AuthRepository {
 
   }
 
-  public async decodeToken(token: string, minimumPrivilege: AccessPrivilege): Promise<Member> {
+  public async decodeToken(token: string, minimumPrivilege: AuthPrivilege): Promise<Member> {
 
     var payload: IAuthPayload;
 
@@ -61,9 +66,6 @@ export class AuthRepository {
 
     if (!member)
       throw new Exception.AccessTokenNotFound;
-      
-    if (payload.privilege == AccessPrivilege.SUPERUSER && member.group != MemberGroup.SUPERUSER)
-      throw new Exception.UnauthorizedRequest;
 
     return member;
 

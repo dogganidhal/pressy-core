@@ -1,17 +1,17 @@
 import { Entity, PrimaryColumn, ManyToOne, Column, CreateDateColumn } from "typeorm";
 import * as uuid from "uuid";
 import { DateUtils } from "../../../utils";
-import { Member } from ".";
+import { Person } from "./person";
 
 
 @Entity()
-export class MemberPasswordResetCode {
+export class PersonPasswordResetCode {
 
   @PrimaryColumn()
   public id?: string;
 
-  @ManyToOne(type => Member)
-  public member?: Member;
+  @ManyToOne(type => Person)
+  public person: Person;
 
   @CreateDateColumn()
   public created: Date;
@@ -19,11 +19,12 @@ export class MemberPasswordResetCode {
   @Column({nullable: false})
   public expiryDate: Date;
 
-  public static create(member: Member): MemberPasswordResetCode {
-    const memberReset: MemberPasswordResetCode = new MemberPasswordResetCode();
+  public static create(person: Person): PersonPasswordResetCode {
+
+    const memberReset: PersonPasswordResetCode = new PersonPasswordResetCode;
 
     memberReset.id = uuid.v4().toString();
-    memberReset.member = member;
+    memberReset.person = person;
     memberReset.expiryDate = DateUtils.addDaysFromNow(1);
 
     return memberReset;

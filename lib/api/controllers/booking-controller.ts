@@ -8,7 +8,7 @@ import { HTTPUtils } from '../../common/utils/http-utils';
 import { JSONSerialization } from '../../common/utils/json-serialization';
 import { DateUtils } from '../../common/utils';
 import { CreateBookingRequestDTO, BookingDTO } from "../../common/model/dto/booking";
-import { Member } from "../../common/model/entity/users";
+import { Member } from "../../common/model/entity/users/member";
 import { Booking } from "../../common/model/entity/booking";
 import { SlotType } from "../../common/model/entity/order/slot";
 import { SlotDTO } from "../../common/model/dto/slot";

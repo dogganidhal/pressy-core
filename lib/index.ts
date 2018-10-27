@@ -7,7 +7,7 @@ import { parse } from "pg-connection-string";
 if (process.env.NODE_ENV === "development") {
   
   require('dotenv').load({path: ".env"});
-  
+    
 } else {
 
   if (process.env.DATABASE_URL != undefined) {

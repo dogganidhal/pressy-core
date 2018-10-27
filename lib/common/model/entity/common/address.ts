@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
 import { Location } from "./location";
-import { AddressDTO, CreateAddressDTO } from "../../dto/address";
+import { CreateAddressDTO } from "../../dto/address";
 import { GeocodingService } from "../../../../common/services/geocoding-service";
 import { LocationRepository } from "../../../repositories/location-repository";
 

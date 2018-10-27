@@ -3,7 +3,7 @@ import { CreateBookingRequestDTO } from './../../dto/booking';
 import { Address } from './../common/address';
 import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne, CreateDateColumn, OneToMany, Column } from "typeorm";
 import { Slot } from "../order/slot";
-import { Member } from '../users';
+import { Member } from '../users/member';
 import { SlotRepository } from '../../../repositories/slot-repository';
 import { Exception } from '../../../errors';
 import { Element } from '../order/order-element';

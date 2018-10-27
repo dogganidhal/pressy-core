@@ -3,6 +3,7 @@ import { Address } from './../model/entity/common/address';
 import { Location } from '../model/entity/common/location';
 import { LocationRepository } from '../repositories/location-repository';
 import { RestClient } from "typed-rest-client";
+import { getConfig } from '../../config';
 
 export interface ICoordinates {
   latitude: number;
@@ -39,7 +40,7 @@ export class GeocodingService {
 
   public async getAddressWithPlaceId(placeId: string): Promise<AddressDTO> {
 
-    const url = `${this.GOOGLE_SERVICES_URL}/place/details/json?placeid=${placeId}&key=${process.env.GMAPS_API_KEY}`;
+    const url = `${this.GOOGLE_SERVICES_URL}/place/details/json?placeid=${placeId}&key=${getConfig().googleMapsAPIKey}`;
     const response = await this._restClient.get(url);
 
     const results: any = (await response.result)!;
@@ -73,7 +74,7 @@ export class GeocodingService {
 
   public async getAddressWithCoordinates(coordinates: ICoordinates): Promise<AddressDTO> {
     const url = `${this.GOOGLE_SERVICES_URL}/geocode/json?latlng=\
-${coordinates.latitude},${coordinates.longitude}&key=${process.env.GMAPS_API_KEY}`;
+${coordinates.latitude},${coordinates.longitude}&key=${getConfig().googleMapsAPIKey}`;
 
     const response = await this._restClient.get(url);
     const result: any = (await response.result as any);
@@ -109,7 +110,7 @@ ${coordinates.latitude},${coordinates.longitude}&key=${process.env.GMAPS_API_KEY
 
     const urlEncodedAddress = address.replace(" ", "+");
     const response = await this._restClient.get(`${this.GOOGLE_SERVICES_URL}/geocode/json\
-?components=&language=&region=&bounds=&address=${urlEncodedAddress}&key=${process.env.GMAPS_API_KEY}`);
+?components=&language=&region=&bounds=&address=${urlEncodedAddress}&key=${getConfig().googleMapsAPIKey}`);
 
     const json: any = await response.result;
     const addressData = json.results[0];

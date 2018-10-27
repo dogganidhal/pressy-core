@@ -1,27 +1,29 @@
-import { CreditCardDTO, MobileDeviceDTO } from './../../common/model/dto/index';
+import { PersonStatus } from './../../common/model/entity/users/person';
+import { CreditCardDTO, MobileDeviceDTO } from '../../common/model/dto/member';
 import {
   Path, GET, POST,
   HttpError, Errors, PathParam, Return, QueryParam, ContextRequest 
 } from "typescript-rest";
-import { MemberRepository } from "../../common/repositories";
+import { MemberRepository, AuthPrivilege } from "../../common/repositories";
 import {
   MemberRegistrationDTO,MemberInfoDTO
-} from "../../common/model/dto";
+} from "../../common/model/dto/member";
 import { Controller, Authenticated } from "../../common/controller";
-import { AccessPrivilege } from "../../common/model";
 import { HTTPUtils } from "../../common/utils/http-utils";
 import { JSONSerialization } from "../../common/utils/json-serialization";
-import { Member, MemberStatus } from "../../common/model/entity/users/member";
+import { Member } from "../../common/model/entity/users/member";
 import { Exception } from '../../common/errors';
 import { DateUtils } from '../../common/utils';
 import { Request } from 'express';
+import { PersonRepository } from '../../common/repositories/person-repository';
 
 @Path('/api/v1/member/')
 export class MemberController extends Controller {
 
   private _memberRepository: MemberRepository = MemberRepository.instance;
+  private _personRepository: PersonRepository = PersonRepository.instance;
 
-  @Authenticated(AccessPrivilege.SUPERUSER)
+  @Authenticated(AuthPrivilege.SUPERUSER)
   @Path("/all")
   @GET
   public async getAllMembers(@QueryParam("g") group?: number, @QueryParam("q") query?: string) {
@@ -30,7 +32,7 @@ export class MemberController extends Controller {
     return members.map(member => JSONSerialization.serializeObject(MemberInfoDTO.create(member)));
   }
 
-  @Authenticated(AccessPrivilege.BASIC)
+  @Authenticated(AuthPrivilege.BASIC)
   @GET
   public async getMemberInfos() {
     const member = this.currentMember;
@@ -43,7 +45,7 @@ export class MemberController extends Controller {
     try {
       const newMember: MemberRegistrationDTO = HTTPUtils.parseBody(request.body, MemberRegistrationDTO);
       const member = await this._memberRepository.createMember(newMember);
-      const _ = this._memberRepository.createActivationCode(member);
+      const _ = this._personRepository.createActivationCode(member.person);
       // TODO: Send the activation URL by email !!
       return JSONSerialization.serializeObject(newMember);
     } catch (error) {
@@ -60,11 +62,11 @@ export class MemberController extends Controller {
   public async activateMember(@PathParam("code") code: string) {
 
     try {
-      const member = await this._memberRepository.getActivationCodeMember(code);
-      member.status = MemberStatus.ACTIVE;
+      const person = await this._personRepository.getActivationCodePerson(code);
+      person.status = PersonStatus.ACTIVE;
 
-      await this._memberRepository.saveMember(member);
-      await this._memberRepository.deleteActivationCode(code);
+      await this._personRepository.savePerson(person);
+      await this._personRepository.deleteActivationCode(code);
 
       return new Return.RequestAccepted(`/api/v1/member/`);
     } catch (error) {
@@ -76,7 +78,7 @@ export class MemberController extends Controller {
 
   }
 
-  @Authenticated(AccessPrivilege.BASIC)
+  @Authenticated(AuthPrivilege.BASIC)
   @Path("/payment-accounts/")
   @GET
   public async getPaymentAccounts() {
@@ -86,7 +88,7 @@ export class MemberController extends Controller {
 
   }
 
-  @Authenticated(AccessPrivilege.BASIC)
+  @Authenticated(AuthPrivilege.BASIC)
   @Path("/payment-accounts/")
   @POST
   public async addPaymentAccount(@ContextRequest request: Request) {
@@ -117,7 +119,7 @@ export class MemberController extends Controller {
 
   }
 
-  @Authenticated(AccessPrivilege.BASIC)
+  @Authenticated(AuthPrivilege.BASIC)
   @Path("/devices/")
   @POST
   public async registerMobileDevice(@ContextRequest request: Request) {
@@ -131,7 +133,7 @@ export class MemberController extends Controller {
 
   }
 
-  @Authenticated(AccessPrivilege.BASIC)
+  @Authenticated(AuthPrivilege.BASIC)
   @Path("/devices/")
   @GET
   public async getMobileDevices() {

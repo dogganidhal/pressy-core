@@ -1,9 +1,8 @@
 import { ContextRequest, ContextResponse, HttpError } from "typescript-rest";
 import { Request, Response } from "express";
-import { Member } from "../model/entity/users";
-import { AccessPrivilege } from "../model";
+import { Member } from "../model/entity/users/member";
 import { Exception } from "../errors";
-import { AuthRepository } from "../repositories";
+import { AuthRepository, AuthPrivilege } from "../repositories";
 
 export abstract class Controller {
 
@@ -27,7 +26,7 @@ export abstract class Controller {
 
 }
 
-export function Authenticated<TController extends Controller>(minimumPrivilege: AccessPrivilege = AccessPrivilege.BASIC): (target: TController, property: string, propertyDescriptor: PropertyDescriptor) => void {
+export function Authenticated<TController extends Controller>(minimumPrivilege: AuthPrivilege = AuthPrivilege.BASIC): (target: TController, property: string, propertyDescriptor: PropertyDescriptor) => void {
 
   return function<TController extends Controller>(_: TController, __: string, propertyDescriptor: PropertyDescriptor) {
     var originalMethod: Function = propertyDescriptor.value;

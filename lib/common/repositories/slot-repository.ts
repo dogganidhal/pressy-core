@@ -1,6 +1,6 @@
 import { SlotType } from './../model/entity/order/slot';
 import { Slot } from '../model/entity/order/slot';
-import { Repository, Brackets, getConnectionManager, getManager } from "typeorm";
+import { Repository, Brackets } from "typeorm";
 import { createConnection } from 'typeorm';
 import { DateUtils } from '../utils';
 
