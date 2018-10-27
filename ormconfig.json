@@ -1,21 +1,14 @@
-[
-  {
-    "type": "postgres",
-    "logging": true,
-    "synchronize": true,
-    "entities": [
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "root",
+  "password": "",
+  "database": "pressy",
+  "logging": true,
+  "logger": "file",
+  "synchronize": false,
+  "entities": [
       "lib/common/model/entity/**/*"
-    ],
-    "subscribers": [
-      "lib/common/model/subscribers/**/*"
-    ],
-    "migrations": [
-      "lib/common/model/subscribers/**/*"
-    ],
-    "cli": {
-      "entitiesDir": "lib/common/model/entity",
-      "migrationsDir": "lib/common/model/migrations",
-      "subscribersDir": "lib/common/model/subscribers"
-    }
-  }
-]
+  ]
+}

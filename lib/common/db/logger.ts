@@ -1,10 +1,11 @@
 const Logger = require("le_node");
 import { Logger as TypeORMLogger, QueryRunner } from "typeorm";
+import { getConfig } from "../../config";
 
 
 export default class DatabaseLogger implements TypeORMLogger {
 
-  private _logger = new Logger({token: process.env.LOGENTRIES_API_KEY});
+  private _logger = new Logger({token: getConfig().logEntriesLoggerAPIKey});
 
   logQuery(query: string, parameters?: any[] | undefined, queryRunner?: QueryRunner | undefined) {
     this._logger.log("debug", {

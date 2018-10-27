@@ -4,12 +4,11 @@ import {
   Path, GET, POST,
   HttpError, Errors, PathParam, Return, QueryParam, ContextRequest 
 } from "typescript-rest";
-import { MemberRepository } from "../../common/repositories";
+import { MemberRepository, AuthPrivilege } from "../../common/repositories";
 import {
   MemberRegistrationDTO,MemberInfoDTO
 } from "../../common/model/dto/member";
 import { Controller, Authenticated } from "../../common/controller";
-import { AccessPrivilege } from "../../common/model";
 import { HTTPUtils } from "../../common/utils/http-utils";
 import { JSONSerialization } from "../../common/utils/json-serialization";
 import { Member } from "../../common/model/entity/users/member";
@@ -24,7 +23,7 @@ export class MemberController extends Controller {
   private _memberRepository: MemberRepository = MemberRepository.instance;
   private _personRepository: PersonRepository = PersonRepository.instance;
 
-  @Authenticated(AccessPrivilege.SUPERUSER)
+  @Authenticated(AuthPrivilege.SUPERUSER)
   @Path("/all")
   @GET
   public async getAllMembers(@QueryParam("g") group?: number, @QueryParam("q") query?: string) {
@@ -33,7 +32,7 @@ export class MemberController extends Controller {
     return members.map(member => JSONSerialization.serializeObject(MemberInfoDTO.create(member)));
   }
 
-  @Authenticated(AccessPrivilege.BASIC)
+  @Authenticated(AuthPrivilege.BASIC)
   @GET
   public async getMemberInfos() {
     const member = this.currentMember;
@@ -79,7 +78,7 @@ export class MemberController extends Controller {
 
   }
 
-  @Authenticated(AccessPrivilege.BASIC)
+  @Authenticated(AuthPrivilege.BASIC)
   @Path("/payment-accounts/")
   @GET
   public async getPaymentAccounts() {
@@ -89,7 +88,7 @@ export class MemberController extends Controller {
 
   }
 
-  @Authenticated(AccessPrivilege.BASIC)
+  @Authenticated(AuthPrivilege.BASIC)
   @Path("/payment-accounts/")
   @POST
   public async addPaymentAccount(@ContextRequest request: Request) {
@@ -120,7 +119,7 @@ export class MemberController extends Controller {
 
   }
 
-  @Authenticated(AccessPrivilege.BASIC)
+  @Authenticated(AuthPrivilege.BASIC)
   @Path("/devices/")
   @POST
   public async registerMobileDevice(@ContextRequest request: Request) {
@@ -134,7 +133,7 @@ export class MemberController extends Controller {
 
   }
 
-  @Authenticated(AccessPrivilege.BASIC)
+  @Authenticated(AuthPrivilege.BASIC)
   @Path("/devices/")
   @GET
   public async getMobileDevices() {
