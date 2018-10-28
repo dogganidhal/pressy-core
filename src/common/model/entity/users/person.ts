@@ -43,7 +43,7 @@ export class Person {
     const person = new Person;
 
     person.firstName = memberDTO.firstName;
-    person.lastName = memberDTO.firstName;
+    person.lastName = memberDTO.lastName;
     person.passwordHash = bcrypt.hashSync(memberDTO.password, 10);
     person.phone = memberDTO.phone;
     person.email = memberDTO.email;

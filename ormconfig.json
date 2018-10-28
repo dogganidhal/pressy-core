@@ -9,6 +9,6 @@
   "logger": "file",
   "synchronize": false,
   "entities": [
-      "lib/common/model/entity/**/*"
+      "src/common/model/entity/**/*"
   ]
 }

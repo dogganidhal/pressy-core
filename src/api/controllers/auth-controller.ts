@@ -20,9 +20,9 @@ import { PersonRepository } from "../../common/repositories/person-repository";
 @Path('/api/v1/auth/')
 export class AuthController extends Controller {
 
-  private _memberRepository: MemberRepository = MemberRepository.instance;
-  private _personRepository: PersonRepository = PersonRepository.instance;
-  private _authRepository: AuthRepository = AuthRepository.instance;
+  private _memberRepository: MemberRepository = new MemberRepository;
+  private _personRepository: PersonRepository = new PersonRepository;
+  private _authRepository: AuthRepository = new AuthRepository;
 
   @Path("/login/")
   @POST
@@ -31,7 +31,6 @@ export class AuthController extends Controller {
     try {
 
       const loginRequest = HTTPUtils.parseBodyOfContoller(this, LoginRequestDTO);
-      var passwordHash: string;
 
       try {
         

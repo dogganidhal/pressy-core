@@ -45,6 +45,7 @@ export class AuthRepository {
 
   public async decodeToken(token: string, minimumPrivilege: AuthPrivilege): Promise<Member> {
 
+    const memberRepository = new MemberRepository;
     var payload: IAuthPayload;
 
     try {
@@ -62,7 +63,7 @@ export class AuthRepository {
     if (payload.privilege < minimumPrivilege) 
       throw new Exception.UnauthorizedRequest;
 
-    const member = await MemberRepository.instance.getMemberById(payload.id);
+    const member = await memberRepository.getMemberById(payload.id);
 
     if (!member)
       throw new Exception.AccessTokenNotFound;

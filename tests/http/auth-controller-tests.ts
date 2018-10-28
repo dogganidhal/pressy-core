@@ -1,19 +1,33 @@
-import { HttpError } from 'typescript-rest';
-import { LoginResponseDTO } from '../../lib/common/model/dto/member';
-import API from "../../lib/api";
+import { MemberRegistrationDTO } from './../../src/common/model/dto/member';
+import { LoginResponseDTO } from '../../src/common/model/dto/member';
+import API from "../../src/api";
 import request from "supertest";
-import { JSONSerialization } from '../../lib/common/utils/json-serialization';
+import { JSONSerialization } from '../../src/common/utils/json-serialization';
+import { MemberRepository } from '../../src/common/repositories';
 
 describe("Testing Authentication Endpoints", () => {
 
+  const memberRepository = new MemberRepository;
   const api: API = new API;
+
+  beforeAll(async (done) => {
+    const memberDTO: MemberRegistrationDTO = {
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@gmail.com",
+      password: "test",
+      phone: "0192837465",
+    }
+    await memberRepository.createMember(memberDTO);
+    done();
+  }, 60000);
 
   it("Returns access credentials when correct user and password were introduced", async (done) => {
 
     request(api.getApp())
     .post("/api/v1/auth/login")
     .set("Content-Type", "application/json")
-    .send({email: "dogga.nidhal@gmail.com", password: "test"})
+    .send({email: "john.doe@gmail.com", password: "test"})
     .expect(200, (error, response) => {
 
       expect(error).toBeNull();
@@ -29,27 +43,10 @@ describe("Testing Authentication Endpoints", () => {
 
     });
 
-  });
+  }, 60000);
 
-  it("Returns an error when a non-existing email was introduced", async (done) => {
-
-    request(api.getApp())
-    .post("/api/v1/auth/login")
-    .send({email: "not.found@email.com", password: ""})
-    .expect(404, (_, response) => {
-
-      expect(response.body).not.toBeNull();
-      expect(response.status).toEqual(404);
-      
-      const error = response.body as HttpError;
-
-      expect(error.statusCode).toEqual(404);
-      expect(error.message).not.toBeNull();
-      
-      done();
-
-    });
-
-  });
+  afterAll(async (done) => {
+    await memberRepository.deleteMemberByEmail("john.doe@gmail.com")
+  }, 60000);
 
 });

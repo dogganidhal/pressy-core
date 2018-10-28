@@ -1,5 +1,5 @@
-import { SlotRepository } from "../../lib/common/repositories/slot-repository";
-import { SlotType } from "../../lib/common/model/entity/order/slot";
+import { SlotRepository } from "../../src/common/repositories/slot-repository";
+import { SlotType } from "../../src/common/model/entity/order/slot";
 
 
 describe("Slot repository operation related tests", () => {

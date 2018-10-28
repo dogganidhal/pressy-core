@@ -5,7 +5,7 @@ import { Controller, Authenticated } from "../../common/controller";
 @Path("/api/v1/driver/")
 export class DriverController extends Controller {
 
-  private _memberRepository = MemberRepository.instance;
+  private _memberRepository = new MemberRepository;
 
   @Authenticated(AuthPrivilege.SUPERUSER)
   @POST

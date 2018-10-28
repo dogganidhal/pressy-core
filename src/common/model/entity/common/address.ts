@@ -34,8 +34,10 @@ export class Address {
 
   public static async create(createAddressDTO: CreateAddressDTO): Promise<Address> {
 
+    const locationRepository = new LocationRepository;
+    const geocodingService = new GeocodingService;
     const address = new Address;
-    const addressDTO = await GeocodingService.instance.getNormalizedAddress(createAddressDTO);
+    const addressDTO = await geocodingService.getNormalizedAddress(createAddressDTO);
 
     address.city = addressDTO.city;
     address.country = addressDTO.country;
@@ -49,7 +51,7 @@ export class Address {
     address.location.latitude = addressDTO.location!.latitude;
     address.location.longitude = addressDTO.location!.longitude;
 
-    await LocationRepository.instance.saveNewLocation(address.location);
+    await locationRepository.saveNewLocation(address.location);
 
     return address;
 

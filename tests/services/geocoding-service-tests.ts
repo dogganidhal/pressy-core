@@ -1,8 +1,8 @@
-import { GeocodingService } from "../../lib/common/services/geocoding-service";
+import { GeocodingService } from "../../src/common/services/geocoding-service";
 
 describe("Geocoding service test suit", async () => {
 
-  const service = GeocodingService.instance;
+  const service = new GeocodingService;
 
   it("Fetches Zenpark address components from it's placeId", async (done) => {
 

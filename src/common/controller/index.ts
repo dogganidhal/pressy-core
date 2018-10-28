@@ -29,6 +29,7 @@ export abstract class Controller {
 export function Authenticated<TController extends Controller>(minimumPrivilege: AuthPrivilege = AuthPrivilege.BASIC): (target: TController, property: string, propertyDescriptor: PropertyDescriptor) => void {
 
   return function<TController extends Controller>(_: TController, __: string, propertyDescriptor: PropertyDescriptor) {
+    const authRepository = new AuthRepository;
     var originalMethod: Function = propertyDescriptor.value;
     propertyDescriptor.value = async function(...args: any[]) {
       var context: TController = this as TController;
@@ -48,7 +49,7 @@ export function Authenticated<TController extends Controller>(minimumPrivilege: 
       }
 
       try {
-        context.currentMember = await AuthRepository.instance.decodeToken(token, minimumPrivilege);
+        context.currentMember = await authRepository.decodeToken(token, minimumPrivilege);
       } catch (error) {
         context.throw(error);
         return;

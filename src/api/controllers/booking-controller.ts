@@ -17,8 +17,8 @@ import { SlotDTO } from "../../common/model/dto/slot";
 @Path('/api/v1/booking/')
 export class BookingController extends Controller {
 
-  private _bookingRepository: BookingRepository = BookingRepository.instance;
-  private _slotsRepository: SlotRepository = SlotRepository.instance;
+  private _bookingRepository: BookingRepository = new BookingRepository;
+  private _slotsRepository: SlotRepository = new SlotRepository;
 
   @Authenticated()
   @POST

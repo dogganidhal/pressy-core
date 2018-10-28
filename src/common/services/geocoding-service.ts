@@ -1,7 +1,7 @@
+import { LocationRepository } from './../repositories/location-repository';
 import { AddressDTO, CreateAddressDTO } from './../model/dto/address';
 import { Address } from './../model/entity/common/address';
 import { Location } from '../model/entity/common/location';
-import { LocationRepository } from '../repositories/location-repository';
 import { RestClient } from "typed-rest-client";
 import { getConfig } from '../../config';
 
@@ -130,6 +130,8 @@ ${coordinates.latitude},${coordinates.longitude}&key=${getConfig().googleMapsAPI
   }
 
   private async addressFromResponse(addressResponse: IGeocodeAddressResult): Promise<Address> {
+    
+    const locationRepository = new LocationRepository;
     var completeAddress = new Address;
 
     completeAddress.city = addressResponse.address_components.locality!;
@@ -145,10 +147,10 @@ ${coordinates.latitude},${coordinates.longitude}&key=${getConfig().googleMapsAPI
     location.longitude = parseFloat(addressResponse.geometry.location.lng);
     location.placeId = addressResponse.place_id;
 
-    location = await LocationRepository.instance.saveNewLocation(location);
+    location = await locationRepository.saveNewLocation(location);
 
     completeAddress.location = location;
-    await LocationRepository.instance.saveNewAddress(completeAddress);
+    await locationRepository.saveNewAddress(completeAddress);
 
     return completeAddress;
   }

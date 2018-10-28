@@ -20,8 +20,8 @@ import { PersonRepository } from '../../common/repositories/person-repository';
 @Path('/api/v1/member/')
 export class MemberController extends Controller {
 
-  private _memberRepository: MemberRepository = MemberRepository.instance;
-  private _personRepository: PersonRepository = PersonRepository.instance;
+  private _memberRepository: MemberRepository = new MemberRepository;
+  private _personRepository: PersonRepository = new PersonRepository;
 
   @Authenticated(AuthPrivilege.SUPERUSER)
   @Path("/all")

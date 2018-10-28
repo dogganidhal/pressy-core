@@ -13,7 +13,8 @@ export class OrderController extends Controller {
   @POST
   public async createOrder(@ContextRequest request: Request) {
 
-    const address = await GeocodingService.instance.getAddressWithCoordinates({
+    const geocodingService = new GeocodingService;
+    const address = await geocodingService.getAddressWithCoordinates({
       latitude: 48.8144503, longitude: 2.2314194
     });
     

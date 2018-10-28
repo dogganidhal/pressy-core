@@ -1,14 +1,15 @@
 import { MobileDevice } from './../model/entity/users/device';
 import { PaymentAccount } from './../model/entity/users/payment-account';
 import { CreditCardDTO, MobileDeviceDTO } from '../model/dto/member';
-import { Repository, createConnection } from "typeorm";
+import { Repository, createConnection, Equal } from "typeorm";
 import { MemberRegistrationDTO } from "../model/dto/member";
 import { Exception } from "../errors";
 import { Member } from '../model/entity/users/member';
 import { Person } from '../model/entity/users/person';
+import { ARepository } from '.';
 
 
-export class MemberRepository {
+export class MemberRepository extends ARepository {
 
   public static instance: MemberRepository = new MemberRepository();
 
@@ -18,6 +19,7 @@ export class MemberRepository {
   private _personRepositoryPromise: Promise<Repository<Person>>;
 
   constructor() {
+    super();
     this._memberRepositoryPromise = new Promise((resolve, reject) => {
       createConnection()
         .then(connection => resolve(connection.getRepository(Member)))
@@ -40,10 +42,17 @@ export class MemberRepository {
     });
   }
 
+  public close(): void {
+    this._personRepositoryPromise.then(repo => repo.manager.connection.close());
+    this._memberRepositoryPromise.then(repo => repo.manager.connection.close());
+    this._mobileDeviceRepositoryPromise.then(repo => repo.manager.connection.close());
+    this._paymentAccountRepositoryPromise.then(repo => repo.manager.connection.close());
+  }
+
   public async saveMember(member: Member): Promise<Member> {
     const memberRepository = await this._memberRepositoryPromise;
     const personRepository = await this._personRepositoryPromise;
-    personRepository.save(member.person);
+    await personRepository.save(member.person);
     return memberRepository.save(member);
   }
 
@@ -57,16 +66,22 @@ export class MemberRepository {
 
   public async getMemberByEmail(email: string): Promise<Member | undefined> {
     const memberRepository = await this._memberRepositoryPromise;
-    return memberRepository.findOneOrFail({person: {email: email}}, {relations: ["person"]});
+    const personRepository = await this._personRepositoryPromise;
+    const person = await personRepository.findOne({email: email});
+    if (!person)
+      return undefined;
+    const member = await memberRepository.findOne({person: {id: person.id}}, {relations: ["person"]});
+    return member;
   }
 
   public async getMemberByPhone(phone: string): Promise<Member | undefined> {
     const memberRepository = await this._memberRepositoryPromise;
-    return memberRepository.findOneOrFail({person: {phone: phone}}, {relations: ["person"]});
+    return memberRepository.findOne({person: {phone: phone}}, {relations: ["person"]});
   }
 
   public async createMember(memberDTO: MemberRegistrationDTO): Promise<Member> {
 
+    const personRepository = await this._personRepositoryPromise;
     const memberRepository = await this._memberRepositoryPromise;
 
     const memberWithSameEmail = await this.getMemberByEmail(memberDTO.email);
@@ -79,8 +94,23 @@ export class MemberRepository {
 
     const newMember = Member.create(memberDTO);
 
+    await personRepository.save(newMember.person);
+
     return memberRepository.save(newMember);
 
+  }
+  
+  public async deleteMemberByEmail(email: string): Promise<void> {
+    const memberRepository = await this._memberRepositoryPromise;
+    const personRepository = await this._personRepositoryPromise;
+
+    const person = await personRepository.findOne({email: email});
+
+    if (!person)
+      return;
+      
+    await memberRepository.delete({person: {id: person.id}});
+    await personRepository.delete({id: person.id});
   }
 
   public async getPaymentAccounts(member: Member): Promise<PaymentAccount[]> {
