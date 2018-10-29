@@ -2,7 +2,7 @@ import { ContextRequest, ContextResponse, HttpError } from "typescript-rest";
 import { Request, Response } from "express";
 import { Member } from "../model/entity/users/member";
 import { Exception } from "../errors";
-import { AuthRepository, AuthPrivilege } from "../repositories";
+import { AuthRepository, AuthPrivilege } from "../repositories/auth-repository";
 
 export abstract class Controller {
 

@@ -1,6 +1,6 @@
+import { ARepository } from '.';
 import { PersonPasswordResetCode } from './../model/entity/users/reset-code';
 import { MobileDevice } from './../model/entity/users/device';
-import { PaymentAccount } from './../model/entity/users/payment-account';
 import { Repository, createConnection } from "typeorm";
 import bcrypt from "bcrypt";
 import { MemberRegistrationDTO, PersonPasswordResetRequestDTO, MemberInfoDTO } from "../model/dto/member";
@@ -10,63 +10,31 @@ import { Member, PersonActivationCode } from '../model/entity/users/member';
 import { Person } from '../model/entity/users/person';
 
 
-export class PersonRepository {
+export class PersonRepository extends ARepository {
 
-  public static instance: PersonRepository = new PersonRepository();
-
-  private _memberRepositoryPromise: Promise<Repository<Member>>;
-  private _resetCodeRepositoryPromise: Promise<Repository<PersonPasswordResetCode>>;
-  private _activationCodeRepositoryPromise: Promise<Repository<PersonActivationCode>>;
-  private _paymentAccountRepositoryPromise: Promise<Repository<PaymentAccount>>;
-  private _mobileDeviceRepositoryPromise: Promise<Repository<MobileDevice>>;
-  private _personRepositoryPromise: Promise<Repository<Person>>;
-
-  constructor() {
-    this._memberRepositoryPromise = new Promise((resolve, reject) => {
-      createConnection()
-        .then(connection => resolve(connection.getRepository(Member)))
-        .catch(error => reject(error));
-    });
-    this._resetCodeRepositoryPromise = new Promise((resolve, reject) => {
-      createConnection()
-      .then(connection => resolve(connection.getRepository(PersonPasswordResetCode)))
-      .catch(error => reject(error));
-    });
-    this._activationCodeRepositoryPromise = new Promise((resolve, reject) => {
-      createConnection()
-      .then(connection => resolve(connection.getRepository(PersonActivationCode)))
-      .catch(error => reject(error));
-    });
-    this._personRepositoryPromise = new Promise((resolve, reject) => {
-      createConnection()
-      .then(connection => resolve(connection.getRepository(Person)))
-      .catch(error => reject(error));
-    });
-  }
+  private _resetCodeRepository: Repository<PersonPasswordResetCode> = this.connection.getRepository(PersonPasswordResetCode);
+  private _activationCodeRepository: Repository<PersonActivationCode> = this.connection.getRepository(PersonActivationCode);
+  private _personRepository: Repository<Person>  = this.connection.getRepository(Person);
 
   public async savePerson(person: Person): Promise<Person> {
-    const personRepository = await this._personRepositoryPromise;
-    return personRepository.save(person);
+    return this._personRepository.save(person);
   }
 
   public async getPersonById(id: number): Promise<Person | undefined> {
-    return (await this._personRepositoryPromise).findOne(id);
+    return this._personRepository.findOne(id);
   }
 
   public async getPersonByEmail(email: string): Promise<Person | undefined> {
-    const personRepository = await this._personRepositoryPromise;
-    return personRepository.findOneOrFail({email: email});
+    return this._personRepository.findOneOrFail({email: email});
   }
 
   public async getPersonByPhone(phone: string): Promise<Person | undefined> {
-    const personRepository = await this._personRepositoryPromise;
-    return personRepository.findOneOrFail({phone: phone});
+    return this._personRepository.findOneOrFail({phone: phone});
   }
   
   public async getActivationCodePerson(code: string): Promise<Person> {
     
-    const activationCodeRepository = await this._activationCodeRepositoryPromise;
-    const activationCode = await activationCodeRepository.findOne(code, {relations: []});
+    const activationCode = await this._activationCodeRepository.findOne(code, {relations: []});
 
     if (!activationCode)
       throw new Exception.ActivationCodeNotFound(code);
@@ -77,9 +45,7 @@ export class PersonRepository {
 
   public async resetPassword(code: string, resetPasswordRequest: PersonPasswordResetRequestDTO): Promise<Person> {
 
-    const resetCodeRepository = await this._resetCodeRepositoryPromise;
-    const personRepository = await this._personRepositoryPromise;
-    const passwordResetRequestCode = await resetCodeRepository.findOne(code, {relations: ["person"]});
+    const passwordResetRequestCode = await this._resetCodeRepository.findOne(code, {relations: ["person"]});
 
     if (!passwordResetRequestCode)
       throw new Exception.PasswordResetCodeNotFound(code);
@@ -93,38 +59,36 @@ export class PersonRepository {
 
     person.passwordHash = bcrypt.hashSync(resetPasswordRequest.newPassword, 10);
 
-    await resetCodeRepository.delete(passwordResetRequestCode);
-    await personRepository.save(person);
+    await this._resetCodeRepository.delete(passwordResetRequestCode);
+    await this._personRepository.save(person);
 
     return person;
   }
 
   public async createPasswordResetCode(person: Person): Promise<PersonPasswordResetCode> {
     const code = PersonPasswordResetCode.create(person);
-    return (await this._resetCodeRepositoryPromise).save(code);
+    return this._resetCodeRepository.save(code);
   }
 
   public async deletePasswordResetCode(passwordResetCode: PersonPasswordResetCode): Promise<void> {
-    (await this._resetCodeRepositoryPromise).delete(passwordResetCode);
+    this._resetCodeRepository.delete(passwordResetCode);
   }
 
   public async createActivationCode(person: Person): Promise<PersonActivationCode> {
 
     const activationCode = PersonActivationCode.create(person);
-    return (await this._activationCodeRepositoryPromise).save(activationCode);
+    return this._activationCodeRepository.save(activationCode);
 
   }
 
   public async deleteActivationCode(code: string): Promise<void> {
 
-    const activationCodeRepository = await this._activationCodeRepositoryPromise;
-    const resetCodeRepository = await this._resetCodeRepositoryPromise;
-    const activationCode = await activationCodeRepository.findOne(code);
+    const activationCode = await this._activationCodeRepository.findOne(code);
 
     if (!activationCode)
       throw new Exception.ActivationCodeNotFound(code);
 
-    resetCodeRepository.createQueryBuilder()
+      this._resetCodeRepository.createQueryBuilder()
       .delete()
       .from(PersonActivationCode)
       .where("code = :code", {code: code})

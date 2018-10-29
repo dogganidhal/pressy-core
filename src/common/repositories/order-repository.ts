@@ -1,25 +1,10 @@
 import { Repository, createConnection } from "typeorm";
 import { Order } from '../model/entity/order';
+import { ARepository } from ".";
 
 
-export class OrderRepository  {
+export class OrderRepository extends ARepository {
 
-  public static instance: OrderRepository = new OrderRepository();
-
-  private _orderRepositoryPromise: Promise<Repository<Order>>;
-
-  constructor() {
-    this._orderRepositoryPromise = new Promise((resolve, reject) => {
-      createConnection()
-      .then(connection => {
-        resolve(connection.getRepository(Order));
-      })
-      .catch(error => {
-        reject(error);
-      });
-    });
-  }
-
-  
+  private _orderRepositoryPromise: Repository<Order> = this.connection.getRepository(Order);
 
 }

@@ -1,37 +1,22 @@
 import { Booking } from './../model/entity/booking/index';
-import { Repository, createConnection } from "typeorm";
+import { Repository } from "typeorm";
 import { Member } from '../model/entity/users/member';
+import { ARepository } from '.';
 
 
-export class BookingRepository  {
+export class BookingRepository extends ARepository {
 
-  public static instance: BookingRepository = new BookingRepository();
-
-  private _bookingRepositoryPromise: Promise<Repository<Booking>>;
-
-  constructor() {
-    this._bookingRepositoryPromise = new Promise((resolve, reject) => {
-      createConnection()
-      .then(connection => {
-        resolve(connection.getRepository(Booking));
-      })
-      .catch(error => {
-        reject(error);
-      });
-    });
-  }
+  private _bookingRepository: Repository<Booking> = this.connection.getRepository(Booking);
 
   public async saveBooking(booking: Booking): Promise<void> {
 
-    const repository = await this._bookingRepositoryPromise;
-    await repository.save(booking);
+    await this._bookingRepository.save(booking);
 
   }
 
   public async getBookingsForMember(member: Member): Promise<Booking[]> {
 
-    const repository = await this._bookingRepositoryPromise;
-    const bookings = await repository.find({
+    const bookings = await this._bookingRepository.find({
       where: {member: member},
       relations: [
         "pickupAddress", "deliveryAddress", 

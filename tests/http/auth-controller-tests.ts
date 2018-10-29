@@ -3,7 +3,7 @@ import { LoginResponseDTO } from '../../src/common/model/dto/member';
 import API from "../../src/api";
 import request from "supertest";
 import { JSONSerialization } from '../../src/common/utils/json-serialization';
-import { MemberRepository } from '../../src/common/repositories';
+import { MemberRepository } from '../../src/common/repositories/member-repository';
 
 describe("Testing Authentication Endpoints", () => {
 

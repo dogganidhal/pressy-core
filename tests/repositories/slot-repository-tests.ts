@@ -1,10 +1,19 @@
+import { createConnection } from 'typeorm';
+import { Connection } from 'typeorm';
 import { SlotRepository } from "../../src/common/repositories/slot-repository";
 import { SlotType } from "../../src/common/model/entity/order/slot";
 
 
 describe("Slot repository operation related tests", () => {
 
-  const slotRepository = new SlotRepository;
+  var slotRepository: SlotRepository;
+  var connection: Connection;
+
+  beforeAll(async done => {
+    connection = await createConnection();
+    slotRepository = new SlotRepository(connection);
+    done();
+  });
 
   it("Retrieves single-type slots from database", async (done) => {
 
@@ -12,6 +21,11 @@ describe("Slot repository operation related tests", () => {
     console.log(slots);
     done();
 
+  });
+
+  afterAll(async done => {
+    await connection.close();
+    done();
   });
   
 });

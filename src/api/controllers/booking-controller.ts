@@ -12,13 +12,14 @@ import { Member } from "../../common/model/entity/users/member";
 import { Booking } from "../../common/model/entity/booking";
 import { SlotType } from "../../common/model/entity/order/slot";
 import { SlotDTO } from "../../common/model/dto/slot";
+import { getConnection } from "typeorm";
 
 
 @Path('/api/v1/booking/')
 export class BookingController extends Controller {
 
-  private _bookingRepository: BookingRepository = new BookingRepository;
-  private _slotsRepository: SlotRepository = new SlotRepository;
+  private _bookingRepository: BookingRepository = new BookingRepository(getConnection());
+  private _slotsRepository: SlotRepository = new SlotRepository(getConnection());
 
   @Authenticated()
   @POST

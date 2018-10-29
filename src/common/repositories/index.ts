@@ -1,5 +1,7 @@
+import { Connection } from "typeorm";
+
 export abstract class ARepository {
 
-  public abstract close(): void;
+  constructor (protected connection: Connection) {}
 
 }

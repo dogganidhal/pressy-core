@@ -6,6 +6,7 @@ import { Exception } from "../errors";
 import { MemberRepository } from "./member-repository";
 import { RefreshCredentialsRequestDTO, LoginResponseDTO } from "../model/dto/member";
 import { getConfig } from "../../config";
+import { ARepository } from '.';
 
 export enum AuthPrivilege {
   BASIC, SUPERUSER
@@ -16,9 +17,7 @@ interface IAuthPayload {
   privilege: number
 }
 
-export class AuthRepository {
-
-  public static instance: AuthRepository = new AuthRepository();
+export class AuthRepository extends ARepository {
 
   private _publicKey: string = getConfig().authenticationPublicKey;
   private _privateKey: string = getConfig().authenticationPrivateKey;
@@ -45,7 +44,7 @@ export class AuthRepository {
 
   public async decodeToken(token: string, minimumPrivilege: AuthPrivilege): Promise<Member> {
 
-    const memberRepository = new MemberRepository;
+    const memberRepository = new MemberRepository(this.connection);
     var payload: IAuthPayload;
 
     try {

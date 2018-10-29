@@ -1,13 +1,13 @@
 import express, { Application } from "express";
 import { Server } from "typescript-rest";
 import * as bodyParser from "body-parser";
-import { 
-  MemberController, AuthController, DriverController
-} from "../api/controllers";
 import { DocumentationController } from "./controllers/doc-controller";
 import { OrderController } from "./controllers/order-controller";
 import { BookingController } from "./controllers/booking-controller";
 import { DB } from "../common/db";
+import { DriverController } from "./controllers/driver-controller";
+import { MemberController } from "./controllers/member-controller";
+import { AuthController } from "./controllers/auth-controller";
 
 export default class API {
 

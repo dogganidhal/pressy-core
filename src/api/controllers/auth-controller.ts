@@ -1,8 +1,8 @@
+import { getConnection } from 'typeorm';
 import {
   Path, POST,
   HttpError, Errors, Return, PathParam 
 } from "typescript-rest";
-import { MemberRepository, AuthRepository } from "../../common/repositories";
 import {
   LoginRequestDTO,
   RefreshCredentialsRequestDTO,
@@ -16,13 +16,15 @@ import { HTTPUtils } from "../../common/utils/http-utils";
 import { JSONSerialization } from "../../common/utils/json-serialization";
 import bcrypt from "bcrypt";
 import { PersonRepository } from "../../common/repositories/person-repository";
+import { MemberRepository } from "../../common/repositories/member-repository";
+import { AuthRepository } from "../../common/repositories/auth-repository";
 
 @Path('/api/v1/auth/')
 export class AuthController extends Controller {
 
-  private _memberRepository: MemberRepository = new MemberRepository;
-  private _personRepository: PersonRepository = new PersonRepository;
-  private _authRepository: AuthRepository = new AuthRepository;
+  private _memberRepository: MemberRepository = new MemberRepository(getConnection());
+  private _personRepository: PersonRepository = new PersonRepository(getConnection());
+  private _authRepository: AuthRepository = new AuthRepository(getConnection());
 
   @Path("/login/")
   @POST
