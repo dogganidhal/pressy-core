@@ -9,17 +9,17 @@ import { DriverController } from "./controllers/driver-controller";
 import { MemberController } from "./controllers/member-controller";
 import { AuthController } from "./controllers/auth-controller";
 
-export default class API {
+export class API {
 
-  private readonly _express: Application;
+	private readonly _express: Application;
 
-  constructor() {
+	constructor() {
     this._express = express();
     this._middleware();
     this._config();
   }
-  
-  private async _config() {
+
+	private async _config() {
     DB.configureConnectionOptions();
     this.registerController(DocumentationController);
     this.registerController(DriverController);
@@ -29,20 +29,20 @@ export default class API {
     this.registerController(BookingController);
   }
 
-  private _middleware() {
+	private _middleware() {
     this._express.use(bodyParser.text({type: 'application/json'}));
     this._express.use(bodyParser.text());
   }
- 
-  public registerController(controller: any) {
+
+	public registerController(controller: any) {
     Server.buildServices(this._express, controller);
   }
 
-  public async run(port: number | string) {
+	public async run(port: number | string) {
     this._express.listen(port);
   }
 
-  public getApp(): Application { 
+	public getApp(): Application {
     return this._express;
   }
 

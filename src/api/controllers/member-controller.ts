@@ -34,7 +34,7 @@ export class MemberController extends Controller {
 
   @Authenticated(AuthPrivilege.BASIC)
   @GET
-  public async getMemberInfos() {
+  public async getMemberInfo() {
     const member = this.currentMember;
     return JSONSerialization.serializeObject(MemberInfoDTO.create(member!));
   }
@@ -43,7 +43,13 @@ export class MemberController extends Controller {
   public async createMember(@ContextRequest request: Request) {
 
 	  const newMember: MemberRegistrationDTO = HTTPUtils.parseBody(request.body, MemberRegistrationDTO);
-	  const member = await this._memberRepository.createMember(newMember);
+	  let member: Member;
+	  try {
+		  member = await this._memberRepository.createMember(newMember);
+	  } catch (error) {
+	    this.throw(error);
+	    return;
+    }
 	  const personActivationCode = await this._personRepository.createActivationCode(member.person);
 	  // TODO: Send the activation URL by email !!
 	  return JSONSerialization.serializeObject(newMember);

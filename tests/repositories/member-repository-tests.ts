@@ -1,5 +1,5 @@
 import { Connection } from 'typeorm';
-import { MemberRepository } from './../../src/common/repositories/member-repository';
+import { MemberRepository } from '../../src/common/repositories/member-repository';
 import { MemberRegistrationDTO } from "../../src/common/model/dto/member";
 import Randomstring from "randomstring";
 import { createConnection } from 'typeorm';
@@ -7,8 +7,8 @@ import { createConnection } from 'typeorm';
 
 describe("MemberRepository operations test suite", () => {
 
-  var connection: Connection;
-  var memberRepository: MemberRepository;
+  let connection: Connection;
+  let memberRepository: MemberRepository;
   const memberDTO: MemberRegistrationDTO = {
     firstName: Randomstring.generate(10),
     lastName: Randomstring.generate(10),
@@ -74,7 +74,7 @@ describe("MemberRepository operations test suite", () => {
 
   afterAll(async (done) => {
     await memberRepository.deleteMemberByEmail(memberDTO.email);
-    connection.close();
+    await connection.close();
     done();
   });
   

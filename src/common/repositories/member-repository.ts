@@ -46,7 +46,7 @@ export class MemberRepository extends ARepository {
     if (!person)
       return undefined;
 
-    return this._memberRepository.findOne({person: {id: person.id}}, {relations: ["person"]});
+    return await this._memberRepository.findOne({person: {id: person.id}}, {relations: ["person"]});
 
   }
 
@@ -63,7 +63,6 @@ export class MemberRepository extends ARepository {
     const newMember = Member.create(memberDTO);
 
     await this._personRepository.save(newMember.person);
-
     return this._memberRepository.save(newMember);
 
   }

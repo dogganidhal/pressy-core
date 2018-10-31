@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import API from "./api";
+import { API } from "./api";
 import { parse } from "pg-connection-string";
 
 
