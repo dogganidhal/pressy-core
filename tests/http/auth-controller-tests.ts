@@ -1,23 +1,28 @@
-import { MemberRegistrationDTO } from './../../src/common/model/dto/member';
+import { createConnection } from 'typeorm';
+import { MemberRepository } from '../../src/common/repositories/member-repository';
+import { Connection } from 'typeorm';
+import { MemberRegistrationDTO } from '../../src/common/model/dto/member';
 import { LoginResponseDTO } from '../../src/common/model/dto/member';
 import API from "../../src/api";
 import request from "supertest";
 import { JSONSerialization } from '../../src/common/utils/json-serialization';
-import { MemberRepository } from '../../src/common/repositories/member-repository';
 
 describe("Testing Authentication Endpoints", () => {
 
-  const memberRepository = new MemberRepository;
+  var connection: Connection;
+  var memberRepository: MemberRepository;
   const api: API = new API;
 
   beforeAll(async (done) => {
+    connection = await createConnection();
+    memberRepository = new MemberRepository(connection);
     const memberDTO: MemberRegistrationDTO = {
       firstName: "John",
       lastName: "Doe",
       email: "john.doe@gmail.com",
       password: "test",
       phone: "0192837465",
-    }
+    };
     await memberRepository.createMember(memberDTO);
     done();
   }, 60000);

@@ -19,7 +19,6 @@ describe("MemberRepository operations test suite", () => {
 
   beforeAll(async (done) => {
     connection = await createConnection();
-    console.warn(connection.options);
     memberRepository = new MemberRepository(connection);
     await memberRepository.createMember(memberDTO);
     done();

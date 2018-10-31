@@ -1,7 +1,6 @@
 import { JsonObject, JsonProperty } from "json2typescript";
 import { JSONSerialization } from "../../utils/json-serialization";
 import { Member } from "../entity/users/member";
-import { PaymentAccount } from "../entity/users/payment-account";
 
 @JsonObject
 export class MemberInfoDTO {
@@ -140,28 +139,6 @@ export class RefreshCredentialsRequestDTO {
 
   @JsonProperty("refresh_token", String)
   public refreshToken: string = "";
-
-}
-
-@JsonObject
-export class CreditCardDTO {
-
-  @JsonProperty("creditCardNumber", String)
-  public creditCardNumber: string = "";
-
-  @JsonProperty("creditCardOwnerName", String)
-  public creditCardOwnerName: string = "";
-
-  @JsonProperty("creditCardExpiryDate", JSONSerialization.CreditCardExpiryDateConvert)
-  public creditCardExpiryDate: Date = new Date();
-
-  public static create(paymentAccount: PaymentAccount): CreditCardDTO {
-    const creditCard = new CreditCardDTO();
-    creditCard.creditCardNumber = paymentAccount.creditCardNumber;
-    creditCard.creditCardOwnerName = paymentAccount.creditCardOwnerName;
-    creditCard.creditCardExpiryDate = paymentAccount.creditExpiryDate;
-    return creditCard;
-  }
 
 }
 

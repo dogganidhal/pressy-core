@@ -6,3 +6,4 @@ secrets
 playground.pgsql
 ormlogs.log
 *.env
+.idea/

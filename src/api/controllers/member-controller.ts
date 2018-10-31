@@ -1,5 +1,5 @@
-import { PersonStatus } from './../../common/model/entity/users/person';
-import { CreditCardDTO, MobileDeviceDTO } from '../../common/model/dto/member';
+import { PersonStatus } from '../../common/model/entity/users/person';
+import {  MobileDeviceDTO } from '../../common/model/dto/member';
 import {
   Path, GET, POST,
   HttpError, Errors, PathParam, Return, QueryParam, ContextRequest 
@@ -42,18 +42,11 @@ export class MemberController extends Controller {
   @POST
   public async createMember(@ContextRequest request: Request) {
 
-    try {
-      const newMember: MemberRegistrationDTO = HTTPUtils.parseBody(request.body, MemberRegistrationDTO);
-      const member = await this._memberRepository.createMember(newMember);
-      const _ = this._personRepository.createActivationCode(member.person);
-      // TODO: Send the activation URL by email !!
-      return JSONSerialization.serializeObject(newMember);
-    } catch (error) {
-      if (error instanceof HttpError)
-        this.throw(error);  
-      else
-        this.throw(new Errors.BadRequestError((error as Error).message));
-    }
+	  const newMember: MemberRegistrationDTO = HTTPUtils.parseBody(request.body, MemberRegistrationDTO);
+	  const member = await this._memberRepository.createMember(newMember);
+	  const personActivationCode = await this._personRepository.createActivationCode(member.person);
+	  // TODO: Send the activation URL by email !!
+	  return JSONSerialization.serializeObject(newMember);
 
   }
 
