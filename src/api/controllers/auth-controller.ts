@@ -13,7 +13,7 @@ import {PersonRepository} from "../../common/repositories/person-repository";
 import {MemberRepository} from "../../common/repositories/member-repository";
 import {AuthRepository} from "../../common/repositories/auth-repository";
 import {BaseController} from "./base-controller";
-import {JSONResponse} from "../annotations/json-response";
+import {JSONResponse} from "../annotations";
 
 @Path('/api/v1/auth/')
 export class AuthController extends BaseController {

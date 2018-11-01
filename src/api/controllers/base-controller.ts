@@ -3,7 +3,7 @@ import {Member} from "../../common/model/entity/users/member";
 import {ContextRequest, ContextResponse, HttpError} from "typescript-rest";
 import {Request, Response} from "express";
 import {APIError} from "../model/api-error";
-import {JSONResponse} from "../annotations/json-response";
+import {JSONResponse} from "../annotations";
 
 export abstract class BaseController {
 

@@ -1,6 +1,6 @@
 import { Path, GET } from "typescript-rest";
 import {BaseController} from "./base-controller";
-import {JSONResponse} from "../annotations/json-response";
+import {JSONResponse} from "../annotations";
 
 
 @Path("/api/v1")
