@@ -2,11 +2,12 @@ import {AuthPrivilege, AuthRepository} from "../../common/repositories/auth-repo
 import {Exception} from "../../common/errors";
 import {Controller} from "../../common/controller";
 import {Connection, createConnection, getConnection} from "typeorm";
+import {BaseController} from "../controllers/base-controller";
 
 
-export function Authenticate<TController extends Controller>(minimumPrivilege: AuthPrivilege = AuthPrivilege.BASIC): (target: TController, property: string, propertyDescriptor: PropertyDescriptor) => void {
+export function Authenticate<TController extends BaseController>(minimumPrivilege: AuthPrivilege = AuthPrivilege.BASIC): (target: TController, property: string, propertyDescriptor: PropertyDescriptor) => void {
 
-	return function<TController extends Controller>(_: TController, __: string, propertyDescriptor: PropertyDescriptor) {
+	return function<TController extends BaseController>(_: TController, __: string, propertyDescriptor: PropertyDescriptor) {
 
 		let originalMethod: Function = propertyDescriptor.value;
 		propertyDescriptor.value = async function(...args: any[]) {
@@ -21,26 +22,17 @@ export function Authenticate<TController extends Controller>(minimumPrivilege: A
 
 			let context: TController = this as TController;
 			const authRepository = new AuthRepository(connection);
-			const authorization = context.currentRequest!.headers["authorization"];
+			const authorization = context.getPendingRequest().headers["authorization"];
 
-			if (!authorization) {
-				context.throw(new Exception.UnauthenticatedRequestException);
-				return;
-			}
+			if (!authorization)
+				throw new Exception.UnauthenticatedRequestException;
 
 			const token = authorization!.split(" ")[1];
 
-			if (!token) {
-				context.throw(new Exception.InvalidAccessTokenException);
-				return;
-			}
+			if (!token)
+				throw new Exception.InvalidAccessTokenException;
 
-			try {
-			  context.currentMember = await authRepository.decodeToken(token, minimumPrivilege);
-			} catch (error) {
-			  context.throw(error);
-			  return;
-			}
+			context.pendingMember = await authRepository.decodeToken(token, minimumPrivilege);
 
 			return originalMethod.call(context, ...args);
 		};

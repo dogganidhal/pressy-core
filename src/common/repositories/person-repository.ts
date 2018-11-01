@@ -65,7 +65,7 @@ export class PersonRepository extends ARepository {
   }
 
   public async createPasswordResetCode(person: Person): Promise<PersonPasswordResetCode> {
-    const code = PersonPasswordResetCode.create(person);
+    let code = PersonPasswordResetCode.create(person);
     await this._resetCodeRepository.insert(code);
     return code;
   }

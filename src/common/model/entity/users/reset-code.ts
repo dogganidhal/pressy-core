@@ -8,7 +8,7 @@ import { Person } from "./person";
 export class PersonPasswordResetCode {
 
   @PrimaryColumn()
-  public id?: string;
+  public id: string;
 
   @ManyToOne(type => Person)
   public person: Person;

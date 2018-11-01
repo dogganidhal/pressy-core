@@ -1,4 +1,4 @@
-import { Person } from './../model/entity/users/person';
+import { Person } from '../model/entity/users/person';
 import "crypto";
 import { Member } from "../model/entity/users/member";
 import { sign, SignOptions, verify, VerifyOptions } from "jsonwebtoken";
@@ -38,14 +38,14 @@ export class AuthRepository extends ARepository {
     const token = sign(payload, this._privateKey, {...signOptions, expiresIn: "1h", subject: "access"});
     const refreshToken = sign(payload, this._privateKey, {...signOptions, subject: "refresh"});
 
-    return LoginResponseDTO.create(token, refreshToken);
+    return new LoginResponseDTO({accessToken: token, refreshToken: refreshToken});
 
   }
 
   public async decodeToken(token: string, minimumPrivilege: AuthPrivilege): Promise<Member> {
 
     const memberRepository = new MemberRepository(this.connection);
-    var payload: IAuthPayload;
+    let payload: IAuthPayload;
 
     try {
 
@@ -92,7 +92,10 @@ export class AuthRepository extends ARepository {
         privilege: payload.privilege
       };
 
-      return LoginResponseDTO.create(sign({...accessToken, expiresIn: "1h"}, this._privateKey, signOptions), request.refreshToken);
+      return new LoginResponseDTO({
+        accessToken: sign({...accessToken, expiresIn: "1h"}, this._privateKey, signOptions),
+        refreshToken: request.refreshToken
+      });
     } catch (error) {
       throw new Exception.InvalidAccessTokenException
     }

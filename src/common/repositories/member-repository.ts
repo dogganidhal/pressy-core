@@ -14,11 +14,6 @@ export class MemberRepository extends ARepository {
   private _personRepository: Repository<Person> = this.connection.getRepository(Person);
   private _personActivationCodeRepository: Repository<PersonActivationCode> = this.connection.getRepository(PersonActivationCode);
 
-  public async saveMember(member: Member): Promise<Member> {
-    await this._personRepository.save(member.person);
-    return this._memberRepository.save(member);
-  }
-
   public async getAllMembers(): Promise<Member[]> {
     return (await this._memberRepository).find();
   }
@@ -51,13 +46,21 @@ export class MemberRepository extends ARepository {
 
   public async createMember(memberDTO: MemberRegistrationDTO): Promise<Member> {
 
-    const memberWithSameEmail = await this.getMemberByEmail(memberDTO.email);
-    if (memberWithSameEmail)
-      throw new Exception.EmailAlreadyExistsException(memberDTO.email);
+    const { email, phone } = memberDTO;
 
-    const memberWithSamePhone = await this.getMemberByPhone(memberDTO.phone);
+    if (!email)
+      throw new Exception.MissingFieldException("email");
+
+    if (!phone)
+	    throw new Exception.MissingFieldException("phone");
+
+    const memberWithSameEmail = await this.getMemberByEmail(email);
+    if (memberWithSameEmail)
+      throw new Exception.EmailAlreadyExistsException(email);
+
+    const memberWithSamePhone = await this.getMemberByPhone(phone);
     if (memberWithSamePhone)
-      throw new Exception.PhoneAlreadyExists(memberDTO.phone);
+      throw new Exception.PhoneAlreadyExists(phone);
 
     const newMember = Member.create(memberDTO);
 

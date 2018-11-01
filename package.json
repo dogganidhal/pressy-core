@@ -9,7 +9,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "dev": "set NODE_ENV=development && ./node_modules/nodemon/bin/nodemon.js",
-    "prod": "set NODE_ENV=production ts-node src/index.ts",
+    "prod": "set NODE_ENV=production && ts-node src/index.ts",
     "sync": "node_modules/typeorm/cli.js schema:sync",
     "debug": "node --inspect-brk=3333 ./node_modules/ts-node/dist/bin.js src/index.ts && ./node_modules/nodemon/bin/nodemon.js",
     "test": "jest --detectOpenHandles",

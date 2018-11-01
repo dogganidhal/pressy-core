@@ -1,4 +1,13 @@
-import { Member } from "../entity/users/member";
+import {Required} from "../../annotations";
+
+interface IMemberInfo {
+	id: number,
+	firstName: string,
+	lastName: string,
+	email: string,
+	phone: string,
+	created: Date
+}
 
 export class MemberInfoDTO {
 
@@ -9,101 +18,91 @@ export class MemberInfoDTO {
   public phone: string;
   public created: Date;
 
-  public static create(member: Member): MemberInfoDTO {
-    const memberDTO = new MemberInfoDTO();
-
-    memberDTO.id = member.id;
-    memberDTO.firstName = member.person.firstName;
-    memberDTO.lastName = member.person.lastName;
-    memberDTO.email = member.person.email;
-    memberDTO.phone = member.person.phone;
-
-    return memberDTO;
+  constructor(memberInfo: IMemberInfo) {
+    this.id = memberInfo.id;
+	  this.firstName = memberInfo.firstName;
+	  this.lastName = memberInfo.lastName;
+	  this.email = memberInfo.email;
+	  this.phone = memberInfo.phone;
+	  this.created = memberInfo.created;
   }
 
+}
+
+interface IMemberRegistration {
+	firstName: string;
+	lastName: string;
+	email: string;
+	password: string;
+	phone: string;
 }
 
 export class MemberRegistrationDTO {
 
-  public firstName: string = "";
-  public lastName: string = "";
-  public email: string = "";
-  public password: string = "";
-  public phone: string = "";
+	@Required
+  public firstName: string;
+	@Required
+  public lastName: string;
+	@Required
+  public email: string;
+	@Required
+  public password: string;
+	@Required
+  public phone: string;
+
+	constructor(memberRegistration: IMemberRegistration) {
+		this.firstName = memberRegistration.firstName;
+		this.lastName = memberRegistration.lastName;
+		this.email = memberRegistration.email;
+		this.phone = memberRegistration.phone;
+		this.password = memberRegistration.password;
+  }
 
 }
 
 export class MemberPasswordResetCodeDTO {
-
-  public code: string = "";
-
-  public static create(code: string): MemberPasswordResetCodeDTO {
-    const resetCodeDTO = new MemberPasswordResetCodeDTO();
-
-    resetCodeDTO.code = code;
-
-    return resetCodeDTO;
-  }
-
+  constructor(public code: string) {}
 }
 
 export class MemberPasswordResetCodeRequestDTO {
-
-  public email: string = "";
-
-  public static create(email: string): MemberPasswordResetCodeRequestDTO {
-    const resetCodeRequest = new MemberPasswordResetCodeRequestDTO();
-    resetCodeRequest.email = email;
-    return resetCodeRequest;
-  }
-
+	constructor(public email: string) {}
 }
 
 export class PersonPasswordResetRequestDTO {
-
-  public oldPassword: string = "";
-  public newPassword: string = "";
-
+  constructor(public oldPassword: string, public newPassword: string) {}
 }
 
 export class LoginRequestDTO {
+  constructor(public password: string, public email: string) {}
+}
 
-  public password: string = "";
-  public email: string = "";
-
+interface ILoginResponse {
+	accessToken: string;
+	refreshToken: string;
+	expiresIn?: number;
+	type?: string;
 }
 
 export class LoginResponseDTO {
 
-  public accessToken: string = "";
-  public refreshToken: string = "";
-  public expiresIn: number = 3600;
-  public type: string = "Bearer";
+  public accessToken: string;
+  public refreshToken: string;
+  public expiresIn: number;
+  public type: string;
 
-  public static create(accessToken: string, refreshToken: string): LoginResponseDTO {
-    const response = new LoginResponseDTO();
-    response.accessToken = accessToken;
-    response.refreshToken = refreshToken;
-    response.type = "Bearer";
-    return response;
+  constructor(loginResponse: ILoginResponse) {
+    this.accessToken = loginResponse.accessToken;
+    this.refreshToken = loginResponse.refreshToken;
+    this.expiresIn = loginResponse.expiresIn || 3600;
+    this.type = loginResponse.type || "Bearer";
   }
 
 }
 
 export class RefreshCredentialsRequestDTO {
-
-  public refreshToken: string = "";
-
+  constructor(public refreshToken: string) {}
 }
 
 export class MobileDeviceDTO {
-
-  public deviceId: string = "";
-
-  public static create(id: string): MobileDeviceDTO {
-    const device = new MobileDeviceDTO();
-    device.deviceId = id;
-    return device;
-  }
-
+  constructor(public deviceId: string) {}
 }

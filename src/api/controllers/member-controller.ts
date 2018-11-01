@@ -26,7 +26,14 @@ export class MemberController extends BaseController {
 
     console.log({group: group, query: query});
     const members: Member[] = await this._memberRepository.getAllMembers();
-    return members.map(member => MemberInfoDTO.create(member));
+    return members.map(member => new MemberInfoDTO({
+      id: member.id,
+      firstName: member.person.firstName,
+      lastName: member.person.lastName,
+      created: member.person.created,
+      email: member.person.email,
+      phone: member.person.phone
+    }));
 
   }
 
@@ -38,7 +45,14 @@ export class MemberController extends BaseController {
     const member = this.pendingMember;
 
     if (member)
-      return MemberInfoDTO.create(member);
+      return new MemberInfoDTO({
+	      id: member.id,
+	      firstName: member.person.firstName,
+	      lastName: member.person.lastName,
+	      created: member.person.created,
+	      email: member.person.email,
+	      phone: member.person.phone
+      });
 
   }
 
@@ -93,7 +107,7 @@ export class MemberController extends BaseController {
     const member = this.pendingMember!;
     
     return (await this._memberRepository.getMobileDevices(member))
-    .map(device => MobileDeviceDTO.create(device.id));
+    .map(device => new MobileDeviceDTO(device.id));
 
   }
 

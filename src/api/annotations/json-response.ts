@@ -1,4 +1,3 @@
-import {InternalServerError} from "typescript-rest/dist/server-errors";
 import {APIError} from "../model/api-error";
 import {BaseController} from "../controllers/base-controller";
 import {Exception} from "../../common/errors";

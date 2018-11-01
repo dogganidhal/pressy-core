@@ -1,4 +1,4 @@
-import { DateUtils } from './../../../utils/date-utils';
+import { DateUtils } from '../../../utils/date-utils';
 import bcrypt from 'bcrypt';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
 import { MemberRegistrationDTO } from "../../dto/member";

@@ -66,7 +66,7 @@ export class AuthController extends BaseController {
 	  const resetCode = await this._personRepository.createPasswordResetCode(person);
 
 	  // TODO: Return an empty "accepted" response, and call the email service
-	  return MemberPasswordResetCodeDTO.create(resetCode.id!);
+	  return new MemberPasswordResetCodeDTO(resetCode.id);
 
   }
 

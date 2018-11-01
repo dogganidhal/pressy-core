@@ -6,6 +6,12 @@ export namespace Exception {
 		constructor(public name: string, public statusCode: number, public message: string) {}
 	}
 
+	export class MissingFieldException extends APIException {
+		constructor(field: string) {
+			super('MissingFieldException', 400, `Missing required field '${field}'`);
+		}
+	}
+
   export class PasswordResetCodeNotFoundException extends APIException {
     constructor(code: string) {
       super('PasswordResetCodeNotFoundException', 404, `Reset code ${code} was not found`);

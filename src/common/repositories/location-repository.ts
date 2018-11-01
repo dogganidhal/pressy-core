@@ -1,5 +1,5 @@
-import { Address } from './../model/entity/common/address';
-import { Repository, createConnection } from "typeorm";
+import { Address } from '../model/entity/common/address';
+import { Repository } from "typeorm";
 import { Location } from '../model/entity/common/location';
 import { ARepository } from '.';
 
