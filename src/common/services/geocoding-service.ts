@@ -1,9 +1,9 @@
-import { LocationRepository } from './../repositories/location-repository';
-import { AddressDTO, CreateAddressDTO } from './../model/dto/address';
-import { Address } from './../model/entity/common/address';
-import { Location } from '../model/entity/common/location';
-import { RestClient } from "typed-rest-client";
-import { getConfig } from '../../config';
+import {LocationRepository} from '../repositories/location-repository';
+import {AddressDTO, CreateAddressDTO} from '../model/dto/address';
+import {Address} from '../model/entity/common/address';
+import {Location} from '../model/entity/common/location';
+import {RestClient} from "typed-rest-client";
+import {getConfig} from '../../config';
 import {Connection} from "typeorm";
 
 export interface ICoordinates {
@@ -56,20 +56,18 @@ export class GeocodingService {
       component.types.map((category: string) => components[category] = component.long_name);
     });
 
-    const address = new AddressDTO;
-
-    address.city = components.locality!;
-    address.country = components.political!;
-    address.zipCode = components.postal_code!;
-    address.streetName = components.route!;
-    address.streetNumber = components.street_number!;
-    address.formattedAddress = placeDetails.formatted_address;
-    address.location = {
-      latitude: placeDetails.geometry.location.lat, 
-      longitude: placeDetails.geometry.location.lng
-    };
-
-    return address;
+	  return new AddressDTO({
+		  city: components.locality,
+		  country: components.political,
+		  zipCode: components.postal_code,
+		  streetName: components.route,
+		  streetNumber: components.street_number,
+		  formattedAddress: placeDetails.formatted_address,
+		  location: {
+			  latitude: placeDetails.geometry.location.lat,
+			  longitude: placeDetails.geometry.location.lng
+		  }
+	  });
 
   }
 
@@ -85,25 +83,23 @@ ${coordinates.latitude},${coordinates.longitude}&key=${getConfig().googleMapsAPI
     
     const placeDetails: IPlaceDetails = result.results[0];
 
-    var components: IGeocodeAddressComponents = {} as IGeocodeAddressComponents;
+    let components: IGeocodeAddressComponents = {} as IGeocodeAddressComponents;
     placeDetails.address_components.map((component: any) => {
       component.types.map((category: string) => components[category] = component.long_name);
     });
 
-    const address = new AddressDTO;
-
-    address.city = components.locality!;
-    address.country = components.political!;
-    address.zipCode = components.postal_code!;
-    address.streetName = components.route!;
-    address.streetNumber = components.street_number!;
-    address.formattedAddress = placeDetails.formatted_address;
-    address.location = {
-      latitude: placeDetails.geometry.location.lat, 
-      longitude: placeDetails.geometry.location.lng
-    };
-
-    return address;
+  return new AddressDTO({
+	    city: components.locality,
+	    country: components.political,
+	    zipCode: components.postal_code,
+	    streetName: components.route,
+	    streetNumber: components.street_number,
+	    formattedAddress: placeDetails.formatted_address,
+	    location: {
+		    latitude: placeDetails.geometry.location.lat,
+		    longitude: placeDetails.geometry.location.lng
+	    }
+    });
 
   }
 

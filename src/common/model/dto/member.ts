@@ -1,6 +1,6 @@
 import {Required} from "../../annotations";
 
-interface IMemberInfo {
+export interface IMemberInfo {
 	id: number,
 	firstName: string,
 	lastName: string,
@@ -29,7 +29,7 @@ export class MemberInfoDTO {
 
 }
 
-interface IMemberRegistration {
+export interface IMemberRegistration {
 	firstName: string;
 	lastName: string;
 	email: string;
@@ -76,7 +76,7 @@ export class LoginRequestDTO {
   constructor(public password: string, public email: string) {}
 }
 
-interface ILoginResponse {
+export interface ILoginResponse {
 	accessToken: string;
 	refreshToken: string;
 	expiresIn?: number;

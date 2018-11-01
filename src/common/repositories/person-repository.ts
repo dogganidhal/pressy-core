@@ -89,7 +89,7 @@ export class PersonRepository extends ARepository {
     if (!activationCode)
       throw new Exception.ActivationCodeNotFoundException(code);
 
-      this._resetCodeRepository.createQueryBuilder()
+      await this._resetCodeRepository.createQueryBuilder()
       .delete()
       .from(PersonActivationCode)
       .where("code = :code", {code: code})

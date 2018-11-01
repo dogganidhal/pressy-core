@@ -1,56 +1,65 @@
-import { Address } from "../entity/common/address";
-import { Location } from "../entity/common/location";
+
+export interface IAddressLocation {
+	longitude: number;
+	latitude: number;
+}
 
 export class AddressLocationDTO {
 
-  public longitude: number = Infinity;
-  public latitude: number = Infinity;
+	public longitude: number;
+	public latitude: number;
 
-  public static create(location: Location): AddressLocationDTO {
-    if (!location.latitude || !location.longitude)
-     return new AddressLocationDTO;
-    const locationDTO = new AddressLocationDTO;
-    locationDTO.latitude = location.latitude;
-    locationDTO.longitude = location.longitude;
-    return locationDTO;
+  constructor(location: IAddressLocation) {
+    this.latitude = location.latitude;
+	  this.longitude = location.longitude;
   }
+}
 
+export interface ICreateAddress {
+  placeId: string,
+  location: IAddressLocation
 }
 
 export class CreateAddressDTO {
 
-  public placeId?: string = undefined;
+  public placeId: string;
+  public location: AddressLocationDTO;
 
-  public location?: AddressLocationDTO = undefined;
+  constructor(address: ICreateAddress) {
+    this.placeId = address.placeId;
+    this.location = new AddressLocationDTO(address.location);
+  }
 
+}
+
+export interface IAddress {
+	streetName: string;
+	streetNumber: string;
+	city: string;
+	country: string;
+	zipCode: string;
+	formattedAddress: string;
+	location?: IAddressLocation;
 }
 
 export class AddressDTO {
 
-  public streetName: string = "";
-  public streetNumber: string = "";
-  public city: string = "";
-  public country: string = "";
-  public zipCode: string = "";
-  public formattedAddress: string = "";
-  public location?: AddressLocationDTO = undefined;
+  public streetName: string;
+  public streetNumber: string;
+  public city: string;
+  public country: string;
+  public zipCode: string;
+  public formattedAddress: string;
+  public location?: IAddressLocation;
 
-  public static create(address: Address): AddressDTO {
-
-    const addressDTO = new AddressDTO;
-
-    addressDTO.city = address.city;
-    addressDTO.country = address.country;
-    addressDTO.formattedAddress = address.formattedAddress;
-    addressDTO.streetName = address.streetName;
-    addressDTO.streetNumber = address.streetNumber;
-    addressDTO.zipCode = address.zipCode;
-    
-    if (address.location.latitude && address.location.longitude)
-      addressDTO.location = AddressLocationDTO.create(address.location);
-
-    return addressDTO;
-
+  constructor(address: IAddress) {
+    this.streetName = address.streetName;
+	  this.streetNumber = address.streetName;
+	  this.city = address.streetName;
+	  this.zipCode = address.streetName;
+	  this.country = address.streetName;
+	  this.formattedAddress = address.streetName;
+	  this.location = address.location && new AddressLocationDTO(address.location);
   }
 
 }

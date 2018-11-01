@@ -1,40 +1,55 @@
-import { CreateAddressDTO, AddressDTO } from "./address";
-import { SlotDTO } from "./slot";
-import { MemberInfoDTO } from "./member";
-import { Booking } from "../entity/booking";
+import {CreateAddressDTO, AddressDTO, ICreateAddress, IAddress} from "./address";
+import {ISlot, SlotDTO} from "./slot";
+import {IMemberInfo, MemberInfoDTO} from "./member";
 
+export interface ICreateBookingRequest {
+	pickupSlotId: number;
+	deliverySlotId: number;
+	pickupAddress: ICreateAddress;
+	deliveryAddress?: ICreateAddress;
+}
 
 export class CreateBookingRequestDTO {
 
-  public pickupSlotId: number = -1;
-  public deliverySlotId: number = -1;
-  public pickupAddress: CreateAddressDTO = new CreateAddressDTO;
-  public deliveryAddress?: CreateAddressDTO = undefined;
+  public pickupSlotId: number;
+  public deliverySlotId: number;
+  public pickupAddress: CreateAddressDTO;
+  public deliveryAddress?: CreateAddressDTO;
 
+  constructor(request: ICreateBookingRequest) {
+    this.pickupSlotId = request.pickupSlotId;
+    this.deliverySlotId = request.deliverySlotId;
+    this.pickupAddress = new CreateAddressDTO(request.pickupAddress);
+    this.deliveryAddress = request.deliveryAddress && new CreateAddressDTO(request.deliveryAddress);
+  }
+
+}
+
+export interface IBooking {
+	id: number;
+	pickupSlot: ISlot;
+	deliverySlot: ISlot;
+	pickupAddress: IAddress;
+	deliveryAddress: IAddress;
+	member: IMemberInfo;
 }
 
 export class BookingDTO {
 
-  public id: number = -1;
-  public pickupSlot: SlotDTO = new SlotDTO;
-  public deliverySlot: SlotDTO = new SlotDTO;
-  public PickupAddress: AddressDTO = new AddressDTO;
-  public deliveryAddress: AddressDTO = new AddressDTO;
-  public member: MemberInfoDTO = new MemberInfoDTO;
+  public id: number;
+  public pickupSlot: SlotDTO;
+  public deliverySlot: SlotDTO;
+  public PickupAddress: AddressDTO;
+  public deliveryAddress: AddressDTO;
+  public member: MemberInfoDTO;
 
-  public static create(booking: Booking): BookingDTO {
-
-    const bookingDTO = new BookingDTO;
-
-    bookingDTO.PickupAddress = AddressDTO.create(booking.pickupAddress);
-    bookingDTO.deliveryAddress = AddressDTO.create(booking.deliveryAddress || booking.pickupAddress);
-    bookingDTO.pickupSlot = SlotDTO.create(booking.pickupSlot);
-    bookingDTO.deliverySlot = SlotDTO.create(booking.deliverySlot);
-    bookingDTO.member = MemberInfoDTO.create(booking.member);
-    bookingDTO.id = booking.id;
-
-    return bookingDTO;
-
+  constructor(booking: IBooking) {
+    this.id = booking.id;
+    this.pickupSlot = new SlotDTO(booking.pickupSlot);
+    this.deliverySlot = new SlotDTO(booking.pickupSlot);
+    this.PickupAddress = new AddressDTO(booking.pickupAddress);
+	  this.deliveryAddress = new AddressDTO(booking.deliveryAddress);
+	  this.member = new MemberInfoDTO(booking.member);
   }
 
 }

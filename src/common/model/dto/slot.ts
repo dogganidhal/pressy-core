@@ -1,21 +1,22 @@
 import { SlotType, Slot } from '../entity/order/slot';
 import { DateUtils } from '../../utils';
 
+export interface ISlot {
+	id: number;
+	type: SlotType;
+	startDate: Date;
+}
 
 export class SlotDTO {
 
-  public id: number = -1;
-  public type: SlotType = SlotType.LIGHT;
-  public startDate: Date = DateUtils.now();
+  public id: number;
+  public type: SlotType;
+  public startDate: Date;
 
-  public static create(slot: Slot): SlotDTO {
-    const slotDTO = new SlotDTO;
-
-    slotDTO.id = slot.id;
-    slotDTO.startDate = slot.startDate;
-    slotDTO.type = slot.type;
-
-    return slotDTO;
+  constructor(slot: ISlot) {
+    this.id = slot.id;
+	  this.type = slot.type;
+	  this.startDate = slot.startDate;
   }
 
 }

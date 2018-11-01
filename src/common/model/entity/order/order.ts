@@ -1,8 +1,8 @@
-import { Booking } from './../booking/index';
-import { Member } from './../users/member';
+import { Booking } from '../booking';
+import { Member } from '../users/member';
 import { 
   Entity, PrimaryGeneratedColumn, JoinColumn, 
-  CreateDateColumn, OneToOne, Column, OneToMany
+  CreateDateColumn, OneToOne, Column
 } from "typeorm";
 import { CreateOrderRequestDTO } from '../../dto/order';
 

@@ -24,7 +24,7 @@ export class Element {
   public booking: Booking;
 
   @Column()
-  public type: ElementType
+  public type: ElementType;
 
   @Column({nullable: true})
   public color: string;
