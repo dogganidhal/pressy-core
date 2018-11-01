@@ -1,9 +1,9 @@
-import { Controller } from "../../common/controller";
 import { Path, GET } from "typescript-rest";
+import {BaseController} from "./base-controller";
 
 
 @Path("/api/v1")
-export class DocumentationController extends Controller {
+export class DocumentationController extends BaseController {
 
   @GET
   public getDocumentation() {

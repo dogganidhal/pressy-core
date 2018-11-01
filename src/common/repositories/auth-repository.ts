@@ -53,19 +53,19 @@ export class AuthRepository extends ARepository {
       payload = typeof decodedPayload === "string" ? JSON.parse(decodedPayload) : decodedPayload;
 
     } catch (error) {
-      throw new Exception.InvalidAccessToken(error.message);
+      throw new Exception.InvalidAccessTokenException(error.message);
     }
 
     if (!payload)
-      throw new Exception.InvalidAccessToken;
+      throw new Exception.InvalidAccessTokenException;
 
     if (payload.privilege < minimumPrivilege) 
-      throw new Exception.UnauthorizedRequest;
+      throw new Exception.UnauthorizedRequestException;
 
     const member = await memberRepository.getMemberById(payload.id);
 
     if (!member)
-      throw new Exception.AccessTokenNotFound;
+      throw new Exception.AccessTokenNotFoundException;
 
     return member;
 
@@ -94,7 +94,7 @@ export class AuthRepository extends ARepository {
 
       return LoginResponseDTO.create(sign({...accessToken, expiresIn: "1h"}, this._privateKey, signOptions), request.refreshToken);
     } catch (error) {
-      throw new Exception.InvalidAccessToken
+      throw new Exception.InvalidAccessTokenException
     }
 
   }

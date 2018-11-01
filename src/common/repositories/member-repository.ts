@@ -54,7 +54,7 @@ export class MemberRepository extends ARepository {
 
     const memberWithSameEmail = await this.getMemberByEmail(memberDTO.email);
     if (memberWithSameEmail)
-      throw new Exception.EmailAlreadyExists(memberDTO.email);
+      throw new Exception.EmailAlreadyExistsException(memberDTO.email);
 
     const memberWithSamePhone = await this.getMemberByPhone(memberDTO.phone);
     if (memberWithSamePhone)

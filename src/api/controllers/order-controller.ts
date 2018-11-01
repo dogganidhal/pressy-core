@@ -1,15 +1,14 @@
 import {
   Path, POST, ContextRequest 
 } from "typescript-rest";
-import { Controller, Authenticated } from "../../common/controller";
 import { JSONSerialization } from "../../common/utils/json-serialization";
 import { Request } from "express";
 import { GeocodingService } from '../../common/services/geocoding-service';
+import {BaseController} from "./base-controller";
 
 @Path('/api/v1/order/')
-export class OrderController extends Controller {
+export class OrderController extends BaseController {
 
-  // @Authenticated()
   @POST
   public async createOrder(@ContextRequest request: Request) {
 

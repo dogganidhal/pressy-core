@@ -15,7 +15,7 @@ export namespace HTTPUtils {
       const jsonObject = typeof body === "string" ? JSON.parse(body) : body;
       return jsonConvert.deserialize(jsonObject, classReference);
     } catch (error) {
-      throw new Exception.RequiredFieldNotFound;
+      throw new Exception.RequiredFieldNotFoundException;
     }
   }
 
@@ -25,7 +25,7 @@ export namespace HTTPUtils {
       return jsonConvert.deserialize(jsonObject, classReference);
     } catch (error) {
       console.log(error);
-      throw new Exception.RequiredFieldNotFound;
+      throw new Exception.RequiredFieldNotFoundException;
     }
   }
 

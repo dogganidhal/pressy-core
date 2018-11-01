@@ -72,12 +72,12 @@ export class Booking {
     const pickupSlot = await slotRepository.getSlotById(createBookingRequestDTO.pickupSlotId);
 
     if (!pickupSlot)
-      throw new Exception.SlotNotFound(createBookingRequestDTO.pickupSlotId);
+      throw new Exception.SlotNotFoundException(createBookingRequestDTO.pickupSlotId);
 
     const deliverySlot = await slotRepository.getSlotById(createBookingRequestDTO.deliverySlotId);
 
       if (!deliverySlot)
-        throw new Exception.SlotNotFound(createBookingRequestDTO.deliverySlotId);
+        throw new Exception.SlotNotFoundException(createBookingRequestDTO.deliverySlotId);
 
     booking.pickupSlot = pickupSlot;
     booking.deliverySlot = deliverySlot;

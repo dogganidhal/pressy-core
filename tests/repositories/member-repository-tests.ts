@@ -22,7 +22,7 @@ describe("MemberRepository operations test suite", () => {
     memberRepository = new MemberRepository(connection);
     await memberRepository.createMember(memberDTO);
     done();
-  });
+  }, 60000);
 
   test("Gets an existing member from database with a correct Email", async () => {
     expect.assertions(5);
@@ -36,7 +36,7 @@ describe("MemberRepository operations test suite", () => {
     } catch (error) {
       fail(error)
     }
-  });
+  }, 60000);
 
   test("Returns undefined from getMemberByEmail when no member with given email is found", async () => {
     expect.assertions(1);
@@ -46,7 +46,7 @@ describe("MemberRepository operations test suite", () => {
     } catch (error) {
       fail(error)
     }
-  });
+  }, 60000);
 
   test("Gets an existing member from database with a correct Phone", async () => {
     expect.assertions(5);
@@ -60,7 +60,7 @@ describe("MemberRepository operations test suite", () => {
     } catch (error) {
       fail(error)
     }
-  });
+  }, 60000);
 
   test("Returns undefined from getMemberByPhone when no member with given phone is found", async () => {
     expect.assertions(1);
@@ -70,12 +70,12 @@ describe("MemberRepository operations test suite", () => {
     } catch (error) {
       fail(error)
     }
-  });
+  }, 60000);
 
   afterAll(async (done) => {
     await memberRepository.deleteMemberByEmail(memberDTO.email);
     await connection.close();
     done();
-  });
+  }, 60000);
   
 });

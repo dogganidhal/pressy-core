@@ -1,16 +1,6 @@
 import { getConnection } from 'typeorm';
-import {
-  Path, POST,
-  HttpError, Errors, Return, PathParam 
-} from "typescript-rest";
-import {
-  LoginRequestDTO,
-  RefreshCredentialsRequestDTO,
-  PersonPasswordResetRequestDTO,
-  MemberPasswordResetCodeDTO,
-  MemberPasswordResetCodeRequestDTO
-} from "../../common/model/dto/member";
-import { Controller } from "../../common/controller";
+import {Path, POST, HttpError, Errors, Return, PathParam} from "typescript-rest";
+import {LoginRequestDTO, RefreshCredentialsRequestDTO, PersonPasswordResetRequestDTO, MemberPasswordResetCodeDTO, MemberPasswordResetCodeRequestDTO} from "../../common/model/dto/member";
 import { Exception } from "../../common/errors";
 import { HTTPUtils } from "../../common/utils/http-utils";
 import { JSONSerialization } from "../../common/utils/json-serialization";
@@ -18,42 +8,31 @@ import bcrypt from "bcrypt";
 import { PersonRepository } from "../../common/repositories/person-repository";
 import { MemberRepository } from "../../common/repositories/member-repository";
 import { AuthRepository } from "../../common/repositories/auth-repository";
+import {BaseController} from "./base-controller";
+import {JSONResponse} from "../annotations/json-response";
 
 @Path('/api/v1/auth/')
-export class AuthController extends Controller {
+export class AuthController extends BaseController {
 
   private _memberRepository: MemberRepository = new MemberRepository(getConnection());
   private _personRepository: PersonRepository = new PersonRepository(getConnection());
   private _authRepository: AuthRepository = new AuthRepository(getConnection());
 
+  @JSONResponse
   @Path("/login/")
   @POST
   public async login() {
 
-    try {
+	  const loginRequest = HTTPUtils.parseBody(this.getPendingRequest().body, LoginRequestDTO);
 
-      const loginRequest = HTTPUtils.parseBodyOfContoller(this, LoginRequestDTO);
+	  const member = await this._memberRepository.getMemberByEmail(loginRequest.email);
+	  if (!member)
+		  throw new Exception.MemberNotFoundException(loginRequest.email);
 
-      try {
-        
-        const member = await this._memberRepository.getMemberByEmail(loginRequest.email);
-        if (!member)
-          throw ""
+	  if (!bcrypt.compareSync(loginRequest.password, member.person.passwordHash))
+		  throw new Exception.WrongPasswordException;
 
-          if (!bcrypt.compareSync(loginRequest.password, member.person.passwordHash))
-          throw new Exception.WrongPassword;
-  
-        const loginResponse = await this._authRepository.generateToken(member.person);
-        
-        return JSONSerialization.serializeObject(loginResponse);
-
-      } catch (error) {
-        throw new Exception.MemberNotFound(loginRequest.email); 
-      }
-
-    } catch (error) {
-      this.throw(error);
-    }
+	  return await this._authRepository.generateToken(member.person);
 
   }
 
@@ -87,7 +66,7 @@ export class AuthController extends Controller {
         .getPersonByEmail(resetCodeRequest.email);
 
       if (person == undefined) {
-        this.throw(new Exception.MemberNotFound(resetCodeRequest.email!));
+        this.throw(new Exception.MemberNotFoundException(resetCodeRequest.email!));
         return;
       }
       

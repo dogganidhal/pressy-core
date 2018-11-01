@@ -5,7 +5,7 @@ import { MemberRegistrationDTO } from '../../src/common/model/dto/member';
 import { API } from "../../src/api";
 import { JSONSerialization } from '../../src/common/utils/json-serialization';
 import { MemberRepository } from '../../src/common/repositories/member-repository';
-import {APIError} from "../../src/api/model/error";
+import {APIError} from "../../src/api/model/api-error";
 
 describe("Testing MemberController Endpoints =>", () => {
 

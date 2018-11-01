@@ -37,7 +37,7 @@ export class PersonRepository extends ARepository {
     const activationCode = await this._activationCodeRepository.findOne(code, {relations: []});
 
     if (!activationCode)
-      throw new Exception.ActivationCodeNotFound(code);
+      throw new Exception.ActivationCodeNotFoundException(code);
 
     return activationCode.person;
 
@@ -48,14 +48,14 @@ export class PersonRepository extends ARepository {
     const passwordResetRequestCode = await this._resetCodeRepository.findOne(code, {relations: ["person"]});
 
     if (!passwordResetRequestCode)
-      throw new Exception.PasswordResetCodeNotFound(code);
+      throw new Exception.PasswordResetCodeNotFoundException(code);
     if (passwordResetRequestCode.expiryDate < DateUtils.now())
-      throw new Exception.PasswordResetCodeExpired(code);
+      throw new Exception.PasswordResetCodeExpiredException(code);
 
     const person: Person = passwordResetRequestCode.person;
 
     if (!bcrypt.compareSync(resetPasswordRequest.oldPassword, person.passwordHash))
-      throw new Exception.WrongPassword();
+      throw new Exception.WrongPasswordException();
 
     person.passwordHash = bcrypt.hashSync(resetPasswordRequest.newPassword, 10);
 
@@ -86,7 +86,7 @@ export class PersonRepository extends ARepository {
     const activationCode = await this._activationCodeRepository.findOne(code);
 
     if (!activationCode)
-      throw new Exception.ActivationCodeNotFound(code);
+      throw new Exception.ActivationCodeNotFoundException(code);
 
       this._resetCodeRepository.createQueryBuilder()
       .delete()
