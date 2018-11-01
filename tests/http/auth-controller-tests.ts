@@ -5,16 +5,17 @@ import { MemberRegistrationDTO } from '../../src/common/model/dto/member';
 import { LoginResponseDTO } from '../../src/common/model/dto/member';
 import { API } from "../../src/api";
 import request from "supertest";
-import { JSONSerialization } from '../../src/common/utils/json-serialization';
 import {APIError} from "../../src/api/model/api-error";
 import RandomString from "randomstring";
+import {Person} from "../../src/common/model/entity/users/person";
+import {Member} from "../../src/common/model/entity/users/member";
 
 describe("Testing Authentication Endpoints", () => {
 
 	let connection: Connection;
 	let memberRepository: MemberRepository;
 	const api: API = new API;
-	const memberDTO: MemberRegistrationDTO = {
+	const testMember: MemberRegistrationDTO = {
 		firstName: RandomString.generate(10),
 		lastName: RandomString.generate(10),
 		email: `${RandomString.generate(10)}@email.com`,
@@ -23,22 +24,31 @@ describe("Testing Authentication Endpoints", () => {
 	};
 
   beforeAll(async (done) => {
+
     connection = await createConnection();
     memberRepository = new MemberRepository(connection);
-    await memberRepository.createMember(memberDTO);
+    let __dbPersonRepository = connection.getRepository(Person);
+    let __dbMemberRepository = connection.getRepository(Member);
+
+    await __dbPersonRepository.insert(Person.create(testMember));
+    await __dbMemberRepository.insert(Member.create(testMember));
+
     done();
+
   }, 60000);
 
   test("Returns access credentials when correct user and password are introduced", async done => {
 
+  	expect.assertions(4);
+
     request(api.getApp())
       .post("/api/v1/auth/login")
       .set("Content-Type", "application/json")
-      .send({email: memberDTO.email, password: "test"})
+      .send({email: testMember.email, password: "test"})
       .expect(200)
       .then(response => {
 
-        const token: LoginResponseDTO = JSONSerialization.deserializeObject(response.body, LoginResponseDTO);
+        const token: LoginResponseDTO = response.body as LoginResponseDTO;
 
         expect(token.accessToken).not.toBeNull();
         expect(token.refreshToken).not.toBeNull();
@@ -54,6 +64,31 @@ describe("Testing Authentication Endpoints", () => {
 
   }, 60000);
 
+	test("Returns bad request when empty body is given", async done => {
+
+		expect.assertions(2);
+
+		request(api.getApp())
+			.post("/api/v1/auth/login")
+			.set("Content-Type", "application/json")
+      .send()
+			.expect(400)
+			.then(response => {
+
+				const error = response.body as APIError;
+
+				expect(error.statusCode).toEqual(400);
+				expect(error.message).not.toBeNull();
+
+				done();
+
+			})
+			.catch(error => {
+				done.fail(error);
+			});
+
+	}, 60000);
+
 	test("Returns unauthorized when wrong password is introduced", async done => {
 
 	  expect.assertions(2);
@@ -61,7 +96,7 @@ describe("Testing Authentication Endpoints", () => {
 		request(api.getApp())
 			.post("/api/v1/auth/login")
 			.set("Content-Type", "application/json")
-			.send({email: memberDTO.email, password: "wrongPassword"})
+			.send({email: testMember.email, password: "wrongPassword"})
 			.expect(403)
 			.then(response => {
 
@@ -79,8 +114,33 @@ describe("Testing Authentication Endpoints", () => {
 
 	}, 60000);
 
+	test("Returns not found when non-existant email is introduced", async done => {
+
+		expect.assertions(2);
+
+		request(api.getApp())
+			.post("/api/v1/auth/login")
+			.set("Content-Type", "application/json")
+			.send({email: "doesNotExist@email.com", password: "test"})
+			.expect(404)
+			.then(response => {
+
+				const error = response.body as APIError;
+
+				expect(error.statusCode).toEqual(404);
+				expect(error.message).not.toBeNull();
+
+				done();
+
+			})
+			.catch(error => {
+				done.fail(error);
+			});
+
+	}, 60000);
+
   afterAll(async (done) => {
-    await memberRepository.deleteMemberByEmail("john.doe@gmail.com");
+    await memberRepository.deleteMemberByEmail(testMember.email);
     done();
   }, 60000);
 

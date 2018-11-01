@@ -1,10 +1,12 @@
 import { Path, GET } from "typescript-rest";
 import {BaseController} from "./base-controller";
+import {JSONResponse} from "../annotations/json-response";
 
 
 @Path("/api/v1")
 export class DocumentationController extends BaseController {
 
+  @JSONResponse
   @GET
   public getDocumentation() {
 

@@ -1,20 +1,95 @@
-import { Connection } from 'typeorm';
+import {Connection} from 'typeorm';
 import { MemberRepository } from '../../src/common/repositories/member-repository';
 import { MemberRegistrationDTO } from "../../src/common/model/dto/member";
-import Randomstring from "randomstring";
 import { createConnection } from 'typeorm';
+import RandomString from "randomstring";
+import bcrypt from "bcrypt";
+import {Member} from "../../src/common/model/entity/users/member";
+import {Person} from "../../src/common/model/entity/users/person";
 
 
-describe("MemberRepository operations test suite", () => {
+describe("MemberRepository Write/Delete Operations Tests", () => {
+
+  let connection: Connection;
+  let memberRepository: MemberRepository;
+	const testMember = {
+		firstName: RandomString.generate(10),
+		lastName: RandomString.generate(10),
+		email: `${RandomString.generate(10)}@email.com`,
+		phone: RandomString.generate({length: 10, charset: "numeric"}),
+    password: RandomString.generate(20)
+	} as MemberRegistrationDTO;
+	const testMember2 = {
+		firstName: RandomString.generate(10),
+		lastName: RandomString.generate(10),
+		email: `${RandomString.generate(10)}@email.com`,
+		phone: RandomString.generate({length: 10, charset: "numeric"}),
+		password: RandomString.generate(20)
+	} as MemberRegistrationDTO;
+
+  beforeAll(async done => {
+    connection = await createConnection();
+    memberRepository = new MemberRepository(connection);
+    done();
+  });
+
+  test("Creates a new member from MemberRegistrationDTO", async done => {
+
+    expect.assertions(5);
+
+    const __dbPersonRepository = connection.getRepository(Person);
+    const __dbMemberRepository = connection.getRepository(Member);
+
+    await memberRepository.createMember(testMember);
+
+    const person = await __dbPersonRepository.findOne({email: testMember.email}) || done.fail();
+    const member = await __dbMemberRepository.findOne({person: person}, {relations: ["person"]}) || done.fail();
+
+    expect(member.person.email).toEqual(testMember.email);
+	  expect(member.person.phone).toEqual(testMember.phone);
+	  expect(member.person.firstName).toEqual(testMember.firstName);
+	  expect(member.person.lastName).toEqual(testMember.lastName);
+	  expect(bcrypt.compareSync(testMember.password, member.person.passwordHash)).toBeTruthy();
+
+	  done();
+
+  });
+
+	test("Deletes Member With Email", async done => {
+
+	  let createdMember = await memberRepository.createMember(testMember2);
+
+	  expect(createdMember).not.toBeUndefined();
+	  expect(createdMember.person).not.toBeUndefined();
+
+	  await memberRepository.deleteMemberByEmail(testMember2.email);
+
+	  let deletedMember = await memberRepository.getMemberByEmail(testMember2.email);
+
+	  expect(deletedMember).toBeUndefined();
+
+		done();
+
+	});
+
+  afterAll(async done => {
+    await connection.close();
+    done();
+  })
+
+});
+
+
+describe("MemberRepository Read Operations Tests", () => {
 
   let connection: Connection;
   let memberRepository: MemberRepository;
   const memberDTO: MemberRegistrationDTO = {
-    firstName: Randomstring.generate(10),
-    lastName: Randomstring.generate(10),
-    password: Randomstring.generate(10),
-    phone: Randomstring.generate({length: 10, charset: "numeric"}),
-    email : `${Randomstring.generate(10)}@gmail.com`
+    firstName: RandomString.generate(10),
+    lastName: RandomString.generate(10),
+    password: RandomString.generate(10),
+    phone: RandomString.generate({length: 10, charset: "numeric"}),
+    email : `${RandomString.generate(10)}@email.com`
   };
 
   beforeAll(async (done) => {

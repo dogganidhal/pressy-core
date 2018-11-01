@@ -1,19 +1,17 @@
-import { Path, POST, ContextRequest, GET, QueryParam, Return } from "typescript-rest";
-import { Request } from "express";
-import { Exception } from '../../common/errors';
-import { BookingRepository } from '../../common/repositories/booking-repository';
-import { SlotRepository } from '../../common/repositories/slot-repository';
-import { HTTPUtils } from '../../common/utils/http-utils';
-import { JSONSerialization } from '../../common/utils/json-serialization';
-import { DateUtils } from '../../common/utils';
-import { CreateBookingRequestDTO, BookingDTO } from "../../common/model/dto/booking";
-import { Member } from "../../common/model/entity/users/member";
-import { Booking } from "../../common/model/entity/booking";
-import { SlotType } from "../../common/model/entity/order/slot";
-import { SlotDTO } from "../../common/model/dto/slot";
-import { getConnection } from "typeorm";
+import {GET, Path, POST, QueryParam, Return} from "typescript-rest";
+import {Exception} from '../../common/errors';
+import {BookingRepository} from '../../common/repositories/booking-repository';
+import {SlotRepository} from '../../common/repositories/slot-repository';
+import {DateUtils} from '../../common/utils';
+import {BookingDTO, CreateBookingRequestDTO} from "../../common/model/dto/booking";
+import {Member} from "../../common/model/entity/users/member";
+import {Booking} from "../../common/model/entity/booking";
+import {SlotType} from "../../common/model/entity/order/slot";
+import {SlotDTO} from "../../common/model/dto/slot";
+import {getConnection} from "typeorm";
 import {BaseController} from "./base-controller";
 import {Authenticate} from "../annotations/authenticate";
+import {JSONResponse} from "../annotations/json-response";
 
 
 @Path('/api/v1/booking/')
@@ -22,44 +20,33 @@ export class BookingController extends BaseController {
   private _bookingRepository: BookingRepository = new BookingRepository(getConnection());
   private _slotsRepository: SlotRepository = new SlotRepository(getConnection());
 
+  @JSONResponse
   @Authenticate()
   @POST
-  public async createBooking(@ContextRequest request: Request) {
+  public async createBooking() {
 
-    try {
+	  const createBookingRequestDTO = this.getPendingRequest().body as CreateBookingRequestDTO;
+	  const member: Member = this.pendingMember!;
+	  const booking = await Booking.create(member, createBookingRequestDTO);
 
-      const createBookingRequestDTO = HTTPUtils.parseBody(request.body, CreateBookingRequestDTO);
-      const member: Member = this.pendingMember!;
-      const booking = await Booking.create(member, createBookingRequestDTO);
+	  await this._bookingRepository.saveBooking(booking);
 
-      await this._bookingRepository.saveBooking(booking);
+	  return new Return.RequestAccepted("/api/v1/booking");
 
-      return new Return.RequestAccepted("/api/v1/booking");
-
-    } catch (error) {
-      this.throw(error);
-    }
 
   }
 
+  @JSONResponse
   @Authenticate()
   @GET
   public async getBookings() {
 
-    try {
-
-      const bookings = await this._bookingRepository.getBookingsForMember(this.pendingMember!);
-      const bookingDTOs = bookings.map(booking => BookingDTO.create(booking));
-
-      return JSONSerialization.serializeObject(bookingDTOs);
-
-    } catch (error) {
-      console.log(error);
-      this.throw(error);
-    }
+	  const bookings = await this._bookingRepository.getBookingsForMember(this.pendingMember!);
+	  return bookings.map(booking => BookingDTO.create(booking));
 
   }
 
+  @JSONResponse
   @Path("/slots")
   @GET
   public async getSlots(
@@ -68,33 +55,19 @@ export class BookingController extends BaseController {
     @QueryParam("to") to: string = DateUtils.addDaysFromNow(7).toISOString()
   ) {
 
-	  let types: SlotType[];
-
-	  try {
-      types = this._parseSlotTypesFromString(typeString);
-    } catch (invalidSlotType) {
-      this.throw(new Exception.InvalidSlotTypeException(invalidSlotType));
-      return;
-    }
-
+	  const types = this._parseSlotTypesFromString(typeString);
     const startDate = new Date(from);
+	  const endDate = new Date(to);
 
-    if (isNaN(startDate.getTime())) {
-      this.throw(new Exception.InvalidDateException(from));
-      return;
-    }
+    if (isNaN(startDate.getTime()))
+      throw new Exception.InvalidDateException(from);
 
-    const endDate = new Date(to);
-
-    if (isNaN(endDate.getTime())) {
-      this.throw(new Exception.InvalidDateException(to));
-      return;
-    }
+    if (isNaN(endDate.getTime()))
+	    throw new Exception.InvalidDateException(to);
 
     const slots = await this._slotsRepository.searchSlots(types, startDate, endDate);
-    const slotDTOs = slots.map(slot => SlotDTO.create(slot));
 
-    return JSONSerialization.serializeObject(slotDTOs);
+	  return slots.map(slot => SlotDTO.create(slot));
 
   }
 
@@ -102,7 +75,7 @@ export class BookingController extends BaseController {
     const types: SlotType[] = string.split(",").map(char => {
       const type = parseInt(char);
       if (type < SlotType.LIGHT || type > SlotType.EXPRESS) {
-        throw type;
+	      throw new Exception.InvalidSlotTypeException(type);
       }
       return type;
     });

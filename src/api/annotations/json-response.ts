@@ -1,5 +1,3 @@
-import {JSONSerialization} from "../../common/utils/json-serialization";
-import {HttpError} from "typescript-rest";
 import {InternalServerError} from "typescript-rest/dist/server-errors";
 import {APIError} from "../model/api-error";
 import {BaseController} from "../controllers/base-controller";
@@ -18,30 +16,29 @@ export function JSONResponse<TController extends BaseController>(target: TContro
 			const returnValue = originalMethod.call(context, args);
 
 			if (returnValue instanceof Promise) {
-				const response = await returnValue;
-				return JSONSerialization.serializeObject(response);
+				return await returnValue;
 			} else {
-				return JSONSerialization.serializeObject(returnValue);
+				return returnValue;
 			}
 
 		} catch (exception) {
 
-			if (exception instanceof Exception.APIException) {
+			const response = context.getPendingResponse();
 
-				const response = context.getPendingResponse();
+			if (response) {
+				if (exception instanceof Exception.APIException) {
 
-				if (response) {
-				  response.status(exception.statusCode);
+					response.status(exception.statusCode);
+					return APIError.create(exception.statusCode, exception.message);
+
+				} else {
+
+					response.status(500);
+					// TODO: Log the error, because it shouldn't happen
+					console.warn(exception);
+					return APIError.INTERNAL_SERVER_ERROR;
+
 				}
-
-				return APIError.create(exception.statusCode, exception.message);
-
-			} else {
-
-				// TODO: Log the error, because it shouldn't happen
-				console.warn(exception);
-				return new InternalServerError;
-
 			}
 
 		}

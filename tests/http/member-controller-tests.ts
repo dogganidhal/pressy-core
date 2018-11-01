@@ -3,7 +3,6 @@ import request from "supertest";
 import { Connection, createConnection } from 'typeorm';
 import { MemberRegistrationDTO } from '../../src/common/model/dto/member';
 import { API } from "../../src/api";
-import { JSONSerialization } from '../../src/common/utils/json-serialization';
 import { MemberRepository } from '../../src/common/repositories/member-repository';
 import {APIError} from "../../src/api/model/api-error";
 
@@ -44,7 +43,7 @@ describe("Testing MemberController Endpoints =>", () => {
       .send(memberDTO)
 	    .expect(200)
 	    .then(response => {
-		    const member: MemberRegistrationDTO = JSONSerialization.deserializeObject(response.body, MemberRegistrationDTO);
+		    const member: MemberRegistrationDTO = response.body;
 
 		    expect(member.firstName).toEqual(memberDTO.firstName);
 		    expect(member.lastName).toEqual(memberDTO.lastName);
@@ -69,10 +68,13 @@ describe("Testing MemberController Endpoints =>", () => {
 			.send(duplicateMemberDTO)
 			.expect(400)
 			.then(async response => {
+
 				const error: APIError = response.body;
 			  expect(error.statusCode).toEqual(400);
 			  expect(error.message.length).toBeGreaterThan(0);
+
 			  done();
+
       })
 			.catch(async error => {
 				console.warn(error);

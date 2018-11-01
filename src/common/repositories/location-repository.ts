@@ -10,11 +10,13 @@ export class LocationRepository extends ARepository {
   private _addressRepository: Repository<Address> = this.connection.getRepository(Address);
 
   public async saveNewLocation(location: Location): Promise<Location> {
-    return this._locationRepository.save(location);
+    await this._locationRepository.insert(location);
+    return location;
   }
 
   public async saveNewAddress(address: Address): Promise<Address> {
-    return this._addressRepository.save(address);
+    await this._addressRepository.insert(address);
+    return address;
   }
 
 }

@@ -15,7 +15,7 @@ describe("Geocoding service test suit", async () => {
     expect(address.formattedAddress).toEqual("142 Rue Montmartre, 75002 Paris, France");
     expect(address.streetName).toEqual("Rue Montmartre");
     expect(address.streetNumber).toEqual("142");
-    expect(address.zipcode).toEqual("75002");
+    expect(address.zipCode).toEqual("75002");
     
     done();
     
@@ -34,7 +34,7 @@ describe("Geocoding service test suit", async () => {
     expect(address.formattedAddress).toEqual("41 Avenue du Château, 92190 Meudon, France");
     expect(address.streetName).toEqual("Avenue du Château");
     expect(address.streetNumber).toEqual("41");
-    expect(address.zipcode).toEqual("92190");
+    expect(address.zipCode).toEqual("92190");
 
     done();
 

@@ -5,7 +5,6 @@ import {Exception} from "../errors";
 import {Member, PersonActivationCode} from '../model/entity/users/member';
 import {Person} from '../model/entity/users/person';
 import {ARepository} from '.';
-import {log} from "util";
 
 
 export class MemberRepository extends ARepository {
@@ -35,7 +34,7 @@ export class MemberRepository extends ARepository {
     if (!person)
       return undefined;
 
-    return await this._memberRepository.findOne({person: {id: person.id}}, {relations: ["person"]});
+    return await this._memberRepository.findOne({person: person}, {relations: ["person"]});
     
   }
 
@@ -62,8 +61,10 @@ export class MemberRepository extends ARepository {
 
     const newMember = Member.create(memberDTO);
 
-    await this._personRepository.save(newMember.person);
-    return this._memberRepository.save(newMember);
+    await this._personRepository.insert(newMember.person);
+	  await this._memberRepository.insert(newMember);
+
+    return newMember;
 
   }
   
@@ -75,12 +76,16 @@ export class MemberRepository extends ARepository {
       return;
 
     const personActivationCode = await this._personActivationCodeRepository.findOne({person: person});
-      
-    await this._memberRepository.delete({person: person});
+    const member = await this._memberRepository.findOne({person: person});
+
     if (personActivationCode)
       await this._personActivationCodeRepository.delete(personActivationCode);
 
-    await this._personRepository.delete({id: person.id});
+    if (member)
+	    await this._memberRepository.delete(member);
+
+    await this._personRepository.delete(person);
+
   }
 
   public async getMobileDevices(member: Member): Promise<MobileDevice[]> {
@@ -92,7 +97,8 @@ export class MemberRepository extends ARepository {
   public async registerMobileDevice(member: Member, mobileDeviceDTO: MobileDeviceDTO): Promise<MobileDevice> {
 
     const device = MobileDevice.create(member, mobileDeviceDTO.deviceId);
-    return this._mobileDeviceRepository.save(device);
+    await this._mobileDeviceRepository.insert(device);
+    return device;
 
   }
 

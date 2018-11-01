@@ -1,26 +1,12 @@
-import { JsonObject, JsonProperty } from "json2typescript";
-import { JSONSerialization } from "../../utils/json-serialization";
 import { Member } from "../entity/users/member";
 
-@JsonObject
 export class MemberInfoDTO {
 
-  @JsonProperty("id", Number)
   public id: number;
-
-  @JsonProperty("firstName", String)
   public firstName: string;
-
-  @JsonProperty("lastName", String)
   public lastName: string;
-
-  @JsonProperty("email", String)
   public email: string;
-
-  @JsonProperty("phone", String)
   public phone: string;
-
-  @JsonProperty("created", JSONSerialization.UTCDateConvert)
   public created: Date;
 
   public static create(member: Member): MemberInfoDTO {
@@ -37,30 +23,18 @@ export class MemberInfoDTO {
 
 }
 
-@JsonObject
 export class MemberRegistrationDTO {
 
-  @JsonProperty("firstName", String)
   public firstName: string = "";
-
-  @JsonProperty("lastName", String)
   public lastName: string = "";
-
-  @JsonProperty("email", String)
   public email: string = "";
-
-  @JsonProperty("password", String)
   public password: string = "";
-
-  @JsonProperty("phone", String)
   public phone: string = "";
 
 }
 
-@JsonObject
 export class MemberPasswordResetCodeDTO {
 
-  @JsonProperty("code", String)
   public code: string = "";
 
   public static create(code: string): MemberPasswordResetCodeDTO {
@@ -73,10 +47,8 @@ export class MemberPasswordResetCodeDTO {
 
 }
 
-@JsonObject
 export class MemberPasswordResetCodeRequestDTO {
 
-  @JsonProperty("email", String)
   public email: string = "";
 
   public static create(email: string): MemberPasswordResetCodeRequestDTO {
@@ -87,41 +59,25 @@ export class MemberPasswordResetCodeRequestDTO {
 
 }
 
-@JsonObject
 export class PersonPasswordResetRequestDTO {
 
-  @JsonProperty("oldPassword", String)
   public oldPassword: string = "";
-
-  @JsonProperty("newPassword", String)
   public newPassword: string = "";
 
 }
 
-@JsonObject
 export class LoginRequestDTO {
 
-  @JsonProperty("password", String)
   public password: string = "";
-
-  @JsonProperty("email", String)
   public email: string = "";
 
 }
 
-@JsonObject
 export class LoginResponseDTO {
 
-  @JsonProperty("accessToken", String)
   public accessToken: string = "";
-
-  @JsonProperty("refreshToken", String)
   public refreshToken: string = "";
-
-  @JsonProperty("expiresIn", Number)
   public expiresIn: number = 3600;
-
-  @JsonProperty("type", String)
   public type: string = "Bearer";
 
   public static create(accessToken: string, refreshToken: string): LoginResponseDTO {
@@ -134,18 +90,14 @@ export class LoginResponseDTO {
 
 }
 
-@JsonObject
 export class RefreshCredentialsRequestDTO {
 
-  @JsonProperty("refresh_token", String)
   public refreshToken: string = "";
 
 }
 
-@JsonObject
 export class MobileDeviceDTO {
 
-  @JsonProperty("deviceId", String)
   public deviceId: string = "";
 
   public static create(id: string): MobileDeviceDTO {

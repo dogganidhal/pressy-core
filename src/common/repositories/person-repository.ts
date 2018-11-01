@@ -1,12 +1,11 @@
 import { ARepository } from '.';
-import { PersonPasswordResetCode } from './../model/entity/users/reset-code';
-import { MobileDevice } from './../model/entity/users/device';
-import { Repository, createConnection } from "typeorm";
+import { PersonPasswordResetCode } from '../model/entity/users/reset-code';
+import { Repository } from "typeorm";
 import bcrypt from "bcrypt";
-import { MemberRegistrationDTO, PersonPasswordResetRequestDTO, MemberInfoDTO } from "../model/dto/member";
+import { PersonPasswordResetRequestDTO } from "../model/dto/member";
 import { Exception } from "../errors";
 import { DateUtils } from "../utils";
-import { Member, PersonActivationCode } from '../model/entity/users/member';
+import { PersonActivationCode } from '../model/entity/users/member';
 import { Person } from '../model/entity/users/person';
 
 
@@ -67,17 +66,19 @@ export class PersonRepository extends ARepository {
 
   public async createPasswordResetCode(person: Person): Promise<PersonPasswordResetCode> {
     const code = PersonPasswordResetCode.create(person);
-    return this._resetCodeRepository.save(code);
+    await this._resetCodeRepository.insert(code);
+    return code;
   }
 
   public async deletePasswordResetCode(passwordResetCode: PersonPasswordResetCode): Promise<void> {
-    this._resetCodeRepository.delete(passwordResetCode);
+    await this._resetCodeRepository.delete(passwordResetCode);
   }
 
   public async createActivationCode(person: Person): Promise<PersonActivationCode> {
 
     const activationCode = PersonActivationCode.create(person);
-    return this._activationCodeRepository.save(activationCode);
+    await this._activationCodeRepository.insert(activationCode);
+    return activationCode;
 
   }
 

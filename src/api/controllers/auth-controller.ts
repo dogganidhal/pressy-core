@@ -1,13 +1,17 @@
-import { getConnection } from 'typeorm';
-import {Path, POST, HttpError, Errors, Return, PathParam} from "typescript-rest";
-import {LoginRequestDTO, RefreshCredentialsRequestDTO, PersonPasswordResetRequestDTO, MemberPasswordResetCodeDTO, MemberPasswordResetCodeRequestDTO} from "../../common/model/dto/member";
-import { Exception } from "../../common/errors";
-import { HTTPUtils } from "../../common/utils/http-utils";
-import { JSONSerialization } from "../../common/utils/json-serialization";
+import {getConnection} from 'typeorm';
+import {Path, PathParam, POST, Return} from "typescript-rest";
+import {
+	LoginRequestDTO,
+	MemberPasswordResetCodeDTO,
+	MemberPasswordResetCodeRequestDTO,
+	PersonPasswordResetRequestDTO,
+	RefreshCredentialsRequestDTO
+} from "../../common/model/dto/member";
+import {Exception} from "../../common/errors";
 import bcrypt from "bcrypt";
-import { PersonRepository } from "../../common/repositories/person-repository";
-import { MemberRepository } from "../../common/repositories/member-repository";
-import { AuthRepository } from "../../common/repositories/auth-repository";
+import {PersonRepository} from "../../common/repositories/person-repository";
+import {MemberRepository} from "../../common/repositories/member-repository";
+import {AuthRepository} from "../../common/repositories/auth-repository";
 import {BaseController} from "./base-controller";
 import {JSONResponse} from "../annotations/json-response";
 
@@ -23,7 +27,7 @@ export class AuthController extends BaseController {
   @POST
   public async login() {
 
-	  const loginRequest = HTTPUtils.parseBody(this.getPendingRequest().body, LoginRequestDTO);
+	  const loginRequest = this.getPendingRequest().body as LoginRequestDTO;
 
 	  const member = await this._memberRepository.getMemberByEmail(loginRequest.email);
 	  if (!member)
@@ -36,69 +40,45 @@ export class AuthController extends BaseController {
 
   }
 
+  @JSONResponse
   @Path("/refresh/")
   @POST
   public async refreshCredentials() {
 
-    try {
-
-      const refreshRequest = HTTPUtils.parseBodyOfContoller(this, RefreshCredentialsRequestDTO);
-      return await this._authRepository.createNewCredentials(refreshRequest);
-
-    } catch (error) {
-      if (error instanceof HttpError)
-        this.throw(error);
-      else
-        this.throw(new Errors.BadRequestError(error.message));
-    }
+	  const refreshRequest = this.getPendingRequest().body as RefreshCredentialsRequestDTO;
+	  return await this._authRepository.createNewCredentials(refreshRequest);
 
   }
 
+  @JSONResponse
   @Path("/reset/")
   @POST
   public async getResetPasswordCode() {
 
-    try {
+	  const resetCodeRequest = this.getPendingRequest().body as MemberPasswordResetCodeRequestDTO;
 
-      const resetCodeRequest = HTTPUtils.parseBodyOfContoller(this, MemberPasswordResetCodeRequestDTO);
+	  const person = await this._personRepository
+		  .getPersonByEmail(resetCodeRequest.email);
 
-      const person = await this._personRepository
-        .getPersonByEmail(resetCodeRequest.email);
+	  if (person == undefined)
+	    throw new Exception.MemberNotFoundException(resetCodeRequest.email!)
 
-      if (person == undefined) {
-        this.throw(new Exception.MemberNotFoundException(resetCodeRequest.email!));
-        return;
-      }
-      
-      const resetCode = await this._personRepository.createPasswordResetCode(person);
-      const resetCodeDTO = MemberPasswordResetCodeDTO.create(resetCode.id!);
+	  const resetCode = await this._personRepository.createPasswordResetCode(person);
 
-      // TODO: Return an empty "accepted" response, and call the email service
-      return JSONSerialization.serializeObject(resetCodeDTO);
-
-    } catch (error) {
-      this.throw(new Errors.BadRequestError((error as Error).message));
-    }
+	  // TODO: Return an empty "accepted" response, and call the email service
+	  return MemberPasswordResetCodeDTO.create(resetCode.id!);
 
   }
 
+  @JSONResponse
   @Path("/reset/:code")
   @POST
   public async resetPassword(@PathParam("code") code: string) {
 
-    try {
+	  const resetPasswordRequest = this.getPendingRequest().body as PersonPasswordResetRequestDTO;
+	  const person = await this._personRepository.resetPassword(code, resetPasswordRequest);
 
-      const resetPasswordRequest = HTTPUtils.parseBodyOfContoller(this, PersonPasswordResetRequestDTO);
-      const person = await this._personRepository.resetPassword(code, resetPasswordRequest);
-
-      return new Return.RequestAccepted(`/api/v1/member/${person.id}`);
-
-    } catch (error) {
-      if (error instanceof Error) 
-        this.throw(new Errors.BadRequestError((error as Error).message));
-      else if (error instanceof HttpError)
-        this.throw(error);
-    }
+	  return new Return.RequestAccepted(`/api/v1/member/${person.id}`);
 
   }
 

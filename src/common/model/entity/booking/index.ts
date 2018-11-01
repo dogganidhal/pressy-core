@@ -55,8 +55,6 @@ export class Booking {
 
   public static async create(member: Member, createBookingRequestDTO: CreateBookingRequestDTO): Promise<Booking> {
 
-    const slotRepository = new SlotRepository;
-    const locationRepository = new LocationRepository;
     const booking = new Booking;
 
     booking.pickupAddress = await Address.create(createBookingRequestDTO.pickupAddress);
@@ -65,22 +63,6 @@ export class Booking {
       booking.deliveryAddress = await Address.create(createBookingRequestDTO.deliveryAddress);
     else
       booking.deliveryAddress = booking.pickupAddress;
-
-    await locationRepository.saveNewAddress(booking.pickupAddress);
-    await locationRepository.saveNewAddress(booking.deliveryAddress);
-
-    const pickupSlot = await slotRepository.getSlotById(createBookingRequestDTO.pickupSlotId);
-
-    if (!pickupSlot)
-      throw new Exception.SlotNotFoundException(createBookingRequestDTO.pickupSlotId);
-
-    const deliverySlot = await slotRepository.getSlotById(createBookingRequestDTO.deliverySlotId);
-
-      if (!deliverySlot)
-        throw new Exception.SlotNotFoundException(createBookingRequestDTO.deliverySlotId);
-
-    booking.pickupSlot = pickupSlot;
-    booking.deliverySlot = deliverySlot;
 
     booking.member = member;
 

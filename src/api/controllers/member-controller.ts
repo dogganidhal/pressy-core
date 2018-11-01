@@ -1,22 +1,16 @@
 import { PersonStatus } from '../../common/model/entity/users/person';
 import {  MobileDeviceDTO } from '../../common/model/dto/member';
-import {
-  Path, GET, POST,
-  HttpError, Errors, PathParam, Return, QueryParam, ContextRequest 
-} from "typescript-rest";
+import {Path, GET, POST,PathParam, Return, QueryParam} from "typescript-rest";
 import {
   MemberRegistrationDTO,MemberInfoDTO
 } from "../../common/model/dto/member";
-import { HTTPUtils } from "../../common/utils/http-utils";
-import { JSONSerialization } from "../../common/utils/json-serialization";
 import { Member } from "../../common/model/entity/users/member";
-import { Request } from 'express';
 import { PersonRepository } from '../../common/repositories/person-repository';
 import { MemberRepository } from '../../common/repositories/member-repository';
 import { AuthPrivilege } from '../../common/repositories/auth-repository';
 import { getConnection } from 'typeorm';
 import {BaseController} from "./base-controller";
-import {Authenticate} from "../annotations/authenticate";
+import {Authenticate, JSONResponse} from "../annotations";
 
 @Path('/api/v1/member/')
 export class MemberController extends BaseController {
@@ -24,67 +18,65 @@ export class MemberController extends BaseController {
   private _memberRepository: MemberRepository = new MemberRepository(getConnection());
   private _personRepository: PersonRepository = new PersonRepository(getConnection());
 
+  @JSONResponse
   @Authenticate(AuthPrivilege.SUPERUSER)
   @Path("/all")
   @GET
   public async getAllMembers(@QueryParam("g") group?: number, @QueryParam("q") query?: string) {
+
     console.log({group: group, query: query});
     const members: Member[] = await this._memberRepository.getAllMembers();
-    return members.map(member => JSONSerialization.serializeObject(MemberInfoDTO.create(member)));
+    return members.map(member => MemberInfoDTO.create(member));
+
   }
 
+	@JSONResponse
   @Authenticate(AuthPrivilege.BASIC)
   @GET
   public async getMemberInfo() {
+
     const member = this.pendingMember;
-    return JSONSerialization.serializeObject(MemberInfoDTO.create(member!));
+
+    if (member)
+      return MemberInfoDTO.create(member);
+
   }
 
+  @JSONResponse
   @POST
-  public async createMember(@ContextRequest request: Request) {
+  public async createMember() {
 
-	  const newMember: MemberRegistrationDTO = HTTPUtils.parseBody(request.body, MemberRegistrationDTO);
-	  let member: Member;
-	  try {
-		  member = await this._memberRepository.createMember(newMember);
-	  } catch (error) {
-	    this.throw(error);
-	    return;
-    }
+	  const newMember: MemberRegistrationDTO = JSON.parse(this.getPendingRequest().body) as MemberRegistrationDTO;
+	  const member = await this._memberRepository.createMember(newMember);
 	  const personActivationCode = await this._personRepository.createActivationCode(member.person);
 	  // TODO: Send the activation URL by email !!
-	  return JSONSerialization.serializeObject(newMember);
+	  return newMember;
 
   }
 
+  @JSONResponse
   @Path("/activate/:code/")
   @GET
   public async activateMember(@PathParam("code") code: string) {
 
-    try {
-      const person = await this._personRepository.getActivationCodePerson(code);
-      person.status = PersonStatus.ACTIVE;
+	  const person = await this._personRepository.getActivationCodePerson(code);
+	  person.status = PersonStatus.ACTIVE;
 
-      await this._personRepository.savePerson(person);
-      await this._personRepository.deleteActivationCode(code);
+	  await this._personRepository.savePerson(person);
+	  await this._personRepository.deleteActivationCode(code);
 
-      return new Return.RequestAccepted(`/api/v1/member/`);
-    } catch (error) {
-      if (error instanceof HttpError)
-        this.throw(error);  
-      else
-        this.throw(new Errors.BadRequestError((error as Error).message));
-    }
+	  return new Return.RequestAccepted(`/api/v1/member/`);
 
   }
 
+  @JSONResponse
   @Authenticate(AuthPrivilege.BASIC)
   @Path("/devices/")
   @POST
-  public async registerMobileDevice(@ContextRequest request: Request) {
+  public async registerMobileDevice() {
 
     const member = this.pendingMember!;
-    const mobileDeviceDTO = HTTPUtils.parseBody(request.body, MobileDeviceDTO);
+    const mobileDeviceDTO = this.getPendingRequest().body as MobileDeviceDTO;
     
     await this._memberRepository.registerMobileDevice(member, mobileDeviceDTO);
 
@@ -92,6 +84,7 @@ export class MemberController extends BaseController {
 
   }
 
+  @JSONResponse
   @Authenticate(AuthPrivilege.BASIC)
   @Path("/devices/")
   @GET
@@ -100,7 +93,7 @@ export class MemberController extends BaseController {
     const member = this.pendingMember!;
     
     return (await this._memberRepository.getMobileDevices(member))
-    .map(device => JSONSerialization.serializeObject(MobileDeviceDTO.create(device.id)))
+    .map(device => MobileDeviceDTO.create(device.id));
 
   }
 

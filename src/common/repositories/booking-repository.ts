@@ -10,7 +10,7 @@ export class BookingRepository extends ARepository {
 
   public async saveBooking(booking: Booking): Promise<void> {
 
-    await this._bookingRepository.save(booking);
+    await this._bookingRepository.insert(booking);
 
   }
 

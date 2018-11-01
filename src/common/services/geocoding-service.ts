@@ -4,6 +4,7 @@ import { Address } from './../model/entity/common/address';
 import { Location } from '../model/entity/common/location';
 import { RestClient } from "typed-rest-client";
 import { getConfig } from '../../config';
+import {Connection} from "typeorm";
 
 export interface ICoordinates {
   latitude: number;
@@ -24,8 +25,8 @@ interface IPlaceDetails {
 
 export class GeocodingService {
 
-  public static instance: GeocodingService = new GeocodingService;
-  
+  constructor(private connection: Connection) {}
+
   private _restClient: RestClient = new RestClient("PRESSY-REST-AGENT");
   private GOOGLE_SERVICES_URL = "https://maps.googleapis.com/maps/api";
 
@@ -59,7 +60,7 @@ export class GeocodingService {
 
     address.city = components.locality!;
     address.country = components.political!;
-    address.zipcode = components.postal_code!;
+    address.zipCode = components.postal_code!;
     address.streetName = components.route!;
     address.streetNumber = components.street_number!;
     address.formattedAddress = placeDetails.formatted_address;
@@ -93,7 +94,7 @@ ${coordinates.latitude},${coordinates.longitude}&key=${getConfig().googleMapsAPI
 
     address.city = components.locality!;
     address.country = components.political!;
-    address.zipcode = components.postal_code!;
+    address.zipCode = components.postal_code!;
     address.streetName = components.route!;
     address.streetNumber = components.street_number!;
     address.formattedAddress = placeDetails.formatted_address;
@@ -131,7 +132,7 @@ ${coordinates.latitude},${coordinates.longitude}&key=${getConfig().googleMapsAPI
 
   private async addressFromResponse(addressResponse: IGeocodeAddressResult): Promise<Address> {
     
-    const locationRepository = new LocationRepository;
+    const locationRepository = new LocationRepository(this.connection);
     var completeAddress = new Address;
 
     completeAddress.city = addressResponse.address_components.locality!;

@@ -1,19 +1,11 @@
-import { SlotType, Slot } from './../entity/order/slot';
-import { JsonObject, JsonProperty } from "json2typescript";
-import { JSONSerialization } from '../../utils/json-serialization';
+import { SlotType, Slot } from '../entity/order/slot';
 import { DateUtils } from '../../utils';
 
 
-@JsonObject
 export class SlotDTO {
 
-  @JsonProperty("id", Number)
   public id: number = -1;
-
-  @JsonProperty("type", Number)
   public type: SlotType = SlotType.LIGHT;
-
-  @JsonProperty("startDate", JSONSerialization.UTCDateConvert)
   public startDate: Date = DateUtils.now();
 
   public static create(slot: Slot): SlotDTO {

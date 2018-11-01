@@ -34,24 +34,24 @@ export class Address {
 
   public static async create(createAddressDTO: CreateAddressDTO): Promise<Address> {
 
-    const locationRepository = new LocationRepository;
-    const geocodingService = new GeocodingService;
+    // const locationRepository = new LocationRepository;
+    // const geocodingService = new GeocodingService;
     const address = new Address;
-    const addressDTO = await geocodingService.getNormalizedAddress(createAddressDTO);
+    // const addressDTO = await geocodingService.getNormalizedAddress(createAddressDTO);
 
-    address.city = addressDTO.city;
-    address.country = addressDTO.country;
-    address.formattedAddress = addressDTO.formattedAddress;
-    address.streetName = addressDTO.streetName;
-    address.streetNumber = addressDTO.streetNumber;
-    address.zipCode = addressDTO.zipcode;
-
-    address.location = new Location;
-
-    address.location.latitude = addressDTO.location!.latitude;
-    address.location.longitude = addressDTO.location!.longitude;
-
-    await locationRepository.saveNewLocation(address.location);
+    // address.city = addressDTO.city;
+    // address.country = addressDTO.country;
+    // address.formattedAddress = addressDTO.formattedAddress;
+    // address.streetName = addressDTO.streetName;
+    // address.streetNumber = addressDTO.streetNumber;
+    // address.zipCode = addressDTO.zipCode;
+    //
+    // address.location = new Location;
+    //
+    // address.location.latitude = addressDTO.location!.latitude;
+    // address.location.longitude = addressDTO.location!.longitude;
+    //
+    // await locationRepository.saveNewLocation(address.location);
 
     return address;
 
