@@ -7,6 +7,6 @@ node_js:
   - 7
   - 6
 install:
-  - cd core && npm install && cd ..
+  - npm install
 script:
-  - cd core && npm test
+  - npm test
