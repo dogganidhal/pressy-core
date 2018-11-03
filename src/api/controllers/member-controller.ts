@@ -8,15 +8,15 @@ import { Member } from "../../common/model/entity/users/member";
 import { PersonRepository } from '../../common/repositories/person-repository';
 import { MemberRepository } from '../../common/repositories/member-repository';
 import { AuthPrivilege } from '../../common/repositories/auth-repository';
-import { getConnection } from 'typeorm';
 import {BaseController} from "./base-controller";
 import {Authenticate, JSONResponse} from "../annotations";
+import {Database} from "../../common/db";
 
 @Path('/api/v1/member/')
 export class MemberController extends BaseController {
 
-  private _memberRepository: MemberRepository = new MemberRepository(getConnection());
-  private _personRepository: PersonRepository = new PersonRepository(getConnection());
+  private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
+  private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
 
   @JSONResponse
   @Authenticate(AuthPrivilege.SUPERUSER)

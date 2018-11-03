@@ -1,8 +1,17 @@
 import { GeocodingService } from "../../src/common/services/geocoding-service";
+import {Connection} from "typeorm";
+import {Database} from "../../src/common/db";
 
 describe("Geocoding service test suit", async () => {
 
-  const service = new GeocodingService;
+  let connection: Connection;
+  let service: GeocodingService;
+
+  beforeAll(async done => {
+    connection = await Database.createConnection();
+    service = new GeocodingService(connection);
+    done();
+  });
 
   it("Fetches Zenpark address components from it's placeId", async (done) => {
 
@@ -54,5 +63,10 @@ describe("Geocoding service test suit", async () => {
     }
 
   });
+
+  afterAll(async done => {
+    await connection.close();
+    done();
+  })
 
 });

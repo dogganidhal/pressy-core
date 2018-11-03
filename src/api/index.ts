@@ -4,10 +4,10 @@ import * as bodyParser from "body-parser";
 import { DocumentationController } from "./controllers/doc-controller";
 import { OrderController } from "./controllers/order-controller";
 import { BookingController } from "./controllers/booking-controller";
-import { DB } from "../common/db";
 import { DriverController } from "./controllers/driver-controller";
 import { MemberController } from "./controllers/member-controller";
 import { AuthController } from "./controllers/auth-controller";
+import {Database} from "../common/db";
 
 export class API {
 
@@ -16,11 +16,14 @@ export class API {
 	constructor() {
     this._express = express();
     this._middleware();
-    this._config();
+    this._config()
+	    .then(_ => console.warn("Successfully connected to database"))
+	    .catch(error => console.warn(error));
   }
 
 	private async _config() {
-    DB.configureConnectionOptions();
+		const connection = await Database.createConnection();
+		console.log(connection.options);
     this.registerController(DocumentationController);
     this.registerController(DriverController);
     this.registerController(MemberController);
@@ -38,7 +41,7 @@ export class API {
     Server.buildServices(this._express, controller);
   }
 
-	public async run(port: number | string) {
+	public run(port: number | string) {
     this._express.listen(port);
   }
 

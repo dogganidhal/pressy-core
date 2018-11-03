@@ -1,14 +1,27 @@
-{
-  "type": "postgres",
-  "host": "localhost",
-  "port": 5432,
-  "username": "root",
-  "password": "",
-  "database": "pressy",
-  "logging": true,
-  "logger": "file",
-  "synchronize": false,
-  "entities": [
-    "src/common/model/entity/**/*"
-  ]
-}
+[
+  {
+    "name": "local",
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "root",
+    "password": "",
+    "database": "pressy",
+    "logging": true,
+    "logger": "file",
+    "synchronize": false,
+    "entities": [
+      "src/common/model/entity/**/*"
+    ]
+  },
+  {
+    "name": "heroku",
+    "type": "postgres",
+    "logging": true,
+    "logger": "file",
+    "synchronize": false,
+    "entities": [
+      "src/common/model/entity/**/*"
+    ]
+  }
+]

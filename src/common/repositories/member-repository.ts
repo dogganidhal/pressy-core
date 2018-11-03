@@ -1,6 +1,6 @@
 import {MobileDevice} from './../model/entity/users/device';
 import {MemberRegistrationDTO, MobileDeviceDTO} from '../model/dto/member';
-import {Repository} from "typeorm";
+import {Connection, Repository} from "typeorm";
 import {Exception} from "../errors";
 import {Member, PersonActivationCode} from '../model/entity/users/member';
 import {Person} from '../model/entity/users/person';

@@ -8,19 +8,19 @@ import {Member} from "../../common/model/entity/users/member";
 import {Booking} from "../../common/model/entity/booking";
 import {SlotType} from "../../common/model/entity/order/slot";
 import {ISlot, SlotDTO} from "../../common/model/dto/slot";
-import {getConnection} from "typeorm";
 import {BaseController} from "./base-controller";
-import {Authenticate} from "../annotations/authenticate";
-import {JSONResponse} from "../annotations/json-response";
+import {Authenticate} from "../annotations";
+import {JSONResponse} from "../annotations";
 import {IAddress} from "../../common/model/dto/address";
 import {IMemberInfo} from "../../common/model/dto/member";
+import {Database} from "../../common/db";
 
 
 @Path('/api/v1/booking/')
 export class BookingController extends BaseController {
 
-  private _bookingRepository: BookingRepository = new BookingRepository(getConnection());
-  private _slotsRepository: SlotRepository = new SlotRepository(getConnection());
+  private _bookingRepository: BookingRepository = new BookingRepository(Database.getConnection());
+  private _slotsRepository: SlotRepository = new SlotRepository(Database.getConnection());
 
   @JSONResponse
   @Authenticate()

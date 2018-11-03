@@ -1,16 +1,16 @@
-import { createConnection } from 'typeorm';
 import { Connection } from 'typeorm';
 import { SlotRepository } from "../../src/common/repositories/slot-repository";
 import { SlotType } from "../../src/common/model/entity/order/slot";
+import {Database} from "../../src/common/db";
 
 
 describe("Slot repository operation related tests", () => {
 
-  var slotRepository: SlotRepository;
-  var connection: Connection;
+  let slotRepository: SlotRepository;
+  let connection: Connection;
 
   beforeAll(async done => {
-    connection = await createConnection();
+    connection = await Database.createConnection();
     slotRepository = new SlotRepository(connection);
     done();
   });

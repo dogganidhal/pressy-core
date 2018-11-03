@@ -54,11 +54,11 @@ export class AddressDTO {
 
   constructor(address: IAddress) {
     this.streetName = address.streetName;
-	  this.streetNumber = address.streetName;
-	  this.city = address.streetName;
-	  this.zipCode = address.streetName;
-	  this.country = address.streetName;
-	  this.formattedAddress = address.streetName;
+	  this.streetNumber = address.streetNumber;
+	  this.city = address.city;
+	  this.zipCode = address.zipCode;
+	  this.country = address.country;
+	  this.formattedAddress = address.formattedAddress;
 	  this.location = address.location && new AddressLocationDTO(address.location);
   }
 

@@ -1,4 +1,4 @@
-import { Validation } from "../../src/common/utils/validation";
+import { Validation } from "../../src/common/utils";
 
 
 describe("Validation Test Suite", () => {

@@ -1,4 +1,3 @@
-import { createConnection } from 'typeorm';
 import { MemberRepository } from '../../src/common/repositories/member-repository';
 import { Connection } from 'typeorm';
 import { MemberRegistrationDTO } from '../../src/common/model/dto/member';
@@ -9,6 +8,7 @@ import {APIError} from "../../src/api/model/api-error";
 import RandomString from "randomstring";
 import {Person} from "../../src/common/model/entity/users/person";
 import {Member} from "../../src/common/model/entity/users/member";
+import {Database} from "../../src/common/db";
 
 describe("Testing Authentication Endpoints", () => {
 
@@ -25,7 +25,7 @@ describe("Testing Authentication Endpoints", () => {
 
   beforeAll(async (done) => {
 
-    connection = await createConnection();
+    connection = await Database.createConnection();
     memberRepository = new MemberRepository(connection);
     let __dbPersonRepository = connection.getRepository(Person);
     let __dbMemberRepository = connection.getRepository(Member);

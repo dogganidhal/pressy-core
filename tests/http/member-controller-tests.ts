@@ -1,10 +1,11 @@
 import Randomstring from 'randomstring';
 import request from "supertest";
-import { Connection, createConnection } from 'typeorm';
+import { Connection } from 'typeorm';
 import { MemberRegistrationDTO } from '../../src/common/model/dto/member';
 import { API } from "../../src/api";
 import { MemberRepository } from '../../src/common/repositories/member-repository';
 import {APIError} from "../../src/api/model/api-error";
+import {Database} from "../../src/common/db";
 
 describe("Testing MemberController Endpoints =>", () => {
 
@@ -27,7 +28,7 @@ describe("Testing MemberController Endpoints =>", () => {
 	} as MemberRegistrationDTO;
 
   beforeAll(async done => {
-    connection = await createConnection();
+    connection = await Database.createConnection();
     memberRepository = new MemberRepository(connection);
 	  await memberRepository.createMember(duplicateMemberDTO);
     done();

@@ -1,11 +1,11 @@
 import {Connection} from 'typeorm';
 import { MemberRepository } from '../../src/common/repositories/member-repository';
 import { MemberRegistrationDTO } from "../../src/common/model/dto/member";
-import { createConnection } from 'typeorm';
 import RandomString from "randomstring";
 import bcrypt from "bcrypt";
 import {Member} from "../../src/common/model/entity/users/member";
 import {Person} from "../../src/common/model/entity/users/person";
+import {Database} from "../../src/common/db";
 
 
 describe("MemberRepository Write/Delete Operations Tests", () => {
@@ -28,7 +28,7 @@ describe("MemberRepository Write/Delete Operations Tests", () => {
 	} as MemberRegistrationDTO;
 
   beforeAll(async done => {
-    connection = await createConnection();
+    connection = await Database.createConnection();
     memberRepository = new MemberRepository(connection);
     done();
   });
@@ -93,7 +93,7 @@ describe("MemberRepository Read Operations Tests", () => {
   };
 
   beforeAll(async (done) => {
-    connection = await createConnection();
+    connection = await Database.createConnection();
     memberRepository = new MemberRepository(connection);
     await memberRepository.createMember(memberDTO);
     done();

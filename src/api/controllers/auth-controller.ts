@@ -1,4 +1,3 @@
-import {getConnection} from 'typeorm';
 import {Path, PathParam, POST, Return} from "typescript-rest";
 import {
 	LoginRequestDTO,
@@ -14,13 +13,15 @@ import {MemberRepository} from "../../common/repositories/member-repository";
 import {AuthRepository} from "../../common/repositories/auth-repository";
 import {BaseController} from "./base-controller";
 import {JSONResponse} from "../annotations";
+import {Database} from "../../common/db";
+
 
 @Path('/api/v1/auth/')
 export class AuthController extends BaseController {
 
-  private _memberRepository: MemberRepository = new MemberRepository(getConnection());
-  private _personRepository: PersonRepository = new PersonRepository(getConnection());
-  private _authRepository: AuthRepository = new AuthRepository(getConnection());
+  private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
+  private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
+  private _authRepository: AuthRepository = new AuthRepository(Database.getConnection());
 
   @JSONResponse
   @Path("/login/")
