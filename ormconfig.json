@@ -22,6 +22,8 @@
     "synchronize": false,
     "entities": [
       "src/common/model/entity/**/*"
-    ]
+    ],
+    "ssl": true,
+    "url": "postgres://rsqhwbycjlvzuu:cac9efedcb4ea55297638432ad0b4e5abc3c92e0b6cdd7cefacab7b39ce04c43@ec2-79-125-127-60.eu-west-1.compute.amazonaws.com:5432/d8r87077slmlfm"
   }
 ]
