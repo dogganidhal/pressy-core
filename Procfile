@@ -1,1 +1,2 @@
-web: npm run prod
+staging: npm run staging
+prod: npm run prod
