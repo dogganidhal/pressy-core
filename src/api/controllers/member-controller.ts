@@ -1,16 +1,14 @@
-import { PersonStatus } from '../../common/model/entity/users/person';
-import {  MobileDeviceDTO } from '../../common/model/dto/member';
-import {Path, GET, POST,PathParam, Return, QueryParam} from "typescript-rest";
-import {
-  MemberRegistrationDTO,MemberInfoDTO
-} from "../../common/model/dto/member";
-import { Member } from "../../common/model/entity/users/member";
-import { PersonRepository } from '../../common/repositories/person-repository';
-import { MemberRepository } from '../../common/repositories/member-repository';
-import { AuthPrivilege } from '../../common/repositories/auth-repository';
+import {PersonStatus} from '../../common/model/entity/users/person';
+import {MemberInfoDTO, MemberRegistrationDTO, MobileDeviceDTO} from '../../common/model/dto/member';
+import {GET, Path, PathParam, POST, QueryParam, Return} from "typescript-rest";
+import {Member} from "../../common/model/entity/users/member";
+import {PersonRepository} from '../../common/repositories/person-repository';
+import {MemberRepository} from '../../common/repositories/member-repository';
 import {BaseController} from "./base-controller";
 import {Authenticate, JSONResponse} from "../annotations";
 import {Database} from "../../common/db";
+import {Crypto} from "../../common/services/crypto";
+import {Exception} from "../../common/errors";
 
 @Path('/api/v1/member/')
 export class MemberController extends BaseController {
@@ -19,7 +17,7 @@ export class MemberController extends BaseController {
   private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
 
   @JSONResponse
-  @Authenticate(AuthPrivilege.SUPERUSER)
+  @Authenticate(Crypto.SigningCategory.ADMIN)
   @Path("/all")
   @GET
   public async getAllMembers(@QueryParam("g") group?: number, @QueryParam("q") query?: string) {
@@ -38,11 +36,11 @@ export class MemberController extends BaseController {
   }
 
 	@JSONResponse
-  @Authenticate(AuthPrivilege.BASIC)
+  @Authenticate([Crypto.SigningCategory.ADMIN, Crypto.SigningCategory.MEMBER])
   @GET
   public async getMemberInfo() {
 
-    const member = this.pendingMember;
+  	let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
 
     if (member)
       return new MemberInfoDTO({
@@ -68,7 +66,6 @@ export class MemberController extends BaseController {
 
   }
 
-  @JSONResponse
   @Path("/activate/:code/")
   @GET
   public async activateMember(@PathParam("code") code: string) {
@@ -83,13 +80,16 @@ export class MemberController extends BaseController {
 
   }
 
-  @JSONResponse
-  @Authenticate(AuthPrivilege.BASIC)
+  @Authenticate([Crypto.SigningCategory.ADMIN, Crypto.SigningCategory.MEMBER])
   @Path("/devices/")
   @POST
   public async registerMobileDevice() {
 
-    const member = this.pendingMember!;
+    const member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
+
+    if (!member)
+    	throw new Exception.MemberNotFoundException(this.pendingPerson.email);
+
     const mobileDeviceDTO = this.getPendingRequest().body as MobileDeviceDTO;
     
     await this._memberRepository.registerMobileDevice(member, mobileDeviceDTO);
@@ -99,12 +99,15 @@ export class MemberController extends BaseController {
   }
 
   @JSONResponse
-  @Authenticate(AuthPrivilege.BASIC)
+  @Authenticate([Crypto.SigningCategory.ADMIN, Crypto.SigningCategory.MEMBER])
   @Path("/devices/")
   @GET
   public async getMobileDevices() {
 
-    const member = this.pendingMember!;
+	  const member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
+
+	  if (!member)
+		  throw new Exception.MemberNotFoundException(this.pendingPerson.email);
     
     return (await this._memberRepository.getMobileDevices(member))
     .map(device => new MobileDeviceDTO(device.id));

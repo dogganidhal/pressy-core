@@ -9,26 +9,28 @@ import {Booking} from "../../common/model/entity/booking";
 import {SlotType} from "../../common/model/entity/order/slot";
 import {ISlot, SlotDTO} from "../../common/model/dto/slot";
 import {BaseController} from "./base-controller";
-import {Authenticate} from "../annotations";
-import {JSONResponse} from "../annotations";
+import {Authenticate, JSONResponse} from "../annotations";
 import {IAddress} from "../../common/model/dto/address";
 import {IMemberInfo} from "../../common/model/dto/member";
 import {Database} from "../../common/db";
+import {Crypto} from "../../common/services/crypto";
+import {MemberRepository} from "../../common/repositories/member-repository";
 
 
 @Path('/api/v1/booking/')
 export class BookingController extends BaseController {
 
+	private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
   private _bookingRepository: BookingRepository = new BookingRepository(Database.getConnection());
   private _slotsRepository: SlotRepository = new SlotRepository(Database.getConnection());
 
   @JSONResponse
-  @Authenticate()
+  @Authenticate([Crypto.SigningCategory.ADMIN, Crypto.SigningCategory.MEMBER])
   @POST
   public async createBooking() {
 
 	  const createBookingRequestDTO = this.getPendingRequest().body as CreateBookingRequestDTO;
-	  const member: Member = this.pendingMember!;
+	  const member: Member = await this._memberRepository.getMemberFromPersonOrFail(this.pendingPerson);
 	  const booking = await Booking.create(member, createBookingRequestDTO);
 
 	  await this._bookingRepository.saveBooking(booking);
@@ -39,11 +41,12 @@ export class BookingController extends BaseController {
   }
 
   @JSONResponse
-  @Authenticate()
+  @Authenticate([Crypto.SigningCategory.ADMIN, Crypto.SigningCategory.MEMBER])
   @GET
   public async getBookings() {
 
-	  const bookings = await this._bookingRepository.getBookingsForMember(this.pendingMember!);
+  	let member = await this._memberRepository.getMemberFromPersonOrFail(this.pendingPerson);
+	  let bookings = await this._bookingRepository.getBookingsForMember(member);
 	  return bookings.map(booking => {
 
 	  	let pickupSlot: ISlot = {

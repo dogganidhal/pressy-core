@@ -56,19 +56,19 @@ export namespace Exception {
 
   export class AccessTokenNotFoundException extends APIException {
     constructor() {
-      super('AccessTokenNotFoundException', 401, `Access token not found`);
+      super('AccessTokenNotFoundException', 403, `Access token not found`);
     }
   }
 
   export class AccessTokenExpiredException extends APIException {
     constructor() {
-      super('AccessTokenExpiredException', 401, `Access token expired`);
+      super('AccessTokenExpiredException', 403, `Access token expired`);
     }
   }
 
   export class InvalidAccessTokenException extends APIException {
-    constructor(msg?: string) {
-      super('InvalidAccessTokenException', 401, `Invalid access token${msg ? " : " + msg : null}`);
+    constructor() {
+      super('InvalidAccessTokenException', 403, `Invalid access token`);
     }
   }
 

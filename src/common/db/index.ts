@@ -13,7 +13,8 @@ export namespace Database {
 
 	export async function createConnection(): Promise<Connection> {
 
-		if (process.env.NODE_ENV == "local") {
+		if (process.env.NODE_ENV != "staging" && process.env.NODE_ENV != "production") {
+			// Local
 			connectionName = "local";
 			return createTypeORMConnection("local");
 		}

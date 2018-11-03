@@ -17,13 +17,12 @@ export class API {
     this._express = express();
     this._middleware();
     this._config()
-	    .then(_ => console.warn("Successfully connected to database"))
+	    .then(_ => console.info("Successfully connected to database"))
 	    .catch(error => console.warn(error));
   }
 
 	private async _config() {
-		const connection = await Database.createConnection();
-		console.log(connection.options);
+		await Database.createConnection();
     this.registerController(DocumentationController);
     this.registerController(DriverController);
     this.registerController(MemberController);

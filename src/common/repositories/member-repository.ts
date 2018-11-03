@@ -18,8 +18,16 @@ export class MemberRepository extends ARepository {
     return (await this._memberRepository).find();
   }
 
+  public async getMemberFromPerson(person:Person): Promise<Member | undefined> {
+    return await this._memberRepository.findOne({person: person}, {relations: ["person"]});
+  }
+
+	public async getMemberFromPersonOrFail(person:Person): Promise<Member> {
+		return await this._memberRepository.findOneOrFail({person: person}, {relations: ["person"]});
+	}
+
   public async getMemberById(id: number): Promise<Member | undefined> {
-    return this._memberRepository.findOne(id);
+    return this._memberRepository.findOne(id, {relations: ["person"]});
   }
 
   public async getMemberByEmail(email: string): Promise<Member | undefined> {
