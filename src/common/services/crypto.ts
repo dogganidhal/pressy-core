@@ -120,5 +120,48 @@ export namespace Crypto {
 
 	}
 
+	export async function refreshCredentials(refreshToken: string): Promise<IAuthCredentials> {
+
+		return new Promise<IAuthCredentials>((resolve, reject) => {
+
+			let verifyOptions = {
+				...__verifyOptions,
+				subject: SigningSubject.REFRESH
+			};
+
+			verify(refreshToken, _publicKey, verifyOptions, (error, decoded) => {
+
+				if (error) {
+					reject(new Exception.InvalidRefreshTokenException);
+					return;
+				}
+
+				let decodedPayload: IAuthPayload = typeof decoded == "string" ? JSON.parse(decoded) : decoded;
+				let payload: IAuthPayload = {
+					id: decodedPayload.id,
+					category: decodedPayload.category
+				};
+				let signOptions = {
+					...__signOptions,
+					expiresIn: "1h",
+					subject: SigningSubject.ACCESS
+				};
+
+				let token = sign(payload, _privateKey, signOptions);
+				let refreshToken = sign(payload, _privateKey, {...__signOptions, subject: SigningSubject.REFRESH});
+
+				resolve({
+					accessToken: token,
+					refreshToken: refreshToken,
+					type: AuthTokenType.BEARER,
+					expiresIn: 3600
+				});
+
+			});
+
+		});
+
+	}
+
 
 }

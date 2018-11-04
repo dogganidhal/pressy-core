@@ -72,6 +72,12 @@ export namespace Exception {
     }
   }
 
+	export class InvalidRefreshTokenException extends APIException {
+		constructor() {
+			super('InvalidRefreshTokenException', 403, `Invalid access token`);
+		}
+	}
+
   export class RequiredFieldNotFoundException extends APIException {
     constructor() {
       super('RequiredFieldNotFoundException', 400, `One or more required fields are missing`);

@@ -46,7 +46,7 @@ export class AuthController extends BaseController {
   public async refreshCredentials() {
 
 	  const refreshRequest: RefreshCredentialsRequestDTO = JSON.parse(this.getPendingRequest().body);
-	  // return await this._authRepository.createNewCredentials(refreshRequest);
+	  return await Crypto.refreshCredentials(refreshRequest.refreshToken);
 
   }
 
