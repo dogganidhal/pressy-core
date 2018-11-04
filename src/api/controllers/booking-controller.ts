@@ -11,10 +11,11 @@ import {ISlot, SlotDTO} from "../../common/model/dto/slot";
 import {BaseController} from "./base-controller";
 import {Authenticate, JSONResponse} from "../annotations";
 import {IAddress} from "../../common/model/dto/address";
-import {IMemberInfo} from "../../common/model/dto/member";
+import {IMemberInfo, MemberRegistrationDTO} from "../../common/model/dto/member";
 import {Database} from "../../common/db";
 import {Crypto} from "../../common/services/crypto";
 import {MemberRepository} from "../../common/repositories/member-repository";
+import {HTTP} from "../../common/utils/http";
 
 
 @Path('/api/v1/booking/')
@@ -29,7 +30,7 @@ export class BookingController extends BaseController {
   @POST
   public async createBooking() {
 
-	  const createBookingRequestDTO = this.getPendingRequest().body as CreateBookingRequestDTO;
+	  const createBookingRequestDTO = HTTP.parseJSONBody(this.getPendingRequest().body, CreateBookingRequestDTO);
 	  const member: Member = await this._memberRepository.getMemberFromPersonOrFail(this.pendingPerson);
 	  const booking = await Booking.create(member, createBookingRequestDTO);
 

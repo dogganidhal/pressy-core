@@ -1,3 +1,4 @@
+import {Required} from "../../annotations";
 
 export interface IAddressLocation {
 	longitude: number;
@@ -6,13 +7,12 @@ export interface IAddressLocation {
 
 export class AddressLocationDTO {
 
+	@Required
 	public longitude: number;
+
+	@Required
 	public latitude: number;
 
-  constructor(location: IAddressLocation) {
-    this.latitude = location.latitude;
-	  this.longitude = location.longitude;
-  }
 }
 
 export interface ICreateAddress {
@@ -22,13 +22,11 @@ export interface ICreateAddress {
 
 export class CreateAddressDTO {
 
+	@Required
   public placeId: string;
-  public location: AddressLocationDTO;
 
-  constructor(address: ICreateAddress) {
-    this.placeId = address.placeId;
-    this.location = new AddressLocationDTO(address.location);
-  }
+	@Required
+  public location: AddressLocationDTO;
 
 }
 
@@ -59,7 +57,10 @@ export class AddressDTO {
 	  this.zipCode = address.zipCode;
 	  this.country = address.country;
 	  this.formattedAddress = address.formattedAddress;
-	  this.location = address.location && new AddressLocationDTO(address.location);
+	  this.location = address.location && {
+	  	latitude: address.location.latitude,
+		  longitude: address.location.longitude
+	  };
   }
 
 }

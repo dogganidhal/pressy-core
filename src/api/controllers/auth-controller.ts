@@ -14,6 +14,7 @@ import {BaseController} from "./base-controller";
 import {JSONResponse} from "../annotations";
 import {Database} from "../../common/db";
 import {Crypto} from "../../common/services/crypto";
+import {HTTP} from "../../common/utils/http";
 
 
 @Path('/api/v1/auth/')
@@ -27,9 +28,9 @@ export class AuthController extends BaseController {
   @POST
   public async login() {
 
-	  const loginRequest: LoginRequestDTO = JSON.parse(this.getPendingRequest().body);
+	  let loginRequest = HTTP.parseJSONBody(this.getPendingRequest().body, LoginRequestDTO);
+	  let member = await this._memberRepository.getMemberByEmail(loginRequest.email);
 
-	  const member = await this._memberRepository.getMemberByEmail(loginRequest.email);
 	  if (!member)
 		  throw new Exception.MemberNotFoundException(loginRequest.email);
 
@@ -45,8 +46,8 @@ export class AuthController extends BaseController {
   @POST
   public async refreshCredentials() {
 
-	  const refreshRequest: RefreshCredentialsRequestDTO = JSON.parse(this.getPendingRequest().body);
-	  return await Crypto.refreshCredentials(refreshRequest.refreshToken);
+	  const {refreshToken} = JSON.parse(this.getPendingRequest().body) as RefreshCredentialsRequestDTO;
+	  return await Crypto.refreshCredentials(refreshToken);
 
   }
 
@@ -57,8 +58,7 @@ export class AuthController extends BaseController {
 
 	  const resetCodeRequest: MemberPasswordResetCodeRequestDTO = JSON.parse(this.getPendingRequest().body);
 
-	  const person = await this._personRepository
-		  .getPersonByEmail(resetCodeRequest.email);
+	  const person = await this._personRepository.getPersonByEmail(resetCodeRequest.email);
 
 	  if (person == undefined)
 	    throw new Exception.MemberNotFoundException(resetCodeRequest.email);
@@ -66,7 +66,9 @@ export class AuthController extends BaseController {
 	  const resetCode = await this._personRepository.createPasswordResetCode(person);
 
 	  // TODO: Return an empty "accepted" response, and call the email service
-	  return new MemberPasswordResetCodeDTO(resetCode.id);
+	  return {
+	  	code: resetCode.id
+	  } as MemberPasswordResetCodeDTO;
 
   }
 

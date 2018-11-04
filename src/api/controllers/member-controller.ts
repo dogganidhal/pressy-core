@@ -9,6 +9,7 @@ import {Authenticate, JSONResponse} from "../annotations";
 import {Database} from "../../common/db";
 import {Crypto} from "../../common/services/crypto";
 import {Exception} from "../../common/errors";
+import {HTTP} from "../../common/utils/http";
 
 @Path('/api/v1/member/')
 export class MemberController extends BaseController {
@@ -58,7 +59,7 @@ export class MemberController extends BaseController {
   @POST
   public async createMember() {
 
-	  const newMember: MemberRegistrationDTO = JSON.parse(this.getPendingRequest().body) as MemberRegistrationDTO;
+	  const newMember = HTTP.parseJSONBody(this.getPendingRequest().body, MemberRegistrationDTO);
 	  const member = await this._memberRepository.createMember(newMember);
 	  const personActivationCode = await this._personRepository.createActivationCode(member.person);
 	  // TODO: Send the activation URL by email !!
@@ -110,7 +111,7 @@ export class MemberController extends BaseController {
 		  throw new Exception.MemberNotFoundException(this.pendingPerson.email);
     
     return (await this._memberRepository.getMobileDevices(member))
-    .map(device => new MobileDeviceDTO(device.id));
+    .map(device => ({deviceId: device.id}));
 
   }
 

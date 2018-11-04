@@ -6,9 +6,9 @@ import { API } from "../../src/api";
 import request from "supertest";
 import {APIError} from "../../src/api/model/api-error";
 import RandomString from "randomstring";
-import {Person} from "../../src/common/model/entity/users/person";
-import {Member} from "../../src/common/model/entity/users/member";
 import {Database} from "../../src/common/db";
+import {Crypto} from "../../src/common/services/crypto";
+import AuthTokenType = Crypto.AuthTokenType;
 
 describe("Testing Authentication Endpoints", () => {
 
@@ -27,11 +27,8 @@ describe("Testing Authentication Endpoints", () => {
 
     connection = await Database.createConnection();
     memberRepository = new MemberRepository(connection);
-    let __dbPersonRepository = connection.getRepository(Person);
-    let __dbMemberRepository = connection.getRepository(Member);
 
-    await __dbPersonRepository.insert(Person.create(testMember));
-    await __dbMemberRepository.insert(Member.create(testMember));
+    await memberRepository.createMember(testMember);
 
     done();
 
@@ -42,7 +39,7 @@ describe("Testing Authentication Endpoints", () => {
   	expect.assertions(4);
 
     request(api.getApp())
-      .post("/api/v1/auth/login")
+      .post("/api/v1/auth/member")
       .set("Content-Type", "application/json")
       .send({email: testMember.email, password: "test"})
       .expect(200)
@@ -53,7 +50,7 @@ describe("Testing Authentication Endpoints", () => {
         expect(token.accessToken).not.toBeNull();
         expect(token.refreshToken).not.toBeNull();
         expect(token.expiresIn).toEqual(3600);
-        expect(token.type).toEqual("Bearer");
+        expect(token.type).toEqual(AuthTokenType.BEARER);
 
         done();
 
@@ -66,10 +63,10 @@ describe("Testing Authentication Endpoints", () => {
 
 	test("Returns bad request when empty body is given", async done => {
 
-		expect.assertions(2);
+		expect.assertions(3);
 
 		request(api.getApp())
-			.post("/api/v1/auth/login")
+			.post("/api/v1/auth/member")
 			.set("Content-Type", "application/json")
       .send()
 			.expect(400)
@@ -77,6 +74,7 @@ describe("Testing Authentication Endpoints", () => {
 
 				const error = response.body as APIError;
 
+				expect(error.name).toEqual("MissingFieldException");
 				expect(error.statusCode).toEqual(400);
 				expect(error.message).not.toBeNull();
 
@@ -94,7 +92,7 @@ describe("Testing Authentication Endpoints", () => {
 	  expect.assertions(2);
 
 		request(api.getApp())
-			.post("/api/v1/auth/login")
+			.post("/api/v1/auth/member")
 			.set("Content-Type", "application/json")
 			.send({email: testMember.email, password: "wrongPassword"})
 			.expect(403)
@@ -114,12 +112,12 @@ describe("Testing Authentication Endpoints", () => {
 
 	}, 60000);
 
-	test("Returns not found when non-existant email is introduced", async done => {
+	test("Returns not found when non-existent email is introduced", async done => {
 
 		expect.assertions(2);
 
 		request(api.getApp())
-			.post("/api/v1/auth/login")
+			.post("/api/v1/auth/member")
 			.set("Content-Type", "application/json")
 			.send({email: "doesNotExist@email.com", password: "test"})
 			.expect(404)
@@ -141,6 +139,7 @@ describe("Testing Authentication Endpoints", () => {
 
   afterAll(async (done) => {
     await memberRepository.deleteMemberByEmail(testMember.email);
+    await connection.close();
     done();
   }, 60000);
 

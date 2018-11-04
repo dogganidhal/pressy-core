@@ -1,6 +1,7 @@
 import {CreateAddressDTO, AddressDTO, ICreateAddress, IAddress} from "./address";
 import {ISlot, SlotDTO} from "./slot";
 import {IMemberInfo, MemberInfoDTO} from "./member";
+import {Required} from "../../annotations";
 
 export interface ICreateBookingRequest {
 	pickupSlotId: number;
@@ -11,17 +12,17 @@ export interface ICreateBookingRequest {
 
 export class CreateBookingRequestDTO {
 
+	@Required
   public pickupSlotId: number;
-  public deliverySlotId: number;
-  public pickupAddress: CreateAddressDTO;
-  public deliveryAddress?: CreateAddressDTO;
 
-  constructor(request: ICreateBookingRequest) {
-    this.pickupSlotId = request.pickupSlotId;
-    this.deliverySlotId = request.deliverySlotId;
-    this.pickupAddress = new CreateAddressDTO(request.pickupAddress);
-    this.deliveryAddress = request.deliveryAddress && new CreateAddressDTO(request.deliveryAddress);
-  }
+	@Required
+  public deliverySlotId: number;
+
+	@Required
+  public pickupAddress: CreateAddressDTO;
+
+	@Required
+  public deliveryAddress?: CreateAddressDTO;
 
 }
 

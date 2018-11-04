@@ -28,7 +28,7 @@ export function JSONResponse<TController extends BaseController>(target: TContro
 				if (exception instanceof Exception.APIException) {
 
 					response.status(exception.statusCode);
-					return APIError.create(exception.statusCode, exception.message);
+					return APIError.create(exception.name, exception.statusCode, exception.message);
 
 				} else {
 

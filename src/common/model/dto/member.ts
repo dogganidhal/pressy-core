@@ -29,14 +29,6 @@ export class MemberInfoDTO {
 
 }
 
-export interface IMemberRegistration {
-	firstName: string;
-	lastName: string;
-	email: string;
-	password: string;
-	phone: string;
-}
-
 export class MemberRegistrationDTO {
 
 	@Required
@@ -50,30 +42,40 @@ export class MemberRegistrationDTO {
 	@Required
   public phone: string;
 
-	constructor(memberRegistration: IMemberRegistration) {
-		this.firstName = memberRegistration.firstName;
-		this.lastName = memberRegistration.lastName;
-		this.email = memberRegistration.email;
-		this.phone = memberRegistration.phone;
-		this.password = memberRegistration.password;
-  }
-
 }
 
 export class MemberPasswordResetCodeDTO {
-  constructor(public code: string) {}
+
+	@Required
+	public code: string;
+
 }
 
 export class MemberPasswordResetCodeRequestDTO {
-	constructor(public email: string) {}
+
+	@Required
+	public email: string;
+
 }
 
 export class PersonPasswordResetRequestDTO {
-  constructor(public oldPassword: string, public newPassword: string) {}
+
+	@Required
+	public oldPassword: string;
+
+	@Required
+	public newPassword: string;
+
 }
 
 export class LoginRequestDTO {
-  constructor(public password: string, public email: string) {}
+
+	@Required
+	public password: string;
+
+	@Required
+	public email: string
+
 }
 
 export interface ILoginResponse {
@@ -100,9 +102,12 @@ export class LoginResponseDTO {
 }
 
 export class RefreshCredentialsRequestDTO {
-  constructor(public refreshToken: string) {}
+
+	@Required
+	public refreshToken: string;
+
 }
 
 export class MobileDeviceDTO {
-  constructor(public deviceId: string) {}
+	public deviceId: string;
 }

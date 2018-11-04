@@ -21,7 +21,7 @@ describe("Slot repository operation related tests", () => {
     console.log(slots);
     done();
 
-  });
+  }, 60000);
 
   afterAll(async done => {
     await connection.close();
