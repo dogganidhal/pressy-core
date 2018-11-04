@@ -4,9 +4,10 @@ import RandomString from "randomstring";
 import {Member} from "../../src/common/model/entity/users/member";
 import {Database} from "../../src/common/db";
 import {Crypto} from "../../src/common/services/crypto";
+import {Exception} from "../../src/common/errors";
 
 
-describe("AuthRepository Operations Tests", () => {
+describe("Crypto Operations Tests", () => {
 
 	let connection: Connection;
 	let memberRepository: MemberRepository;
@@ -33,6 +34,60 @@ describe("AuthRepository Operations Tests", () => {
 		expect(authCredentials.refreshToken).not.toBeNull();
 		expect(authCredentials.type).toEqual(Crypto.AuthTokenType.BEARER);
 		expect(authCredentials.expiresIn).toEqual(3600);
+
+	}, 60000);
+
+	test("Throws an error when corrupted token is given", async done => {
+
+		expect.assertions(1);
+
+		const authCredentials = Crypto.signAuthToken(member.person, Crypto.SigningCategory.MEMBER);
+
+		let accessToken = authCredentials.accessToken.slice(0, authCredentials.accessToken.length - 10);
+
+		try {
+			let _ = await Crypto.decodeJWT(accessToken, Crypto.SigningCategory.MEMBER);
+			done.fail();
+		} catch (error) {
+			expect(error instanceof Exception.InvalidAccessTokenException).toBeTruthy();
+			done();
+		}
+
+	}, 60000);
+
+	test("Throws an error when expired token is given", async done => {
+
+		expect.assertions(1);
+
+		const authCredentials = Crypto.signAuthToken(member.person, Crypto.SigningCategory.MEMBER, {expiresIn: 0});
+
+		let accessToken = authCredentials.accessToken;
+
+		try {
+			let _ = await Crypto.decodeJWT(accessToken, Crypto.SigningCategory.MEMBER);
+			done.fail();
+		} catch (error) {
+			expect(error instanceof Exception.AccessTokenExpiredException).toBeTruthy();
+			done();
+		}
+
+	}, 60000);
+
+	test("Throws an error when a token with the wrong subject is given", async done => {
+
+		expect.assertions(1);
+
+		const authCredentials = Crypto.signAuthToken(member.person, Crypto.SigningCategory.MEMBER, {subject: "refresh"});
+
+		let accessToken = authCredentials.accessToken;
+
+		try {
+			let _ = await Crypto.decodeJWT(accessToken, Crypto.SigningCategory.MEMBER);
+			done.fail();
+		} catch (error) {
+			expect(error instanceof Exception.InvalidAccessTokenException).toBeTruthy();
+			done();
+		}
 
 	}, 60000);
 

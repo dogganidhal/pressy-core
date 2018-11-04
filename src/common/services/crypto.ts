@@ -50,14 +50,21 @@ export namespace Crypto {
 		expiresIn: number
 	}
 
-	export function signAuthToken(person: Person, category: SigningCategory): IAuthCredentials {
+	export function signAuthToken(person: Person, category: SigningCategory, options: SignOptions = {}): IAuthCredentials {
 
 		let payload: IAuthPayload = {
 			id: person.id,
 			category: category
 		};
 
-		const token = sign(payload, _privateKey, {...__signOptions, expiresIn: "1h", subject: SigningSubject.ACCESS});
+		let signOptions = {
+			...__signOptions,
+			expiresIn: "1h",
+			subject: SigningSubject.ACCESS,
+			...options
+		};
+
+		const token = sign(payload, _privateKey, signOptions);
 		const refreshToken = sign(payload, _privateKey, {...__signOptions, subject: SigningSubject.REFRESH});
 
 		return {
