@@ -3,12 +3,12 @@
 export namespace Exception {
 
 	export abstract class APIException {
-		constructor(public name: string, public statusCode: number, public message: string) {}
+		protected constructor(public name: string, public statusCode: number, public message: string) {}
 	}
 
-	export class MissingFieldException extends APIException {
-		constructor(field: string) {
-			super('MissingFieldException', 400, `Missing required field '${field}'`);
+	export class MissingFieldsException extends APIException {
+		constructor(fields: string) {
+			super('MissingFieldsException', 400, `Missing required fields ${fields}`);
 		}
 	}
 

@@ -12,11 +12,16 @@ export namespace HTTP {
 			obj = JSON.parse(body);
 		} catch (_) {}
 
+		let missingFields: string[] = [];
+
 		requiredFields.map((requiredField: string) => {
 			if (!obj[requiredField]) {
-				throw new Exception.MissingFieldException(requiredField);
+				missingFields.push(requiredField);
 			}
 		});
+
+		if (missingFields.length > 0)
+			throw new Exception.MissingFieldsException(`[${missingFields.join(",")}]`);
 
 		return obj;
 

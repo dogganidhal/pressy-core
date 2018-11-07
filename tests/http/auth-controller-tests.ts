@@ -61,6 +61,58 @@ describe("Testing Authentication Endpoints", () => {
 
   }, 60000);
 
+	test("Returns bad request when email is missing", async done => {
+
+		expect.assertions(3);
+
+		request(api.getApp())
+			.post("/api/v1/auth/member")
+			.set("Content-Type", "application/json")
+			.send({email: testMember.email})
+			.expect(400)
+			.then(response => {
+
+				const error = response.body as APIError;
+
+				expect(error.name).toEqual("MissingFieldsException");
+				expect(error.statusCode).toEqual(400);
+				expect(error.message).not.toBeNull();
+
+				done();
+
+			})
+			.catch(error => {
+				done.fail(error);
+			});
+
+	}, 60000);
+
+	test("Returns bad request when password is missing", async done => {
+
+		expect.assertions(3);
+
+		request(api.getApp())
+			.post("/api/v1/auth/member")
+			.set("Content-Type", "application/json")
+			.send({email: testMember.email})
+			.expect(400)
+			.then(response => {
+
+				const error = response.body as APIError;
+
+				expect(error.name).toEqual("MissingFieldsException");
+				expect(error.statusCode).toEqual(400);
+				expect(error.message).not.toBeNull();
+
+				done();
+
+			})
+			.catch(error => {
+				done.fail(error);
+			});
+
+	}, 60000);
+
 	test("Returns bad request when empty body is given", async done => {
 
 		expect.assertions(3);
@@ -74,7 +126,7 @@ describe("Testing Authentication Endpoints", () => {
 
 				const error = response.body as APIError;
 
-				expect(error.name).toEqual("MissingFieldException");
+				expect(error.name).toEqual("MissingFieldsException");
 				expect(error.statusCode).toEqual(400);
 				expect(error.message).not.toBeNull();
 

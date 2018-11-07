@@ -57,10 +57,10 @@ export class MemberRepository extends ARepository {
     const { email, phone } = memberDTO;
 
     if (!email)
-      throw new Exception.MissingFieldException("email");
+      throw new Exception.MissingFieldsException("email");
 
     if (!phone)
-	    throw new Exception.MissingFieldException("phone");
+	    throw new Exception.MissingFieldsException("phone");
 
     const memberWithSameEmail = await this.getMemberByEmail(email);
     if (memberWithSameEmail)

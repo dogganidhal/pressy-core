@@ -41,7 +41,7 @@ describe("@Required annotation tests", () => {
 			fail();
 		} catch (error) {
 			console.log(error);
-			expect(error instanceof Exception.MissingFieldException).toBeTruthy();
+			expect(error instanceof Exception.MissingFieldsException).toBeTruthy();
 		}
 
 	});
