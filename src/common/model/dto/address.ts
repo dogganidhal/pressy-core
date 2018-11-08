@@ -15,11 +15,6 @@ export class AddressLocationDTO {
 
 }
 
-export interface ICreateAddress {
-  placeId: string,
-  location: IAddressLocation
-}
-
 export class CreateAddressDTO {
 
 	@Required

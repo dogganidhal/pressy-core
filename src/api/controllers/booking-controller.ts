@@ -11,7 +11,7 @@ import {ISlot, SlotDTO} from "../../common/model/dto/slot";
 import {BaseController} from "./base-controller";
 import {Authenticate, JSONResponse} from "../annotations";
 import {IAddress} from "../../common/model/dto/address";
-import {IMemberInfo, MemberRegistrationDTO} from "../../common/model/dto/member";
+import {IMemberInfo} from "../../common/model/dto/member";
 import {Database} from "../../common/db";
 import {Crypto} from "../../common/services/crypto";
 import {MemberRepository} from "../../common/repositories/member-repository";
@@ -37,7 +37,6 @@ export class BookingController extends BaseController {
 	  await this._bookingRepository.saveBooking(booking);
 
 	  return new Return.RequestAccepted("/api/v1/booking");
-
 
   }
 

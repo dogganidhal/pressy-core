@@ -14,6 +14,15 @@ describe("@Required annotation tests", () => {
 
 	}
 
+	class TestNestedClass {
+
+		@Required
+		public requiredNestedObject: TestClass;
+
+		public optionalProperty: number;
+
+	}
+
 	test("Object with fulfilled required field is successfully parsed", () => {
 
 		let body = JSON.stringify({
@@ -45,5 +54,25 @@ describe("@Required annotation tests", () => {
 		}
 
 	});
+
+  test("Throws an error when required field in a nested object is missing", () => {
+
+    let body = JSON.stringify({
+      requiredNestedObject: {
+				optionalTestProperty: 10
+			},
+			optionalProperty: undefined
+    });
+
+    try {
+      let testObject = HTTP.parseJSONBody(body, TestNestedClass);
+      console.log(testObject);
+      fail();
+    } catch (error) {
+      console.log(error);
+      expect(error instanceof Exception.MissingFieldsException).toBeTruthy();
+    }
+
+  });
 
 });
