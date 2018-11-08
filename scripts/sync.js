@@ -1,17 +1,17 @@
 let {exec} = require("child_process");
 let databaseURL = process.env.DATABASE_URL;
 
-if (!databaseURL) {
-	console.error("Can't find database URL");
-	process.exit(1);
-}
-
 let { readFileSync, writeFileSync } = require("fs");
 
 let buffer = readFileSync("ormconfig.json");
 let config = JSON.parse(buffer);
 let oldConfig = config;
 let connectionName = process.argv[2] || "local";
+
+if (!databaseURL && connectionName !== "local") {
+    console.error("Can't find database URL");
+    process.exit(1);
+}
 
 if (Array.isArray(config)) {
 
