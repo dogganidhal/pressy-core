@@ -1,8 +1,13 @@
 language: node_js
 sudo: false
 node_js:
-  - 8
+- 8
 install:
-  - npm install -f
+- npm install -f
 script:
-  - npm test
+- npm test
+deploy:
+  provider: heroku
+  api_key:
+    secure: CntiwH141y+ZVvQY/yBxim7zCHWAemVJ1E43V+upTenXUu6gFv/Gq8GlZN4W48VKM/g2R72T9PLrVpxOCXO9ZrhvvIZAgyNGsljGqMsLDsmkk6TzmdRrn8qQ0cVtXIarxGitPSIERefT8F8WXOjfZvhXaOsi745J7318nF+Ky1/eCLlYyETyl5bnHO7/srdwP7wfomB3H17kLdbesYKsSZY0KjFuTEdfUV2L+WKWDJuSWE3aSBY/qIovwjmQnkh4OEKlM9gEmfuLWBq8lGHeZ5ikrywuZ1HDFZK/q/nh6haZjqnWPdoUvYilvcopumnz9GI5vMAgdf6r/pfvJtxh+4W13qb6iVrnFhntkd55WRxXsicKpQc1ejcoPm8JNyom9EzTXhC8B5EHljWv/wdjgbps4bDOhPXcmRGw5fqq+0rj9yRu9c68iG6t/iE9yjajuTWGr/VEfxDRoEt6Nk9HTT8zRIZC9L7yWLhlXVc8zXD/OZIhQPSe2pS+Pu6wTFWMQ3L8Hz6+xIJMZAJoPMVaZgEpOj6MGVl5k1lkAV9S5xkRLjc1cN9QrEDs9STqp5zrSMCubmZ2MD5Mf0htnFTtZq0hyfE52bGXwpaePI7wHvYWOkvLFaUS8Mq4lpCNACPhw/nsM9PqNsCopl4qRAawWs5lUWR6JwV44itWYMizM00=
+  app: pressy-dev
