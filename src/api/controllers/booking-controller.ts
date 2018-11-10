@@ -1,6 +1,6 @@
 import {GET, Path, POST, QueryParam, Return} from "typescript-rest";
 import {Exception} from '../../common/errors';
-import {BookingRepository} from '../../common/repositories/booking-repository';
+import {BookingRepository} from '../../common/repositories/booking/booking-repository';
 import {SlotRepository} from '../../common/repositories/slot-repository';
 import {DateUtils} from '../../common/utils';
 import {BookingDTO, CreateBookingRequestDTO} from "../../common/model/dto/booking";
@@ -10,39 +10,41 @@ import {SlotType} from "../../common/model/entity/order/slot";
 import {ISlot, SlotDTO} from "../../common/model/dto/slot";
 import {BaseController} from "./base-controller";
 import {Authenticate, JSONResponse} from "../annotations";
-import {IAddress} from "../../common/model/dto/address";
-import {IMemberInfo, MemberRegistrationDTO} from "../../common/model/dto/member";
+import {AddressDTO, IAddress} from "../../common/model/dto/address";
+import {IMemberInfo, MemberInfoDTO, MemberRegistrationDTO} from "../../common/model/dto/member";
 import {Database} from "../../common/db";
 import {Crypto} from "../../common/services/crypto";
 import {MemberRepository} from "../../common/repositories/member-repository";
 import {HTTP} from "../../common/utils/http";
+import {GeocodeService} from "../../common/services/geocode-service";
 
 
 @Path('/api/v1/booking/')
 export class BookingController extends BaseController {
+
+	private _geocodeService = new GeocodeService();
 
 	private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
   private _bookingRepository: BookingRepository = new BookingRepository(Database.getConnection());
   private _slotsRepository: SlotRepository = new SlotRepository(Database.getConnection());
 
   @JSONResponse
-  @Authenticate([Crypto.SigningCategory.ADMIN, Crypto.SigningCategory.MEMBER])
+  @Authenticate(Crypto.SigningCategory.MEMBER)
   @POST
   public async createBooking() {
 
-	  const createBookingRequestDTO = HTTP.parseJSONBody(this.getPendingRequest().body, CreateBookingRequestDTO);
+	  const dto = HTTP.parseJSONBody(this.getPendingRequest().body, CreateBookingRequestDTO);
 	  const member: Member = await this._memberRepository.getMemberFromPersonOrFail(this.pendingPerson);
-	  const booking = await Booking.create(member, createBookingRequestDTO);
-
-	  await this._bookingRepository.saveBooking(booking);
+	  // let bookingDTO: BookingDTO = new BookingDTO()
+	  //
+	  // await this._bookingRepository.createBooking(member, bookingDTO);
 
 	  return new Return.RequestAccepted("/api/v1/booking");
-
 
   }
 
   @JSONResponse
-  @Authenticate([Crypto.SigningCategory.ADMIN, Crypto.SigningCategory.MEMBER])
+  @Authenticate(Crypto.SigningCategory.MEMBER)
   @GET
   public async getBookings() {
 
@@ -66,11 +68,7 @@ export class BookingController extends BaseController {
 			  city: booking.pickupAddress.city,
 			  country: booking.pickupAddress.country,
 			  formattedAddress: booking.pickupAddress.formattedAddress,
-			  zipCode: booking.pickupAddress.zipCode,
-			  location: (booking.pickupAddress.location.latitude && booking.pickupAddress.location.longitude) ? {
-				  latitude: booking.pickupAddress.location.latitude!,
-				  longitude: booking.pickupAddress.location.longitude!
-			  } : undefined
+			  zipCode: booking.pickupAddress.zipCode
 		  };
 	  	let deliveryAddress: IAddress = booking.deliveryAddress ? {
 			  streetNumber: booking.deliveryAddress.streetNumber,
@@ -78,11 +76,7 @@ export class BookingController extends BaseController {
 			  city: booking.deliveryAddress.city,
 			  country: booking.deliveryAddress.country,
 			  formattedAddress: booking.deliveryAddress.formattedAddress,
-			  zipCode: booking.deliveryAddress.zipCode,
-			  location: (booking.deliveryAddress.location.latitude && booking.deliveryAddress.location.longitude) ? {
-				  latitude: booking.deliveryAddress.location.latitude!,
-				  longitude: booking.deliveryAddress.location.longitude!
-			  } : undefined
+			  zipCode: booking.deliveryAddress.zipCode
 		  } : pickupAddress;
 	  	let member: IMemberInfo = {
 			  id: booking.member.id,

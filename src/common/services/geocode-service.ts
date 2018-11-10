@@ -1,10 +1,7 @@
-import {LocationRepository} from '../repositories/location-repository';
-import {AddressDTO, CreateAddressDTO} from '../model/dto/address';
+import {AddressDTO} from '../model/dto/address';
 import {Address} from '../model/entity/common/address';
-import {Location} from '../model/entity/common/location';
 import {RestClient} from "typed-rest-client";
 import {getConfig} from '../../config';
-import {Connection} from "typeorm";
 
 export interface ICoordinates {
   latitude: number;
@@ -23,28 +20,17 @@ interface IPlaceDetails {
   }
 }
 
-export class GeocodingService {
-
-  constructor(private connection: Connection) {}
+export class GeocodeService {
 
   private _restClient: RestClient = new RestClient("PRESSY-REST-AGENT");
   private GOOGLE_SERVICES_URL = "https://maps.googleapis.com/maps/api";
-
-  public async getNormalizedAddress(createAddressDTO: CreateAddressDTO): Promise<AddressDTO> {
-
-    if (createAddressDTO.placeId != undefined)
-      return this.getAddressWithPlaceId(createAddressDTO.placeId!);
-    
-    return this.getAddressWithCoordinates(createAddressDTO.location!);
-
-  }
 
   public async getAddressWithPlaceId(placeId: string): Promise<AddressDTO> {
 
     const url = `${this.GOOGLE_SERVICES_URL}/place/details/json?placeid=${placeId}&key=${getConfig().googleMapsAPIKey}`;
     const response = await this._restClient.get(url);
 
-    const results: any = (await response.result)!;
+    const results: any = (await response.result);
     
     if (results.status != "OK")
       throw new Error(`Can't fetch address components for place_id ${placeId}`);
@@ -62,11 +48,7 @@ export class GeocodingService {
 		  zipCode: components.postal_code,
 		  streetName: components.route,
 		  streetNumber: components.street_number,
-		  formattedAddress: placeDetails.formatted_address,
-		  location: {
-			  latitude: placeDetails.geometry.location.lat,
-			  longitude: placeDetails.geometry.location.lng
-		  }
+		  formattedAddress: placeDetails.formatted_address
 	  });
 
   }
@@ -94,11 +76,7 @@ ${coordinates.latitude},${coordinates.longitude}&key=${getConfig().googleMapsAPI
 	    zipCode: components.postal_code,
 	    streetName: components.route,
 	    streetNumber: components.street_number,
-	    formattedAddress: placeDetails.formatted_address,
-	    location: {
-		    latitude: placeDetails.geometry.location.lat,
-		    longitude: placeDetails.geometry.location.lng
-	    }
+	    formattedAddress: placeDetails.formatted_address
     });
 
   }
@@ -123,31 +101,19 @@ ${coordinates.latitude},${coordinates.longitude}&key=${getConfig().googleMapsAPI
     const addressResponse: IGeocodeAddressResult = addressData;
     addressResponse.address_components = components;
 
-    return this.addressFromResponse(addressResponse);
+    return GeocodeService.addressFromResponse(addressResponse);
   }
 
-  private async addressFromResponse(addressResponse: IGeocodeAddressResult): Promise<Address> {
+  private static async addressFromResponse(addressResponse: IGeocodeAddressResult): Promise<Address> {
     
-    const locationRepository = new LocationRepository(this.connection);
-    var completeAddress = new Address;
+    let completeAddress = new Address;
 
-    completeAddress.city = addressResponse.address_components.locality!;
-    completeAddress.country = addressResponse.address_components.political!;
-    completeAddress.zipCode = addressResponse.address_components.postal_code!;
-    completeAddress.streetName = addressResponse.address_components.route!;
-    completeAddress.streetNumber = addressResponse.address_components.street_number!;
+    completeAddress.city = addressResponse.address_components.locality;
+    completeAddress.country = addressResponse.address_components.political;
+    completeAddress.zipCode = addressResponse.address_components.postal_code;
+    completeAddress.streetName = addressResponse.address_components.route;
+    completeAddress.streetNumber = addressResponse.address_components.street_number;
     completeAddress.formattedAddress = addressResponse.formatted_address;
-    
-    var location = new Location;
-
-    location.latitude = parseFloat(addressResponse.geometry.location.lat);
-    location.longitude = parseFloat(addressResponse.geometry.location.lng);
-    location.placeId = addressResponse.place_id;
-
-    location = await locationRepository.saveNewLocation(location);
-
-    completeAddress.location = location;
-    await locationRepository.saveNewAddress(completeAddress);
 
     return completeAddress;
   }
@@ -185,4 +151,4 @@ interface IGeocodeAddressComponents {
   administrative_area_level_1: string,
   country: string,
   postal_code: string
-};
+}

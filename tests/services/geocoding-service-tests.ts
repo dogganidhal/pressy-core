@@ -1,15 +1,15 @@
-import { GeocodingService } from "../../src/common/services/geocoding-service";
+import { GeocodeService } from "../../src/common/services/geocode-service";
 import {Connection} from "typeorm";
 import {Database} from "../../src/common/db";
 
 describe("Geocoding service test suit", async () => {
 
   let connection: Connection;
-  let service: GeocodingService;
+  let service: GeocodeService;
 
   beforeAll(async done => {
     connection = await Database.createConnection();
-    service = new GeocodingService(connection);
+    service = new GeocodeService(connection);
     done();
   });
 

@@ -1,14 +1,7 @@
-import {CreateAddressDTO, AddressDTO, ICreateAddress, IAddress} from "./address";
+import {AddressDTO, IAddress, ICreateAddress} from "./address";
 import {ISlot, SlotDTO} from "./slot";
 import {IMemberInfo, MemberInfoDTO} from "./member";
 import {Required} from "../../annotations";
-
-export interface ICreateBookingRequest {
-	pickupSlotId: number;
-	deliverySlotId: number;
-	pickupAddress: ICreateAddress;
-	deliveryAddress?: ICreateAddress;
-}
 
 export class CreateBookingRequestDTO {
 
@@ -19,10 +12,10 @@ export class CreateBookingRequestDTO {
   public deliverySlotId: number;
 
 	@Required
-  public pickupAddress: CreateAddressDTO;
+  public pickupAddress: ICreateAddress;
 
 	@Required
-  public deliveryAddress?: CreateAddressDTO;
+  public deliveryAddress?: ICreateAddress;
 
 }
 
