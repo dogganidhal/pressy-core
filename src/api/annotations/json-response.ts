@@ -1,6 +1,6 @@
 import {APIError} from "../model/api-error";
 import {BaseController} from "../controllers/base-controller";
-import {Exception} from "../../common/errors";
+import {exception} from "../../common/errors";
 
 export function JSONResponse<TController extends BaseController>(target: TController, property: string, propertyDescriptor: PropertyDescriptor) {
 
@@ -20,21 +20,22 @@ export function JSONResponse<TController extends BaseController>(target: TContro
 				return returnValue;
 			}
 
-		} catch (exception) {
+		} catch (error) {
 
 			const response = context.getPendingResponse();
 
 			if (response) {
-				if (exception instanceof Exception.APIException) {
 
-					response.status(exception.statusCode);
-					return APIError.create(exception.name, exception.statusCode, exception.message);
+				if (error instanceof exception.APIException) {
+
+					response.status(error.statusCode);
+					return APIError.create(error.name, error.statusCode, error.message);
 
 				} else {
 
 					response.status(500);
 					// TODO: Log the error, because it shouldn't happen
-					console.warn(exception);
+					console.warn(error);
 					return APIError.INTERNAL_SERVER_ERROR;
 
 				}

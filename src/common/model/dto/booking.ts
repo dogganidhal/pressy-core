@@ -7,16 +7,16 @@ export module booking {
 
 	export class CreateBookingRequest {
 
-		@Required
+		@Required()
 		public pickupSlotId: number;
 
-		@Required
+		@Required()
 		public deliverySlotId: number;
 
-		@Required
+		@Required(address.CreateAddressRequest)
 		public pickupAddress: address.CreateAddressRequest;
 
-		@Required
+		@Required(address.CreateAddressRequest)
 		public deliveryAddress?: address.CreateAddressRequest;
 
 	}

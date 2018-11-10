@@ -7,7 +7,7 @@ import {BaseController} from "./base-controller";
 import {Authenticate, JSONResponse} from "../annotations";
 import {Database} from "../../common/db";
 import {crypto} from "../../common/services/crypto";
-import {Exception} from "../../common/errors";
+import {exception} from "../../common/errors";
 import {http} from "../../common/utils/http";
 import * as DTO from "../../common/model/dto";
 
@@ -90,7 +90,7 @@ export class MemberController extends BaseController {
     const member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
 
     if (!member)
-    	throw new Exception.MemberNotFoundException(this.pendingPerson.email);
+    	throw new exception.MemberNotFoundException(this.pendingPerson.email);
 
     const mobileDevice = this.getPendingRequest().body as DTO.member.MobileDevice;
     
@@ -109,7 +109,7 @@ export class MemberController extends BaseController {
 	  const member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
 
 	  if (!member)
-		  throw new Exception.MemberNotFoundException(this.pendingPerson.email);
+		  throw new exception.MemberNotFoundException(this.pendingPerson.email);
     
     return (await this._memberRepository.getMobileDevices(member))
     .map(device => ({deviceId: device.id}));

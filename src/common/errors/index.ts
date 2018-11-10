@@ -1,6 +1,6 @@
 
 
-export namespace Exception {
+export namespace exception {
 
 	export abstract class APIException {
 		protected constructor(public name: string, public statusCode: number, public message: string) {}

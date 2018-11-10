@@ -1,7 +1,5 @@
 import { MemberRepository } from '../../src/common/repositories/member-repository';
 import { Connection } from 'typeorm';
-import { MemberRegistrationDTO } from '../../src/common/model/dto/member';
-import { LoginResponseDTO } from '../../src/common/model/dto/member';
 import { API } from "../../src/api";
 import request from "supertest";
 import {APIError} from "../../src/api/model/api-error";
@@ -9,13 +7,14 @@ import RandomString from "randomstring";
 import {Database} from "../../src/common/db";
 import {crypto} from "../../src/common/services/crypto";
 import AuthTokenType = crypto.AuthTokenType;
+import * as DTO from "../../src/common/model/dto";
 
 describe("Testing Authentication Endpoints", () => {
 
 	let connection: Connection;
 	let memberRepository: MemberRepository;
 	const api: API = new API;
-	const testMember: MemberRegistrationDTO = {
+	const testMember: DTO.member.CreateMemberRequest = {
 		firstName: RandomString.generate(10),
 		lastName: RandomString.generate(10),
 		email: `${RandomString.generate(10)}@email.com`,
@@ -45,7 +44,7 @@ describe("Testing Authentication Endpoints", () => {
       .expect(200)
       .then(response => {
 
-        const token: LoginResponseDTO = response.body as LoginResponseDTO;
+        const token: DTO.member.LoginResponse = response.body as DTO.member.LoginResponse;
 
         expect(token.accessToken).not.toBeNull();
         expect(token.refreshToken).not.toBeNull();

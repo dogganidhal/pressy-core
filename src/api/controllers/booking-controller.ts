@@ -1,5 +1,5 @@
 import {GET, Path, POST, QueryParam, Return} from "typescript-rest";
-import {Exception} from '../../common/errors';
+import {exception} from '../../common/errors';
 import {BookingRepository} from '../../common/repositories/booking/booking-repository';
 import {SlotRepository} from '../../common/repositories/slot-repository';
 import {DateUtils} from '../../common/utils';
@@ -108,10 +108,10 @@ export class BookingController extends BaseController {
 	  const endDate = new Date(to);
 
     if (isNaN(startDate.getTime()))
-      throw new Exception.InvalidDateException(from);
+      throw new exception.InvalidDateException(from);
 
     if (isNaN(endDate.getTime()))
-	    throw new Exception.InvalidDateException(to);
+	    throw new exception.InvalidDateException(to);
 
     const slots = await this._slotsRepository.searchSlots(types, startDate, endDate);
 
@@ -123,7 +123,7 @@ export class BookingController extends BaseController {
     const types: SlotType[] = string.split(",").map(char => {
       const type = parseInt(char);
       if (type < SlotType.LIGHT || type > SlotType.EXPRESS) {
-	      throw new Exception.InvalidSlotTypeException(type);
+	      throw new exception.InvalidSlotTypeException(type);
       }
       return type;
     });

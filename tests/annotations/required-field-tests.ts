@@ -1,13 +1,13 @@
 import {Required} from "../../src/common/annotations";
 import {http} from "../../src/common/utils/http";
-import {Exception} from "../../src/common/errors";
+import {exception} from "../../src/common/errors";
 
 
 describe("@Required annotation tests", () => {
 
 	class TestClass {
 
-		@Required
+		@Required()
 		public requiredTestProperty: string;
 
 		public optionalTestProperty: number;
@@ -16,7 +16,7 @@ describe("@Required annotation tests", () => {
 
 	class TestNestedClass {
 
-		@Required
+		@Required(TestClass)
 		public requiredNestedObject: TestClass;
 
 		public optionalProperty: number;
@@ -50,7 +50,7 @@ describe("@Required annotation tests", () => {
 			fail();
 		} catch (error) {
 			console.log(error);
-			expect(error instanceof Exception.MissingFieldsException).toBeTruthy();
+			expect(error instanceof exception.MissingFieldsException).toBeTruthy();
 		}
 
 	});
@@ -70,7 +70,7 @@ describe("@Required annotation tests", () => {
       fail();
     } catch (error) {
       console.log(error);
-      expect(error instanceof Exception.MissingFieldsException).toBeTruthy();
+      expect(error instanceof exception.MissingFieldsException).toBeTruthy();
     }
 
   });

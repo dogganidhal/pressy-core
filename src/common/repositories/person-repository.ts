@@ -2,7 +2,7 @@ import { BaseRepository } from './base-repository';
 import { PersonPasswordResetCode } from '../model/entity/users/reset-code';
 import { Repository } from "typeorm";
 import bcrypt from "bcrypt";
-import { Exception } from "../errors";
+import { exception } from "../errors";
 import { DateUtils } from "../utils";
 import { PersonActivationCode } from '../model/entity/users/member';
 import { Person } from '../model/entity/users/person';
@@ -36,7 +36,7 @@ export class PersonRepository extends BaseRepository {
     const activationCode = await this._activationCodeRepository.findOne(code, {relations: []});
 
     if (!activationCode)
-      throw new Exception.ActivationCodeNotFoundException(code);
+      throw new exception.ActivationCodeNotFoundException(code);
 
     return activationCode.person;
 
@@ -47,14 +47,14 @@ export class PersonRepository extends BaseRepository {
     const passwordResetRequestCode = await this._resetCodeRepository.findOne(code, {relations: ["person"]});
 
     if (!passwordResetRequestCode)
-      throw new Exception.PasswordResetCodeNotFoundException(code);
+      throw new exception.PasswordResetCodeNotFoundException(code);
     if (passwordResetRequestCode.expiryDate < DateUtils.now())
-      throw new Exception.PasswordResetCodeExpiredException(code);
+      throw new exception.PasswordResetCodeExpiredException(code);
 
     const person: Person = passwordResetRequestCode.person;
 
     if (!bcrypt.compareSync(resetPasswordRequest.oldPassword, person.passwordHash))
-      throw new Exception.WrongPasswordException();
+      throw new exception.WrongPasswordException();
 
     person.passwordHash = bcrypt.hashSync(resetPasswordRequest.newPassword, 10);
 
@@ -87,7 +87,7 @@ export class PersonRepository extends BaseRepository {
     const activationCode = await this._activationCodeRepository.findOne(code);
 
     if (!activationCode)
-      throw new Exception.ActivationCodeNotFoundException(code);
+      throw new exception.ActivationCodeNotFoundException(code);
 
       await this._resetCodeRepository.createQueryBuilder()
       .delete()

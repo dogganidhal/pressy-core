@@ -1,4 +1,4 @@
-import {Exception} from "../../common/errors";
+import {exception} from "../../common/errors";
 import {Connection} from "typeorm";
 import {BaseController} from "../controllers/base-controller";
 import {Database} from "../../common/db";
@@ -16,12 +16,12 @@ export function Authenticate<TController extends BaseController>(category: crypt
 			const authorization = context.getPendingRequest().headers["authorization"];
 
 			if (!authorization)
-				throw new Exception.UnauthenticatedRequestException;
+				throw new exception.UnauthenticatedRequestException;
 
 			const token = authorization!.split(" ")[1];
 
 			if (!token)
-				throw new Exception.InvalidAccessTokenException;
+				throw new exception.InvalidAccessTokenException;
 
 			context.pendingPerson= await crypto.decodeJWT(token, category);
 

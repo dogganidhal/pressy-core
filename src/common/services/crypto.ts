@@ -1,6 +1,6 @@
 import {sign, verify, SignOptions, VerifyOptions, JsonWebTokenError, TokenExpiredError} from "jsonwebtoken";
 import {getConfig} from "../../config";
-import {Exception} from "../errors";
+import {exception} from "../errors";
 import {Database} from "../db";
 import {Person} from "../model/entity/users/person";
 import {PersonRepository} from "../repositories/person-repository";
@@ -92,9 +92,9 @@ export namespace crypto {
 				if (error) {
 
 					if (error instanceof TokenExpiredError)
-						reject(new Exception.AccessTokenExpiredException);
+						reject(new exception.AccessTokenExpiredException);
 					else
-						reject(new Exception.InvalidAccessTokenException);
+						reject(new exception.InvalidAccessTokenException);
 
 					return;
 
@@ -104,7 +104,7 @@ export namespace crypto {
 				let person = await personRepository.getPersonById(payload.id);
 
 				if (!person) {
-					reject(new Exception.AccessTokenNotFoundException);
+					reject(new exception.AccessTokenNotFoundException);
 				}
 
 				if ((Array.isArray(category) && category.includes(payload.category)) || category === payload.category || payload.category == SigningCategory.SUPERUSER) {
@@ -112,7 +112,7 @@ export namespace crypto {
 					return;
 				}
 
-				reject(new Exception.UnauthorizedRequestException);
+				reject(new exception.UnauthorizedRequestException);
 
 			});
 
@@ -129,14 +129,21 @@ export namespace crypto {
 				subject: SigningSubject.REFRESH
 			};
 
-			verify(refreshToken, _publicKey, verifyOptions, (error, decoded) => {
+			verify(refreshToken, _publicKey, verifyOptions, async (error, decoded) => {
 
 				if (error) {
-					reject(new Exception.InvalidRefreshTokenException);
+					reject(new exception.InvalidRefreshTokenException);
 					return;
 				}
 
 				let decodedPayload: IAuthPayload = typeof decoded == "string" ? JSON.parse(decoded) : decoded;
+				let personRepository = new PersonRepository(Database.getConnection());
+
+				let person = await personRepository.getPersonById(decodedPayload.id);
+
+				if (!person)
+					reject(new exception.InvalidRefreshTokenException);
+
 				let payload: IAuthPayload = {
 					id: decodedPayload.id,
 					category: decodedPayload.category

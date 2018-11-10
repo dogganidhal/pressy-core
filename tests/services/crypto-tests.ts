@@ -4,7 +4,7 @@ import RandomString from "randomstring";
 import {Member} from "../../src/common/model/entity/users/member";
 import {Database} from "../../src/common/db";
 import {crypto} from "../../src/common/services/crypto";
-import {Exception} from "../../src/common/errors";
+import {exception} from "../../src/common/errors";
 
 
 describe("crypto Operations Tests", () => {
@@ -48,7 +48,7 @@ describe("crypto Operations Tests", () => {
 			let _ = await crypto.decodeJWT(accessToken, crypto.SigningCategory.MEMBER);
 			done.fail();
 		} catch (error) {
-			expect(error instanceof Exception.InvalidAccessTokenException).toBeTruthy();
+			expect(error instanceof exception.InvalidAccessTokenException).toBeTruthy();
 			done();
 		}
 
@@ -65,7 +65,7 @@ describe("crypto Operations Tests", () => {
 			let _ = await crypto.decodeJWT(accessToken, crypto.SigningCategory.MEMBER);
 			done.fail();
 		} catch (error) {
-			expect(error instanceof Exception.AccessTokenExpiredException).toBeTruthy();
+			expect(error instanceof exception.AccessTokenExpiredException).toBeTruthy();
 			done();
 		}
 
@@ -81,7 +81,7 @@ describe("crypto Operations Tests", () => {
 			let _ = await crypto.decodeJWT(authCredentials.accessToken, crypto.SigningCategory.MEMBER);
 			done.fail();
 		} catch (error) {
-			expect(error instanceof Exception.InvalidAccessTokenException).toBeTruthy();
+			expect(error instanceof exception.InvalidAccessTokenException).toBeTruthy();
 			done();
 		}
 
@@ -122,7 +122,7 @@ describe("crypto Operations Tests", () => {
 			let _ = await crypto.refreshCredentials(refreshToken);
 			done.fail();
 		} catch (error) {
-			expect(error instanceof Exception.InvalidRefreshTokenException).toBeTruthy();
+			expect(error instanceof exception.InvalidRefreshTokenException).toBeTruthy();
 			done();
 		}
 

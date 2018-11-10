@@ -33,49 +33,49 @@ export module member {
 
 	export class CreateMemberRequest {
 
-		@Required
+		@Required()
 		public firstName: string;
-		@Required
+		@Required()
 		public lastName: string;
-		@Required
+		@Required()
 		public email: string;
-		@Required
+		@Required()
 		public password: string;
-		@Required
+		@Required()
 		public phone: string;
 
 	}
 
 	export class ResetCode {
 
-		@Required
+		@Required()
 		public code: string;
 
 	}
 
 	export class ResetCodeRequest {
 
-		@Required
+		@Required()
 		public email: string;
 
 	}
 
 	export class ResetPasswordRequest {
 
-		@Required
+		@Required()
 		public oldPassword: string;
 
-		@Required
+		@Required()
 		public newPassword: string;
 
 	}
 
 	export class LoginRequest {
 
-		@Required
+		@Required()
 		public password: string;
 
-		@Required
+		@Required()
 		public email: string
 
 	}
@@ -105,7 +105,7 @@ export module member {
 
 	export class RefreshCredentialsRequest {
 
-		@Required
+		@Required()
 		public refreshToken: string;
 
 	}

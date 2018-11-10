@@ -1,5 +1,5 @@
 import {Path, PathParam, POST, Return} from "typescript-rest";
-import {Exception} from "../../common/errors";
+import {exception} from "../../common/errors";
 import bcrypt from "bcrypt";
 import {PersonRepository} from "../../common/repositories/person-repository";
 import {MemberRepository} from "../../common/repositories/member-repository";
@@ -27,10 +27,10 @@ export class AuthController extends BaseController {
 	  let member = await this._memberRepository.getMemberByEmail(loginRequest.email);
 
 	  if (!member)
-		  throw new Exception.MemberNotFoundException(loginRequest.email);
+		  throw new exception.MemberNotFoundException(loginRequest.email);
 
 	  if (!bcrypt.compareSync(loginRequest.password, member.person.passwordHash))
-		  throw new Exception.WrongPasswordException;
+		  throw new exception.WrongPasswordException;
 
 	  return crypto.signAuthToken(member.person, crypto.SigningCategory.MEMBER);
 
@@ -56,7 +56,7 @@ export class AuthController extends BaseController {
 	  const person = await this._personRepository.getPersonByEmail(resetCodeRequest.email);
 
 	  if (person == undefined)
-	    throw new Exception.MemberNotFoundException(resetCodeRequest.email);
+	    throw new exception.MemberNotFoundException(resetCodeRequest.email);
 
 	  const resetCode = await this._personRepository.createPasswordResetCode(person);
 

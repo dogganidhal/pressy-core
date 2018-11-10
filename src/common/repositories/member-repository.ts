@@ -1,6 +1,6 @@
 import {MobileDevice} from './../model/entity/users/device';
 import {Repository} from "typeorm";
-import {Exception} from "../errors";
+import {exception} from "../errors";
 import {Member, PersonActivationCode} from '../model/entity/users/member';
 import {Person} from '../model/entity/users/person';
 import {BaseRepository} from './base-repository';
@@ -57,18 +57,18 @@ export class MemberRepository extends BaseRepository {
     const { email, phone } = createMemberRequest;
 
     if (!email)
-      throw new Exception.MissingFieldsException("email");
+      throw new exception.MissingFieldsException("email");
 
     if (!phone)
-	    throw new Exception.MissingFieldsException("phone");
+	    throw new exception.MissingFieldsException("phone");
 
     const memberWithSameEmail = await this.getMemberByEmail(email);
     if (memberWithSameEmail)
-      throw new Exception.EmailAlreadyExistsException(email);
+      throw new exception.EmailAlreadyExistsException(email);
 
     const memberWithSamePhone = await this.getMemberByPhone(phone);
     if (memberWithSamePhone)
-      throw new Exception.PhoneAlreadyExists(phone);
+      throw new exception.PhoneAlreadyExists(phone);
 
     const newMember = Member.create(createMemberRequest);
 

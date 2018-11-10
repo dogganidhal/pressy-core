@@ -1,23 +1,31 @@
-import {Exception} from "../errors";
+import {exception} from "../errors";
 
 
 export namespace http {
 
-	function getMissingRequiredFields(obj: any, fieldNamePrefix = "") {
+	function getMissingRequiredFields(obj: any, classRef: {new(): any}, fieldNamePrefix = "") {
 
-    let requiredFields = Reflect.getMetadata("__REQUIRED_PROPERTIES__", obj) || [];
+    let requiredFields = Reflect.getMetadata("__REQUIRED_PROPERTIES__", obj) || {};
     let missingFields: string[] = [];
 
-    requiredFields.map((requiredField: string) => {
+    Object.keys(requiredFields).map((requiredField: string) => {
       if (!obj[requiredField]) {
 
       	let missingField = fieldNamePrefix.length > 0 ? `${fieldNamePrefix}.${requiredField}` : requiredField;
         missingFields.push(missingField);
 
       } else if (typeof obj[requiredField] === "object") {
-
       	// Recursive Checking
-        getMissingRequiredFields(obj[requiredField], requiredField).map(fld => missingFields.push(fld));
+
+	      let nestedClassRef = requiredFields[requiredField];
+	      let nestedObject: any;
+
+	      if (nestedClassRef)
+	        nestedObject = new nestedClassRef;
+
+	      nestedObject = Object.assign(nestedObject, nestedObject, obj[requiredField]);
+
+        getMissingRequiredFields(nestedObject, requiredFields[requiredField], requiredField).map(fld => missingFields.push(fld));
 
 			}
     });
@@ -34,10 +42,10 @@ export namespace http {
       Object.assign(obj, obj, JSON.parse(body));
 		} catch (_) {}
 
-		let missingFields = getMissingRequiredFields(obj);
+		let missingFields = getMissingRequiredFields(obj, classRef);
 
 		if (missingFields.length > 0)
-			throw new Exception.MissingFieldsException(`[${missingFields.join(",")}]`);
+			throw new exception.MissingFieldsException(`[${missingFields.join(",")}]`);
 
 		return obj;
 
