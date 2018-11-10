@@ -1,10 +1,7 @@
 import { Booking } from '../booking';
 import { Member } from '../users/member';
-import { 
-  Entity, PrimaryGeneratedColumn, JoinColumn, 
-  CreateDateColumn, OneToOne, Column
-} from "typeorm";
-import { CreateOrderRequestDTO } from '../../dto/order';
+import {Entity, PrimaryGeneratedColumn, JoinColumn, CreateDateColumn, OneToOne, Column} from "typeorm";
+import * as DTO from "../../dto";
 
 @Entity()
 export class Order {
@@ -22,7 +19,7 @@ export class Order {
   @Column({nullable: false})
   public price: number;
 
-  public static async create(member: Member, createOrderDTO: CreateOrderRequestDTO): Promise<Order> {
+  public static async create(member: Member, createOrderRequest: DTO.order.CreateOrderRequest): Promise<Order> {
 
     const order = new Order();
 

@@ -1,11 +1,4 @@
 import {Path, PathParam, POST, Return} from "typescript-rest";
-import {
-	LoginRequestDTO,
-	MemberPasswordResetCodeDTO,
-	MemberPasswordResetCodeRequestDTO,
-	PersonPasswordResetRequestDTO,
-	RefreshCredentialsRequestDTO
-} from "../../common/model/dto/member";
 import {Exception} from "../../common/errors";
 import bcrypt from "bcrypt";
 import {PersonRepository} from "../../common/repositories/person-repository";
@@ -13,8 +6,10 @@ import {MemberRepository} from "../../common/repositories/member-repository";
 import {BaseController} from "./base-controller";
 import {JSONResponse} from "../annotations";
 import {Database} from "../../common/db";
-import {Crypto} from "../../common/services/crypto";
-import {HTTP} from "../../common/utils/http";
+import {crypto} from "../../common/services/crypto";
+import {http} from "../../common/utils/http";
+import * as DTO from "../../common/model/dto";
+
 
 
 @Path('/api/v1/auth/')
@@ -28,7 +23,7 @@ export class AuthController extends BaseController {
   @POST
   public async login() {
 
-	  let loginRequest = HTTP.parseJSONBody(this.getPendingRequest().body, LoginRequestDTO);
+	  let loginRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.member.LoginRequest);
 	  let member = await this._memberRepository.getMemberByEmail(loginRequest.email);
 
 	  if (!member)
@@ -37,7 +32,7 @@ export class AuthController extends BaseController {
 	  if (!bcrypt.compareSync(loginRequest.password, member.person.passwordHash))
 		  throw new Exception.WrongPasswordException;
 
-	  return Crypto.signAuthToken(member.person, Crypto.SigningCategory.MEMBER);
+	  return crypto.signAuthToken(member.person, crypto.SigningCategory.MEMBER);
 
   }
 
@@ -46,8 +41,8 @@ export class AuthController extends BaseController {
   @POST
   public async refreshCredentials() {
 
-	  const {refreshToken} = JSON.parse(this.getPendingRequest().body) as RefreshCredentialsRequestDTO;
-	  return await Crypto.refreshCredentials(refreshToken);
+	  const {refreshToken} = http.parseJSONBody(this.getPendingRequest().body, DTO.member.RefreshCredentialsRequest);
+	  return await crypto.refreshCredentials(refreshToken);
 
   }
 
@@ -56,7 +51,7 @@ export class AuthController extends BaseController {
   @POST
   public async getResetPasswordCode() {
 
-	  const resetCodeRequest: MemberPasswordResetCodeRequestDTO = JSON.parse(this.getPendingRequest().body);
+	  const resetCodeRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.member.ResetCodeRequest);
 
 	  const person = await this._personRepository.getPersonByEmail(resetCodeRequest.email);
 
@@ -68,7 +63,7 @@ export class AuthController extends BaseController {
 	  // TODO: Return an empty "accepted" response, and call the email service
 	  return {
 	  	code: resetCode.id
-	  } as MemberPasswordResetCodeDTO;
+	  } as DTO.member.ResetCode;
 
   }
 
@@ -77,7 +72,7 @@ export class AuthController extends BaseController {
   @POST
   public async resetPassword(@PathParam("code") code: string) {
 
-	  const resetPasswordRequest: PersonPasswordResetRequestDTO = JSON.parse(this.getPendingRequest().body);
+	  const resetPasswordRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.member.ResetPasswordRequest);
 	  const person = await this._personRepository.resetPassword(code, resetPasswordRequest);
 
 	  return new Return.RequestAccepted(`/api/v1/member/${person.id}`);

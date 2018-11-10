@@ -36,7 +36,10 @@ export class BookingStatusUpdate extends StatusUpdate {
 	@Column({nullable: false})
 	public doerIdentity: BookingStatusUpdateDoerIdentity;
 
-	public static create(booking: Booking, type: BookingStatusUpdateType, doer: Person = booking.member.person, doerIdentity: BookingStatusUpdateDoerIdentity = BookingStatusUpdateDoerIdentity.MEMBER): BookingStatusUpdate {
+	public static create(
+		booking: Booking, type: BookingStatusUpdateType, doer: Person = booking.member.person,
+		doerIdentity: BookingStatusUpdateDoerIdentity = BookingStatusUpdateDoerIdentity.MEMBER
+	): BookingStatusUpdate {
 		let bookingStatusUpdate = new BookingStatusUpdate;
 
 		bookingStatusUpdate.booking = booking;

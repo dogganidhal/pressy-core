@@ -6,7 +6,7 @@ import {Person} from "../model/entity/users/person";
 import {PersonRepository} from "../repositories/person-repository";
 
 
-export namespace Crypto {
+export namespace crypto {
 
 	let __signOptions: SignOptions = {
 		issuer: "pressy",

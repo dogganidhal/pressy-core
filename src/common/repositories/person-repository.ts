@@ -1,15 +1,15 @@
-import { ARepository } from '.';
+import { BaseRepository } from './base-repository';
 import { PersonPasswordResetCode } from '../model/entity/users/reset-code';
 import { Repository } from "typeorm";
 import bcrypt from "bcrypt";
-import { PersonPasswordResetRequestDTO } from "../model/dto/member";
 import { Exception } from "../errors";
 import { DateUtils } from "../utils";
 import { PersonActivationCode } from '../model/entity/users/member';
 import { Person } from '../model/entity/users/person';
+import * as DTO from "../model/dto";
 
 
-export class PersonRepository extends ARepository {
+export class PersonRepository extends BaseRepository {
 
   private _resetCodeRepository: Repository<PersonPasswordResetCode> = this.connection.getRepository(PersonPasswordResetCode);
   private _activationCodeRepository: Repository<PersonActivationCode> = this.connection.getRepository(PersonActivationCode);
@@ -42,7 +42,7 @@ export class PersonRepository extends ARepository {
 
   }
 
-  public async resetPassword(code: string, resetPasswordRequest: PersonPasswordResetRequestDTO): Promise<Person> {
+  public async resetPassword(code: string, resetPasswordRequest: DTO.member.ResetPasswordRequest): Promise<Person> {
 
     const passwordResetRequestCode = await this._resetCodeRepository.findOne(code, {relations: ["person"]});
 

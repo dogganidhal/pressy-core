@@ -1,8 +1,7 @@
-import { DateUtils } from '../../../utils/date-utils';
+import { DateUtils } from '../../../utils';
 import bcrypt from 'bcrypt';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
-import { MemberRegistrationDTO } from "../../dto/member";
-
+import * as DTO from "../../dto";
 
 export enum PersonStatus {
   INACTIVE = 1,
@@ -38,15 +37,15 @@ export class Person {
   @Column()
   public passwordHash: string;
 
-  public static create(memberDTO: MemberRegistrationDTO): Person {
+  public static create(createMemberRequest: DTO.member.CreateMemberRequest): Person {
 
     const person = new Person;
 
-    person.firstName = memberDTO.firstName;
-    person.lastName = memberDTO.lastName;
-    person.passwordHash = bcrypt.hashSync(memberDTO.password, 10);
-    person.phone = memberDTO.phone;
-    person.email = memberDTO.email;
+    person.firstName = createMemberRequest.firstName;
+    person.lastName = createMemberRequest.lastName;
+    person.passwordHash = bcrypt.hashSync(createMemberRequest.password, 10);
+    person.phone = createMemberRequest.phone;
+    person.email = createMemberRequest.email;
 
     return person;
 

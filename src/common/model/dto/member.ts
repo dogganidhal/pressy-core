@@ -1,113 +1,117 @@
 import {Required} from "../../annotations";
 
-export interface IMemberInfo {
-	id: number,
-	firstName: string,
-	lastName: string,
-	email: string,
-	phone: string,
-	created: Date
-}
+export module member {
 
-export class MemberInfoDTO {
+	export interface IMemberInfo {
+		id: number,
+		firstName: string,
+		lastName: string,
+		email: string,
+		phone: string,
+		created: Date
+	}
 
-  public id: number;
-  public firstName: string;
-  public lastName: string;
-  public email: string;
-  public phone: string;
-  public created: Date;
+	export class MemberInfo {
 
-  constructor(memberInfo: IMemberInfo) {
-    this.id = memberInfo.id;
-	  this.firstName = memberInfo.firstName;
-	  this.lastName = memberInfo.lastName;
-	  this.email = memberInfo.email;
-	  this.phone = memberInfo.phone;
-	  this.created = memberInfo.created;
-  }
+		public id: number;
+		public firstName: string;
+		public lastName: string;
+		public email: string;
+		public phone: string;
+		public created: Date;
 
-}
+		constructor(memberInfo: IMemberInfo) {
+			this.id = memberInfo.id;
+			this.firstName = memberInfo.firstName;
+			this.lastName = memberInfo.lastName;
+			this.email = memberInfo.email;
+			this.phone = memberInfo.phone;
+			this.created = memberInfo.created;
+		}
 
-export class MemberRegistrationDTO {
+	}
 
-	@Required
-  public firstName: string;
-	@Required
-  public lastName: string;
-	@Required
-  public email: string;
-	@Required
-  public password: string;
-	@Required
-  public phone: string;
+	export class CreateMemberRequest {
 
-}
+		@Required
+		public firstName: string;
+		@Required
+		public lastName: string;
+		@Required
+		public email: string;
+		@Required
+		public password: string;
+		@Required
+		public phone: string;
 
-export class MemberPasswordResetCodeDTO {
+	}
 
-	@Required
-	public code: string;
+	export class ResetCode {
 
-}
+		@Required
+		public code: string;
 
-export class MemberPasswordResetCodeRequestDTO {
+	}
 
-	@Required
-	public email: string;
+	export class ResetCodeRequest {
 
-}
+		@Required
+		public email: string;
 
-export class PersonPasswordResetRequestDTO {
+	}
 
-	@Required
-	public oldPassword: string;
+	export class ResetPasswordRequest {
 
-	@Required
-	public newPassword: string;
+		@Required
+		public oldPassword: string;
 
-}
+		@Required
+		public newPassword: string;
 
-export class LoginRequestDTO {
+	}
 
-	@Required
-	public password: string;
+	export class LoginRequest {
 
-	@Required
-	public email: string
+		@Required
+		public password: string;
 
-}
+		@Required
+		public email: string
 
-export interface ILoginResponse {
-	accessToken: string;
-	refreshToken: string;
-	expiresIn?: number;
-	type?: string;
-}
+	}
 
-export class LoginResponseDTO {
+	export interface ILoginResponse {
+		accessToken: string;
+		refreshToken: string;
+		expiresIn?: number;
+		type?: string;
+	}
 
-  public accessToken: string;
-  public refreshToken: string;
-  public expiresIn: number;
-  public type: string;
+	export class LoginResponse {
 
-  constructor(loginResponse: ILoginResponse) {
-    this.accessToken = loginResponse.accessToken;
-    this.refreshToken = loginResponse.refreshToken;
-    this.expiresIn = loginResponse.expiresIn || 3600;
-    this.type = loginResponse.type || "Bearer";
-  }
+		public accessToken: string;
+		public refreshToken: string;
+		public expiresIn: number;
+		public type: string;
 
-}
+		constructor(loginResponse: ILoginResponse) {
+			this.accessToken = loginResponse.accessToken;
+			this.refreshToken = loginResponse.refreshToken;
+			this.expiresIn = loginResponse.expiresIn || 3600;
+			this.type = loginResponse.type || "Bearer";
+		}
 
-export class RefreshCredentialsRequestDTO {
+	}
 
-	@Required
-	public refreshToken: string;
+	export class RefreshCredentialsRequest {
 
-}
+		@Required
+		public refreshToken: string;
 
-export class MobileDeviceDTO {
-	public deviceId: string;
+	}
+
+	export class MobileDevice {
+		public deviceId: string;
+	}
+
 }

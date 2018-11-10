@@ -1,6 +1,6 @@
 import { Connection } from "typeorm";
 
-export abstract class ARepository {
+export abstract class BaseRepository {
 
   constructor (protected connection: Connection) {}
 

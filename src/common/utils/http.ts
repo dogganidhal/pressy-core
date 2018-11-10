@@ -1,7 +1,7 @@
 import {Exception} from "../errors";
 
 
-export namespace HTTP {
+export namespace http {
 
 	export function parseJSONBody<Type extends any>(body: string, classRef: {new(): Type}) {
 

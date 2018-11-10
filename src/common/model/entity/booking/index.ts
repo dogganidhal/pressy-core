@@ -1,13 +1,9 @@
-import { LocationRepository } from './../../../repositories/location-repository';
-import {BookingDTO, CreateBookingRequestDTO} from './../../dto/booking';
-import { Address } from './../common/address';
+import { Address } from '../common/address';
 import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne, CreateDateColumn, OneToMany, Column } from "typeorm";
 import { Slot } from "../order/slot";
 import { Member } from '../users/member';
-import { SlotRepository } from '../../../repositories/slot-repository';
-import { Exception } from '../../../errors';
 import { Element } from '../order/order-element';
-
+import * as DTO from "../../dto/";
 
 export enum BookingStatus {
   VALIDATED = 0,
@@ -53,17 +49,12 @@ export class Booking {
   @Column({nullable: false})
   public status: BookingStatus;
 
-  public static async create(member: Member, dto: BookingDTO): Promise<Booking> {
+  public static async create(member: Member, createBookingRequest: DTO.booking.CreateBookingRequest): Promise<Booking> {
 
     const booking = new Booking;
 
-    booking.pickupAddress = await Address.create(dto.deliveryAddress);
-    
-    if (dto.deliveryAddress != undefined)
-      booking.deliveryAddress = await Address.create(dto.deliveryAddress);
-    else
-      booking.deliveryAddress = booking.pickupAddress;
-
+    booking.pickupAddress = await Address.create(createBookingRequest.pickupAddress);
+	  booking.deliveryAddress = await Address.create(createBookingRequest.deliveryAddress || createBookingRequest.pickupAddress);
     booking.member = member;
 
     return booking;

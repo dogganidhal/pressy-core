@@ -3,7 +3,7 @@ import {MemberRepository} from "../../common/repositories/member-repository";
 import {Authenticate, JSONResponse} from "../annotations";
 import {BaseController} from "./base-controller";
 import {Database} from "../../common/db";
-import {Crypto} from "../../common/services/crypto";
+import {crypto} from "../../common/services/crypto";
 
 @Path("/api/v1/driver/")
 export class DriverController extends BaseController {
@@ -11,7 +11,7 @@ export class DriverController extends BaseController {
   private _memberRepository = new MemberRepository(Database.getConnection());
 
   @JSONResponse
-  @Authenticate([Crypto.SigningCategory.ADMIN])
+  @Authenticate([crypto.SigningCategory.ADMIN])
   @POST
   public async createDriver() {
 

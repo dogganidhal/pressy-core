@@ -1,13 +1,13 @@
 import {MobileDevice} from './../model/entity/users/device';
-import {MemberRegistrationDTO, MobileDeviceDTO} from '../model/dto/member';
-import {Connection, Repository} from "typeorm";
+import {Repository} from "typeorm";
 import {Exception} from "../errors";
 import {Member, PersonActivationCode} from '../model/entity/users/member';
 import {Person} from '../model/entity/users/person';
-import {ARepository} from '.';
+import {BaseRepository} from './base-repository';
+import * as DTO from "../model/dto";
 
 
-export class MemberRepository extends ARepository {
+export class MemberRepository extends BaseRepository {
 
   private _memberRepository: Repository<Member> = this.connection.getRepository(Member);
   private _mobileDeviceRepository: Repository<MobileDevice> = this.connection.getRepository(MobileDevice);
@@ -52,9 +52,9 @@ export class MemberRepository extends ARepository {
 
   }
 
-  public async createMember(memberDTO: MemberRegistrationDTO): Promise<Member> {
+  public async createMember(createMemberRequest: DTO.member.CreateMemberRequest): Promise<Member> {
 
-    const { email, phone } = memberDTO;
+    const { email, phone } = createMemberRequest;
 
     if (!email)
       throw new Exception.MissingFieldsException("email");
@@ -70,7 +70,7 @@ export class MemberRepository extends ARepository {
     if (memberWithSamePhone)
       throw new Exception.PhoneAlreadyExists(phone);
 
-    const newMember = Member.create(memberDTO);
+    const newMember = Member.create(createMemberRequest);
 
     await this._personRepository.insert(newMember.person);
 	  await this._memberRepository.insert(newMember);
@@ -105,7 +105,7 @@ export class MemberRepository extends ARepository {
 
   }
 
-  public async registerMobileDevice(member: Member, mobileDeviceDTO: MobileDeviceDTO): Promise<MobileDevice> {
+  public async registerMobileDevice(member: Member, mobileDeviceDTO: DTO.member.MobileDevice): Promise<MobileDevice> {
 
     const device = MobileDevice.create(member, mobileDeviceDTO.deviceId);
     await this._mobileDeviceRepository.insert(device);

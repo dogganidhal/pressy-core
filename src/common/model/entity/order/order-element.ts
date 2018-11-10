@@ -1,4 +1,4 @@
-import { Booking } from './../booking';
+import { Booking } from '../booking';
 import { 
   Entity, PrimaryGeneratedColumn, 
   ManyToOne, JoinColumn, Column,

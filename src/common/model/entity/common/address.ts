@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-import {AddressDTO} from "../../dto/address";
+import * as DTO from "../../dto";
 
 @Entity()
 export class Address {
@@ -25,7 +25,7 @@ export class Address {
   @Column()
   public formattedAddress: string;
 
-  public static async create(dto: AddressDTO): Promise<Address> {
+  public static async create(dto: DTO.address.CreateAddressRequest): Promise<Address> {
 
     const address = new Address;
 

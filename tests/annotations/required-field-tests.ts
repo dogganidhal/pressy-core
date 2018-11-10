@@ -1,5 +1,5 @@
 import {Required} from "../../src/common/annotations";
-import {HTTP} from "../../src/common/utils/http";
+import {http} from "../../src/common/utils/http";
 import {Exception} from "../../src/common/errors";
 
 
@@ -21,7 +21,7 @@ describe("@Required annotation tests", () => {
 			optionalTestProperty: 0
 		});
 
-		let testObject = HTTP.parseJSONBody(body, TestClass);
+		let testObject = http.parseJSONBody(body, TestClass);
 		console.log(testObject);
 
 		expect(testObject.requiredTestProperty).toEqual("Hello World");
@@ -36,7 +36,7 @@ describe("@Required annotation tests", () => {
 		});
 
 		try {
-			let testObject = HTTP.parseJSONBody(body, TestClass);
+			let testObject = http.parseJSONBody(body, TestClass);
 			console.log(testObject);
 			fail();
 		} catch (error) {

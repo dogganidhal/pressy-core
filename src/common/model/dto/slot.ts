@@ -1,22 +1,25 @@
-import { SlotType, Slot } from '../entity/order/slot';
-import { DateUtils } from '../../utils';
+import { SlotType } from '../entity/order/slot';
 
-export interface ISlot {
-	id: number;
-	type: SlotType;
-	startDate: Date;
-}
+export module slot {
 
-export class SlotDTO {
+	export interface ISlot {
+		id: number;
+		type: SlotType;
+		startDate: Date;
+	}
 
-  public id: number;
-  public type: SlotType;
-  public startDate: Date;
+	export class Slot {
 
-  constructor(slot: ISlot) {
-    this.id = slot.id;
-	  this.type = slot.type;
-	  this.startDate = slot.startDate;
-  }
+		public id: number;
+		public type: SlotType;
+		public startDate: Date;
+
+		constructor(slot: ISlot) {
+			this.id = slot.id;
+			this.type = slot.type;
+			this.startDate = slot.startDate;
+		}
+
+	}
 
 }

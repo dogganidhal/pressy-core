@@ -1,12 +1,11 @@
-import {Booking} from '../../model/entity/booking/index';
+import {Booking} from '../../model/entity/booking';
 import {Repository} from "typeorm";
 import {Member} from '../../model/entity/users/member';
-import {ARepository} from '../index';
-import {BookingDTO} from "../../model/dto/booking";
+import {BaseRepository} from '../base-repository';
 import {BookingStatusManager} from "./booking-status-manager";
+import * as DTO from "../../model/dto";
 
-
-export class BookingRepository extends ARepository {
+export class BookingRepository extends BaseRepository {
 
   private _bookingRepository: Repository<Booking> = this.connection.getRepository(Booking);
   private _bookingStatusManger: BookingStatusManager = new BookingStatusManager(this.connection);
@@ -23,7 +22,7 @@ export class BookingRepository extends ARepository {
     
   }
 
-  public async createBooking(member: Member, dto: BookingDTO): Promise<Booking> {
+  public async createBooking(member: Member, dto: DTO.booking.CreateBookingRequest): Promise<Booking> {
 
 	  let booking = await Booking.create(member, dto);
 

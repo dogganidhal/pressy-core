@@ -1,7 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, PrimaryColumn, OneToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, PrimaryColumn, OneToOne, JoinColumn } from "typeorm";
 import uuid from "uuid";
-import { MemberRegistrationDTO } from "../../dto/member";
 import { Person } from "./person";
+import * as DTO from "../../dto";
 
 @Entity()
 export class Member {
@@ -13,10 +13,10 @@ export class Member {
   @JoinColumn()
   public person: Person;
 
-  public static create(memberDTO: MemberRegistrationDTO): Member {
+  public static create(createMemberRequest: DTO.member.CreateMemberRequest): Member {
     
     const member: Member = new Member();
-    member.person = Person.create(memberDTO);
+    member.person = Person.create(createMemberRequest);
 
     return member;
 

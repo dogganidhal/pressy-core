@@ -1,49 +1,53 @@
-import {AddressDTO, IAddress, ICreateAddress} from "./address";
-import {ISlot, SlotDTO} from "./slot";
-import {IMemberInfo, MemberInfoDTO} from "./member";
 import {Required} from "../../annotations";
+import {slot} from "./slot";
+import {member} from "./member";
+import {address} from "./address";
 
-export class CreateBookingRequestDTO {
+export module booking {
 
-	@Required
-  public pickupSlotId: number;
+	export class CreateBookingRequest {
 
-	@Required
-  public deliverySlotId: number;
+		@Required
+		public pickupSlotId: number;
 
-	@Required
-  public pickupAddress: ICreateAddress;
+		@Required
+		public deliverySlotId: number;
 
-	@Required
-  public deliveryAddress?: ICreateAddress;
+		@Required
+		public pickupAddress: address.CreateAddressRequest;
 
-}
+		@Required
+		public deliveryAddress?: address.CreateAddressRequest;
 
-export interface IBooking {
-	id: number;
-	pickupSlot: ISlot;
-	deliverySlot: ISlot;
-	pickupAddress: IAddress;
-	deliveryAddress: IAddress;
-	member: IMemberInfo;
-}
+	}
 
-export class BookingDTO {
+	export interface IBooking {
+		id: number;
+		pickupSlot: slot.ISlot;
+		deliverySlot: slot.ISlot;
+		pickupAddress: address.IAddress;
+		deliveryAddress: address.IAddress;
+		member: member.IMemberInfo;
+	}
 
-  public id: number;
-  public pickupSlot: SlotDTO;
-  public deliverySlot: SlotDTO;
-  public PickupAddress: AddressDTO;
-  public deliveryAddress: AddressDTO;
-  public member: MemberInfoDTO;
+	export class Booking {
 
-  constructor(booking: IBooking) {
-    this.id = booking.id;
-    this.pickupSlot = new SlotDTO(booking.pickupSlot);
-    this.deliverySlot = new SlotDTO(booking.pickupSlot);
-    this.PickupAddress = new AddressDTO(booking.pickupAddress);
-	  this.deliveryAddress = new AddressDTO(booking.deliveryAddress);
-	  this.member = new MemberInfoDTO(booking.member);
-  }
+		public id: number;
+		public pickupSlot: slot.Slot;
+		public deliverySlot: slot.Slot;
+		public PickupAddress: address.Address;
+		public deliveryAddress: address.Address;
+		public member: member.MemberInfo;
+
+		constructor(booking: IBooking) {
+			this.id = booking.id;
+			this.pickupSlot = new slot.Slot(booking.pickupSlot);
+			this.deliverySlot = new slot.Slot(booking.pickupSlot);
+			this.PickupAddress = new address.Address(booking.pickupAddress);
+			this.deliveryAddress = new address.Address(booking.deliveryAddress);
+			this.member = new member.MemberInfo(booking.member);
+		}
+
+	}
 
 }

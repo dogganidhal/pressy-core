@@ -7,8 +7,8 @@ import request from "supertest";
 import {APIError} from "../../src/api/model/api-error";
 import RandomString from "randomstring";
 import {Database} from "../../src/common/db";
-import {Crypto} from "../../src/common/services/crypto";
-import AuthTokenType = Crypto.AuthTokenType;
+import {crypto} from "../../src/common/services/crypto";
+import AuthTokenType = crypto.AuthTokenType;
 
 describe("Testing Authentication Endpoints", () => {
 

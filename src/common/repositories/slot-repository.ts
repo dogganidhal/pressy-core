@@ -1,11 +1,11 @@
-import { SlotType } from './../model/entity/order/slot';
+import { SlotType } from '../model/entity/order/slot';
 import { Slot } from '../model/entity/order/slot';
 import { Repository, Brackets } from "typeorm";
 import { DateUtils } from '../utils';
-import { ARepository } from '.';
+import { BaseRepository } from './base-repository';
 
 
-export class SlotRepository extends ARepository {
+export class SlotRepository extends BaseRepository {
 
   private _slotRepository: Repository<Slot> = this.connection.getRepository(Slot);
 

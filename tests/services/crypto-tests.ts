@@ -3,11 +3,11 @@ import {MemberRepository} from '../../src/common/repositories/member-repository'
 import RandomString from "randomstring";
 import {Member} from "../../src/common/model/entity/users/member";
 import {Database} from "../../src/common/db";
-import {Crypto} from "../../src/common/services/crypto";
+import {crypto} from "../../src/common/services/crypto";
 import {Exception} from "../../src/common/errors";
 
 
-describe("Crypto Operations Tests", () => {
+describe("crypto Operations Tests", () => {
 
 	let connection: Connection;
 	let memberRepository: MemberRepository;
@@ -28,11 +28,11 @@ describe("Crypto Operations Tests", () => {
 
 	test("Returns auth credentials for a registered member", () => {
 
-		let authCredentials = Crypto.signAuthToken(member.person, Crypto.SigningCategory.MEMBER);
+		let authCredentials = crypto.signAuthToken(member.person, crypto.SigningCategory.MEMBER);
 
 		expect(authCredentials.accessToken).not.toBeNull();
 		expect(authCredentials.refreshToken).not.toBeNull();
-		expect(authCredentials.type).toEqual(Crypto.AuthTokenType.BEARER);
+		expect(authCredentials.type).toEqual(crypto.AuthTokenType.BEARER);
 		expect(authCredentials.expiresIn).toEqual(3600);
 
 	}, 60000);
@@ -41,11 +41,11 @@ describe("Crypto Operations Tests", () => {
 
 		expect.assertions(1);
 
-		let authCredentials = Crypto.signAuthToken(member.person, Crypto.SigningCategory.MEMBER);
+		let authCredentials = crypto.signAuthToken(member.person, crypto.SigningCategory.MEMBER);
 		let accessToken = authCredentials.accessToken.slice(0, authCredentials.accessToken.length - 10);
 
 		try {
-			let _ = await Crypto.decodeJWT(accessToken, Crypto.SigningCategory.MEMBER);
+			let _ = await crypto.decodeJWT(accessToken, crypto.SigningCategory.MEMBER);
 			done.fail();
 		} catch (error) {
 			expect(error instanceof Exception.InvalidAccessTokenException).toBeTruthy();
@@ -58,11 +58,11 @@ describe("Crypto Operations Tests", () => {
 
 		expect.assertions(1);
 
-		let authCredentials = Crypto.signAuthToken(member.person, Crypto.SigningCategory.MEMBER, {expiresIn: 0});
+		let authCredentials = crypto.signAuthToken(member.person, crypto.SigningCategory.MEMBER, {expiresIn: 0});
 		let accessToken = authCredentials.accessToken;
 
 		try {
-			let _ = await Crypto.decodeJWT(accessToken, Crypto.SigningCategory.MEMBER);
+			let _ = await crypto.decodeJWT(accessToken, crypto.SigningCategory.MEMBER);
 			done.fail();
 		} catch (error) {
 			expect(error instanceof Exception.AccessTokenExpiredException).toBeTruthy();
@@ -75,10 +75,10 @@ describe("Crypto Operations Tests", () => {
 
 		expect.assertions(1);
 
-		let authCredentials = Crypto.signAuthToken(member.person, Crypto.SigningCategory.MEMBER, {subject: "refresh"});
+		let authCredentials = crypto.signAuthToken(member.person, crypto.SigningCategory.MEMBER, {subject: "refresh"});
 
 		try {
-			let _ = await Crypto.decodeJWT(authCredentials.accessToken, Crypto.SigningCategory.MEMBER);
+			let _ = await crypto.decodeJWT(authCredentials.accessToken, crypto.SigningCategory.MEMBER);
 			done.fail();
 		} catch (error) {
 			expect(error instanceof Exception.InvalidAccessTokenException).toBeTruthy();
@@ -93,9 +93,9 @@ describe("Crypto Operations Tests", () => {
 
 		try {
 
-			let { refreshToken } = Crypto.signAuthToken(member.person, Crypto.SigningCategory.MEMBER);
-			let { accessToken } = await Crypto.refreshCredentials(refreshToken);
-			let person = await Crypto.decodeJWT(accessToken, Crypto.SigningCategory.MEMBER);
+			let { refreshToken } = crypto.signAuthToken(member.person, crypto.SigningCategory.MEMBER);
+			let { accessToken } = await crypto.refreshCredentials(refreshToken);
+			let person = await crypto.decodeJWT(accessToken, crypto.SigningCategory.MEMBER);
 
 			expect(person.id).toEqual(member.person.id);
 			expect(person.firstName).toEqual(member.person.firstName);
@@ -115,11 +115,11 @@ describe("Crypto Operations Tests", () => {
 
 		expect.assertions(1);
 
-		let {refreshToken} = Crypto.signAuthToken(member.person, Crypto.SigningCategory.MEMBER);
+		let {refreshToken} = crypto.signAuthToken(member.person, crypto.SigningCategory.MEMBER);
 		refreshToken = refreshToken.slice(0, refreshToken.length - 10);
 
 		try {
-			let _ = await Crypto.refreshCredentials(refreshToken);
+			let _ = await crypto.refreshCredentials(refreshToken);
 			done.fail();
 		} catch (error) {
 			expect(error instanceof Exception.InvalidRefreshTokenException).toBeTruthy();
