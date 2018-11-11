@@ -25,7 +25,7 @@ export class Address {
   @Column()
   public formattedAddress: string;
 
-  public static async create(dto: DTO.address.CreateAddressRequest): Promise<Address> {
+  public static create(dto: DTO.address.Address): Address {
 
     const address = new Address;
 

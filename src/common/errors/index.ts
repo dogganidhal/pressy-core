@@ -36,12 +36,6 @@ export namespace exception {
     }
   }
 
-  export class NeitherEmailNoPhoneException extends APIException {
-    constructor() {
-      super('NeitherEmailNoPhoneException', 400, `Must Provide email or phone to login`);
-    }
-  }
-
   export class UnauthorizedRequestException extends APIException {
     constructor() {
       super('UnauthorizedRequestException', 403, `Access denied to requested resource`);
@@ -96,21 +90,9 @@ export namespace exception {
     }
   }
 
-  export class AccessTokenAndRefreshTokenDoNotMatchException extends APIException {
-    constructor() {
-      super('AccessTokenAndRefreshTokenDoNotMatchException', 400, `Access token and refresh token do not match`);
-    }
-  }
-
   export class ActivationCodeNotFoundException extends APIException {
     constructor(code: string) {
       super('ActivationCodeNotFoundException', 401, `Activation code '${code}' was not found`);
-    }
-  }
-
-  export class InvalidCreditCardInformationException extends APIException {
-    constructor(msg?: string) {
-      super('InvalidCreditCardInformationException', 400, `Invalid credit card information${msg ? " : " + msg : null}`);
     }
   }
 
@@ -130,6 +112,12 @@ export namespace exception {
     constructor(dateString: string) {
       super('InvalidDateException', 400, `Invalid date string '${dateString}'`);
     }
+  }
+
+  export class CannotCreateAddressException extends APIException {
+	  constructor() {
+		  super('CannotCreateAddressException', 400, `Can't create address, must provide either Google Place id or Coordinates`);
+	  }
   }
 
 }

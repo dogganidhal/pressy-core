@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {slot} from "../../dto";
 
 export enum SlotType {
   LIGHT = 1,
@@ -16,6 +17,17 @@ export class Slot {
 
   @Column({nullable: false})
   public type: SlotType = SlotType.LIGHT;
+
+  public static create(slot: slot.ISlot): Slot {
+
+    let slotEntity = new Slot;
+
+    slotEntity.startDate = slot.startDate;
+    slotEntity.type = slot.type;
+
+    return slotEntity
+
+  }
 
   public static getDurationInMinutes(type: SlotType): number {
 

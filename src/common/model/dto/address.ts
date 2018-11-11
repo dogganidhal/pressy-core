@@ -1,12 +1,14 @@
 
 export module address {
 
-	export interface ICreateAddress {
-		googlePlaceId?: string;
-		coordinates?: {
+	export class CreateAddressRequest {
+
+		public googlePlaceId: string;
+		public coordinates: {
 			latitude: number;
 			longitude: number;
 		}
+
 	}
 
 	export interface IAddress {
@@ -16,15 +18,6 @@ export module address {
 		country: string;
 		zipCode: string;
 		formattedAddress: string;
-	}
-
-	export class CreateAddressRequest {
-		city: string;
-		country: string;
-		formattedAddress: string;
-		streetName: string;
-		streetNumber: string;
-		zipCode: string;
 	}
 
 	export class Address {

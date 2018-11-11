@@ -33,7 +33,7 @@ export class BookingController extends BaseController {
 	  const member: Member = await this._memberRepository.getMemberFromPersonOrFail(this.pendingPerson);
 	  // let bookingDTO: Booking = new Booking()
 	  //
-	  // await this._bookingRepository.createBooking(member, bookingDTO);
+	  await this._bookingRepository.createBooking(member, bookingDTO);
 
 	  return new Return.RequestAccepted("/api/v1/booking");
 

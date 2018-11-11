@@ -49,15 +49,26 @@ export class Booking {
   @Column({nullable: false})
   public status: BookingStatus;
 
-  public static async create(member: Member, createBookingRequest: DTO.booking.CreateBookingRequest): Promise<Booking> {
+  public static async create(
+    member: Member, pickupSlot: Slot, deliverySlot: Slot,
+    pickupAddress: DTO.address.Address, deliveryAddress: DTO.address.Address = pickupAddress
 
-    const booking = new Booking;
 
-    booking.pickupAddress = await Address.create(createBookingRequest.pickupAddress);
-	  booking.deliveryAddress = await Address.create(createBookingRequest.deliveryAddress || createBookingRequest.pickupAddress);
-    booking.member = member;
+  ): Promise<Booking> {
 
-    return booking;
+    let bookingEntity = new Booking;
+
+	  bookingEntity.member = member;
+	  bookingEntity.status = BookingStatus.VALIDATED;
+
+    bookingEntity.pickupSlot = pickupSlot;
+	  bookingEntity.deliverySlot = deliverySlot;
+	  bookingEntity.pickupAddress = Address.create(pickupAddress);
+	  bookingEntity.deliveryAddress = Address.create(deliveryAddress);
+
+	  bookingEntity.elements;
+
+    return bookingEntity;
 
   }
 
