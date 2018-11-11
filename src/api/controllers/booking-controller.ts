@@ -11,14 +11,11 @@ import {Database} from "../../common/db";
 import {crypto} from "../../common/services/crypto";
 import {MemberRepository} from "../../common/repositories/member-repository";
 import {http} from "../../common/utils/http";
-import {GeocodeService} from "../../common/services/geocode-service";
 import * as DTO from "../../common/model/dto";
 
 
 @Path('/api/v1/booking/')
 export class BookingController extends BaseController {
-
-	private _geocodeService = new GeocodeService();
 
 	private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
   private _bookingRepository: BookingRepository = new BookingRepository(Database.getConnection());
@@ -31,9 +28,8 @@ export class BookingController extends BaseController {
 
 	  const dto = http.parseJSONBody(this.getPendingRequest().body, DTO.booking.CreateBookingRequest);
 	  const member: Member = await this._memberRepository.getMemberFromPersonOrFail(this.pendingPerson);
-	  // let bookingDTO: Booking = new Booking()
-	  //
-	  await this._bookingRepository.createBooking(member, bookingDTO);
+
+	  await this._bookingRepository.createBooking(member, dto);
 
 	  return new Return.RequestAccepted("/api/v1/booking");
 
@@ -82,13 +78,15 @@ export class BookingController extends BaseController {
 			  phone: booking.member.person.phone,
 			  created: booking.member.person.created
 		  };
+	  	let elements: Array<DTO.booking.IBookingElement> = booking.elements.map(e => new DTO.booking.BookingElement({
+			  type: e.type, bookingId: booking.id, color: e.color, comment: e.comment
+		  }));
 
 	  	return new DTO.booking.Booking({
 			  pickupSlot: pickupSlot, pickupAddress: pickupAddress,
 			  deliverySlot: deliverySlot, deliveryAddress: deliveryAddress,
-			  member: member, id: booking.id
+			  member: member, id: booking.id, elements: elements
 		  })
-
 
 	  });
 

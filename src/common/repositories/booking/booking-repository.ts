@@ -7,12 +7,14 @@ import * as DTO from "../../model/dto";
 import {Slot} from "../../model/entity/order/slot";
 import {exception} from "../../errors";
 import {GeocodeService} from "../../services/geocode-service";
+import {Address} from "../../model/entity/common/address";
 
 
 export class BookingRepository extends BaseRepository {
 
   private _bookingRepository: Repository<Booking> = this.connection.getRepository(Booking);
   private _slotRepository: Repository<Slot> = this.connection.getRepository(Slot);
+	private _addressRepository: Repository<Address> = this.connection.getRepository(Address);
 
   private _geocodeService: GeocodeService = new GeocodeService;
 	private _bookingStatusManger: BookingStatusManager = new BookingStatusManager(this.connection);
@@ -60,10 +62,18 @@ export class BookingRepository extends BaseRepository {
 	  else
 		  throw new exception.CannotCreateAddressException;
 
+	  let pickupAddressEntity = Address.create(pickupAddress);
+	  let deliveryAddressEntity = deliveryAddress != pickupAddress ? Address.create(deliveryAddress) : pickupAddressEntity;
+
 	  let bookingEntity = await Booking.create(
 	  	member, pickupSlot, deliverySlot,
-		  pickupAddress, deliveryAddress
+		  pickupAddressEntity, deliveryAddressEntity,
+		  createBookingRequest.elements
 	  );
+
+	  await this._addressRepository.insert(pickupAddressEntity);
+	  if (deliveryAddress !== pickupAddress)
+		  await this._addressRepository.insert(deliveryAddressEntity);
 
 	  await this._bookingRepository.insert(bookingEntity);
 

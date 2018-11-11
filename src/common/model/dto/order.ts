@@ -1,4 +1,4 @@
-import { ElementType } from "../entity/order/order-element";
+import { ElementType } from "../entity/booking/element";
 
 export module order {
 

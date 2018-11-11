@@ -2,7 +2,7 @@ import { Address } from '../common/address';
 import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne, CreateDateColumn, OneToMany, Column } from "typeorm";
 import { Slot } from "../order/slot";
 import { Member } from '../users/member';
-import { Element } from '../order/order-element';
+import { Element } from './element';
 import * as DTO from "../../dto/";
 
 export enum BookingStatus {
@@ -35,9 +35,9 @@ export class Booking {
   @JoinColumn()
   public pickupAddress: Address;
 
-  @OneToOne(type => Address, {nullable: true})
+  @OneToOne(type => Address, {nullable: false})
   @JoinColumn()
-  public deliveryAddress?: Address;
+  public deliveryAddress: Address;
 
   @ManyToOne(type => Member, {nullable: false})
   @JoinColumn()
@@ -51,9 +51,8 @@ export class Booking {
 
   public static async create(
     member: Member, pickupSlot: Slot, deliverySlot: Slot,
-    pickupAddress: DTO.address.Address, deliveryAddress: DTO.address.Address = pickupAddress
-
-
+    pickupAddress: Address, deliveryAddress: Address = pickupAddress,
+    elements: Array<DTO.booking.CreateBookingElementRequest>
   ): Promise<Booking> {
 
     let bookingEntity = new Booking;
@@ -63,10 +62,10 @@ export class Booking {
 
     bookingEntity.pickupSlot = pickupSlot;
 	  bookingEntity.deliverySlot = deliverySlot;
-	  bookingEntity.pickupAddress = Address.create(pickupAddress);
-	  bookingEntity.deliveryAddress = Address.create(deliveryAddress);
+	  bookingEntity.pickupAddress = pickupAddress;
+	  bookingEntity.deliveryAddress = deliveryAddress;
 
-	  bookingEntity.elements;
+	  bookingEntity.elements = elements.map(element => Element.create(bookingEntity, element));
 
     return bookingEntity;
 

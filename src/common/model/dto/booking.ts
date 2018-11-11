@@ -2,7 +2,7 @@ import {Required} from "../../annotations";
 import {slot} from "./slot";
 import {member} from "./member";
 import {address} from "./address";
-import {ElementType} from "../entity/order/order-element";
+import {ElementType} from "../entity/booking/element";
 
 export module booking {
 

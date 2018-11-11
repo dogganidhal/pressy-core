@@ -13,6 +13,8 @@ export class APIError {
 		} as APIError;
 	}
 
-	public static INTERNAL_SERVER_ERROR: APIError = APIError.create("InternalServerError", 500, "Internal Server Error");
+	public static InteralServerError(message?: string): APIError {
+		return APIError.create("InternalServerError", 500, message || "Internal Server Error");
+	}
 
 }
