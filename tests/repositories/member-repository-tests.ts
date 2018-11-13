@@ -1,12 +1,11 @@
 import {Connection} from 'typeorm';
-import { MemberRepository } from '../../src/common/repositories/member-repository';
-import { MemberRegistrationDTO } from "../../src/common/model/dto/member";
+import { MemberRepository } from '../../src/common/repositories/users/member-repository';
 import RandomString from "randomstring";
 import bcrypt from "bcrypt";
-import {Member} from "../../src/common/model/entity/users/member";
+import {Member} from "../../src/common/model/entity/users/member/member";
 import {Person} from "../../src/common/model/entity/users/person";
 import {Database} from "../../src/common/db";
-
+import * as DTO from "../../src/common/model/dto";
 
 describe("MemberRepository Write/Delete Operations Tests", () => {
 
@@ -18,14 +17,14 @@ describe("MemberRepository Write/Delete Operations Tests", () => {
 		email: `${RandomString.generate(10)}@email.com`,
 		phone: RandomString.generate({length: 10, charset: "numeric"}),
     password: RandomString.generate(20)
-	} as MemberRegistrationDTO;
+	} as DTO.person.CreatePersonRequest;
 	const testMember2 = {
 		firstName: RandomString.generate(10),
 		lastName: RandomString.generate(10),
 		email: `${RandomString.generate(10)}@email.com`,
 		phone: RandomString.generate({length: 10, charset: "numeric"}),
 		password: RandomString.generate(20)
-	} as MemberRegistrationDTO;
+	} as DTO.person.CreatePersonRequest;
 
   beforeAll(async done => {
     connection = await Database.createConnection();
@@ -84,7 +83,7 @@ describe("MemberRepository Read Operations Tests", () => {
 
   let connection: Connection;
   let memberRepository: MemberRepository;
-  const memberDTO: MemberRegistrationDTO = {
+  const memberDTO: DTO.person.CreatePersonRequest = {
     firstName: RandomString.generate(10),
     lastName: RandomString.generate(10),
     password: RandomString.generate(10),

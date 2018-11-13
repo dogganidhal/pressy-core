@@ -5,7 +5,7 @@ import { Person } from "./person";
 
 
 @Entity()
-export class PersonPasswordResetCode {
+export class PasswordResetCode {
 
   @PrimaryColumn()
   public id: string;
@@ -19,9 +19,9 @@ export class PersonPasswordResetCode {
   @Column({nullable: false})
   public expiryDate: Date;
 
-  public static create(person: Person): PersonPasswordResetCode {
+  public static create(person: Person): PasswordResetCode {
 
-    const memberReset: PersonPasswordResetCode = new PersonPasswordResetCode;
+    const memberReset: PasswordResetCode = new PasswordResetCode;
 
     memberReset.id = uuid.v4().toString();
     memberReset.person = person;

@@ -1,6 +1,6 @@
 import {Order} from '../../model/entity/order';
 import {Repository} from "typeorm";
-import {Member} from '../../model/entity/users/member';
+import {Member} from '../../model/entity/users/member/member';
 import {BaseRepository} from '../base-repository';
 import {OrderStatusManager} from "./order-status-manager";
 import * as DTO from "../../model/dto";

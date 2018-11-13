@@ -1,7 +1,8 @@
 import { DateUtils } from '../../../utils';
 import bcrypt from 'bcrypt';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, PrimaryColumn, OneToOne, JoinColumn} from "typeorm";
 import * as DTO from "../../dto";
+import uuid from "uuid";
 
 export enum PersonStatus {
   INACTIVE = 1,
@@ -37,18 +38,37 @@ export class Person {
   @Column()
   public passwordHash: string;
 
-  public static create(createMemberRequest: DTO.member.CreateMemberRequest): Person {
+  public static create(createPersonRequest: DTO.person.CreatePersonRequest): Person {
 
     const person = new Person;
 
-    person.firstName = createMemberRequest.firstName;
-    person.lastName = createMemberRequest.lastName;
-    person.passwordHash = bcrypt.hashSync(createMemberRequest.password, 10);
-    person.phone = createMemberRequest.phone;
-    person.email = createMemberRequest.email;
+    person.firstName = createPersonRequest.firstName;
+    person.lastName = createPersonRequest.lastName;
+    person.passwordHash = bcrypt.hashSync(createPersonRequest.password, 10);
+    person.phone = createPersonRequest.phone;
+    person.email = createPersonRequest.email;
 
     return person;
 
   }
+
+}
+
+@Entity()
+export class ActivationCode {
+
+	@PrimaryColumn()
+	public code: string;
+
+	@OneToOne(type => Person)
+	@JoinColumn()
+	public person: Person;
+
+	public static create(person: Person): ActivationCode {
+		const activationCode = new ActivationCode();
+		activationCode.code = uuid.v4().toString();
+		activationCode.person = person;
+		return activationCode;
+	}
 
 }

@@ -2,17 +2,17 @@ import Randomstring from 'randomstring';
 import request from "supertest";
 import { Connection } from 'typeorm';
 import { API } from "../../src/api";
-import { MemberRepository } from '../../src/common/repositories/member-repository';
+import { MemberRepository } from '../../src/common/repositories/users/member-repository';
 import {APIError} from "../../src/api/model/api-error";
 import {Database} from "../../src/common/db";
-import {member} from "../../src/common/model/dto";
+import {person} from "../../src/common/model/dto";
 
 describe("Testing MemberController Endpoints =>", () => {
 
   let connection: Connection;
   let memberRepository: MemberRepository;
   const api: API = new API;
-  const memberDTO: member.CreateMemberRequest = {
+  const memberDTO: person.CreatePersonRequest = {
     firstName: Randomstring.generate(10),
     lastName: Randomstring.generate(10),
     email: `${Randomstring.generate(10)}@test.com`,
@@ -25,7 +25,7 @@ describe("Testing MemberController Endpoints =>", () => {
 		email: `${Randomstring.generate(10)}@test.com`,
 		phone: Randomstring.generate({length: 10, charset: "numeric"}),
 		password: Randomstring.generate(6)
-	} as member.CreateMemberRequest;
+	} as person.CreatePersonRequest;
 
   beforeAll(async done => {
     connection = await Database.createConnection();
@@ -44,7 +44,7 @@ describe("Testing MemberController Endpoints =>", () => {
       .send(memberDTO)
 	    .expect(200)
 	    .then(response => {
-		    const member: member.CreateMemberRequest = response.body;
+		    const member: person.CreatePersonRequest = response.body;
 
 		    expect(member.firstName).toEqual(memberDTO.firstName);
 		    expect(member.lastName).toEqual(memberDTO.lastName);

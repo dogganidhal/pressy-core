@@ -1,4 +1,4 @@
 export {address} from "./address";
-export {member} from "./member";
+export {person} from "./person";
 export {slot} from "./slot";
 export {order} from "./order";

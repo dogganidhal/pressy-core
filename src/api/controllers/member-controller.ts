@@ -1,8 +1,8 @@
 import {PersonStatus} from '../../common/model/entity/users/person';
 import {GET, Path, PathParam, POST, QueryParam, Return} from "typescript-rest";
-import {Member} from "../../common/model/entity/users/member";
-import {PersonRepository} from '../../common/repositories/person-repository';
-import {MemberRepository} from '../../common/repositories/member-repository';
+import {Member} from "../../common/model/entity/users/member/member";
+import {PersonRepository} from '../../common/repositories/users/person-repository';
+import {MemberRepository} from '../../common/repositories/users/member-repository';
 import {BaseController} from "./base-controller";
 import {Authenticate, JSONResponse} from "../annotations";
 import {Database} from "../../common/db";
@@ -26,7 +26,7 @@ export class MemberController extends BaseController {
 
     console.log({group: group, query: query});
     const members: Member[] = await this._memberRepository.getAllMembers();
-    return members.map(member => new DTO.member.MemberInfo({
+    return members.map(member => new DTO.person.PersonInfo({
       id: member.id,
       firstName: member.person.firstName,
       lastName: member.person.lastName,
@@ -45,7 +45,7 @@ export class MemberController extends BaseController {
   	let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
 
     if (member)
-      return new DTO.member.MemberInfo({
+      return new DTO.person.PersonInfo({
 	      id: member.id,
 	      firstName: member.person.firstName,
 	      lastName: member.person.lastName,
@@ -60,7 +60,7 @@ export class MemberController extends BaseController {
   @POST
   public async createMember() {
 
-	  const newMember = http.parseJSONBody(this.getPendingRequest().body, DTO.member.CreateMemberRequest);
+	  const newMember = http.parseJSONBody(this.getPendingRequest().body, DTO.person.CreatePersonRequest);
 	  const member = await this._memberRepository.createMember(newMember);
 	  const personActivationCode = await this._personRepository.createActivationCode(member.person);
 	  // TODO: Send the activation URL by email !!
@@ -92,7 +92,7 @@ export class MemberController extends BaseController {
     if (!member)
     	throw new exception.MemberNotFoundException(this.pendingPerson.email);
 
-    const mobileDevice = this.getPendingRequest().body as DTO.member.MobileDevice;
+    const mobileDevice = this.getPendingRequest().body as DTO.person.MobileDevice;
     
     await this._memberRepository.registerMobileDevice(member, mobileDevice);
 

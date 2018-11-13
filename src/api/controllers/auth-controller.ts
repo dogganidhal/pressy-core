@@ -1,8 +1,8 @@
 import {Path, PathParam, POST, Return} from "typescript-rest";
 import {exception} from "../../common/errors";
 import bcrypt from "bcrypt";
-import {PersonRepository} from "../../common/repositories/person-repository";
-import {MemberRepository} from "../../common/repositories/member-repository";
+import {PersonRepository} from "../../common/repositories/users/person-repository";
+import {MemberRepository} from "../../common/repositories/users/member-repository";
 import {BaseController} from "./base-controller";
 import {JSONResponse} from "../annotations";
 import {Database} from "../../common/db";
@@ -23,7 +23,7 @@ export class AuthController extends BaseController {
   @POST
   public async login() {
 
-	  let loginRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.member.LoginRequest);
+	  let loginRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.person.LoginRequest);
 	  let member = await this._memberRepository.getMemberByEmail(loginRequest.email);
 
 	  if (!member)
@@ -41,7 +41,7 @@ export class AuthController extends BaseController {
   @POST
   public async refreshCredentials() {
 
-	  const {refreshToken} = http.parseJSONBody(this.getPendingRequest().body, DTO.member.RefreshCredentialsRequest);
+	  const {refreshToken} = http.parseJSONBody(this.getPendingRequest().body, DTO.person.RefreshCredentialsRequest);
 	  return await crypto.refreshCredentials(refreshToken);
 
   }
@@ -51,7 +51,7 @@ export class AuthController extends BaseController {
   @POST
   public async getResetPasswordCode() {
 
-	  const resetCodeRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.member.ResetCodeRequest);
+	  const resetCodeRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.person.ResetCodeRequest);
 
 	  const person = await this._personRepository.getPersonByEmail(resetCodeRequest.email);
 
@@ -63,7 +63,7 @@ export class AuthController extends BaseController {
 	  // TODO: Return an empty "accepted" response, and call the email service
 	  return {
 	  	code: resetCode.id
-	  } as DTO.member.ResetCode;
+	  } as DTO.person.ResetCode;
 
   }
 
@@ -72,7 +72,7 @@ export class AuthController extends BaseController {
   @POST
   public async resetPassword(@PathParam("code") code: string) {
 
-	  const resetPasswordRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.member.ResetPasswordRequest);
+	  const resetPasswordRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.person.ResetPasswordRequest);
 	  const person = await this._personRepository.resetPassword(code, resetPasswordRequest);
 
 	  return new Return.RequestAccepted(`/api/v1/member/${person.id}`);

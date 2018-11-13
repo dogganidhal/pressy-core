@@ -1,18 +1,17 @@
-import { BaseRepository } from './base-repository';
-import { PersonPasswordResetCode } from '../model/entity/users/reset-code';
+import { BaseRepository } from '../base-repository';
+import { PasswordResetCode } from '../../model/entity/users/password-reset-code';
 import { Repository } from "typeorm";
 import bcrypt from "bcrypt";
-import { exception } from "../errors";
-import { DateUtils } from "../utils";
-import { PersonActivationCode } from '../model/entity/users/member';
-import { Person } from '../model/entity/users/person';
-import * as DTO from "../model/dto";
+import { exception } from "../../errors";
+import { DateUtils } from "../../utils";
+import {Person, ActivationCode} from '../../model/entity/users/person';
+import * as DTO from "../../model/dto/index";
 
 
 export class PersonRepository extends BaseRepository {
 
-  private _resetCodeRepository: Repository<PersonPasswordResetCode> = this.connection.getRepository(PersonPasswordResetCode);
-  private _activationCodeRepository: Repository<PersonActivationCode> = this.connection.getRepository(PersonActivationCode);
+  private _resetCodeRepository: Repository<PasswordResetCode> = this.connection.getRepository(PasswordResetCode);
+  private _activationCodeRepository: Repository<ActivationCode> = this.connection.getRepository(ActivationCode);
   private _personRepository: Repository<Person>  = this.connection.getRepository(Person);
 
   public async savePerson(person: Person): Promise<Person> {
@@ -42,7 +41,7 @@ export class PersonRepository extends BaseRepository {
 
   }
 
-  public async resetPassword(code: string, resetPasswordRequest: DTO.member.ResetPasswordRequest): Promise<Person> {
+  public async resetPassword(code: string, resetPasswordRequest: DTO.person.ResetPasswordRequest): Promise<Person> {
 
     const passwordResetRequestCode = await this._resetCodeRepository.findOne(code, {relations: ["person"]});
 
@@ -64,19 +63,19 @@ export class PersonRepository extends BaseRepository {
     return person;
   }
 
-  public async createPasswordResetCode(person: Person): Promise<PersonPasswordResetCode> {
-    let code = PersonPasswordResetCode.create(person);
+  public async createPasswordResetCode(person: Person): Promise<PasswordResetCode> {
+    let code = PasswordResetCode.create(person);
     await this._resetCodeRepository.insert(code);
     return code;
   }
 
-  public async deletePasswordResetCode(passwordResetCode: PersonPasswordResetCode): Promise<void> {
+  public async deletePasswordResetCode(passwordResetCode: PasswordResetCode): Promise<void> {
     await this._resetCodeRepository.delete(passwordResetCode);
   }
 
-  public async createActivationCode(person: Person): Promise<PersonActivationCode> {
+  public async createActivationCode(person: Person): Promise<ActivationCode> {
 
-    const activationCode = PersonActivationCode.create(person);
+    const activationCode = ActivationCode.create(person);
     await this._activationCodeRepository.insert(activationCode);
     return activationCode;
 
@@ -91,7 +90,7 @@ export class PersonRepository extends BaseRepository {
 
       await this._resetCodeRepository.createQueryBuilder()
       .delete()
-      .from(PersonActivationCode)
+      .from(ActivationCode)
       .where("code = :code", {code: code})
       .execute();
 

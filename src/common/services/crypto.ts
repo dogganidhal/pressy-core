@@ -3,7 +3,7 @@ import {getConfig} from "../../config";
 import {exception} from "../errors";
 import {Database} from "../db";
 import {Person} from "../model/entity/users/person";
-import {PersonRepository} from "../repositories/person-repository";
+import {PersonRepository} from "../repositories/users/person-repository";
 
 
 export namespace crypto {

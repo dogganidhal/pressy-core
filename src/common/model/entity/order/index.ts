@@ -1,9 +1,10 @@
 import { Address } from '../common/address';
 import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne, CreateDateColumn, OneToMany, Column } from "typeorm";
 import { Slot } from "../slot";
-import { Member } from '../users/member';
+import { Member } from '../users/member/member';
 import { Element } from './element';
 import * as DTO from "../../dto/";
+import {Driver} from "../users/driver/driver";
 
 export enum BookingStatus {
   VALIDATED = 0,
@@ -43,6 +44,10 @@ export class Order {
   @JoinColumn()
   public member: Member;
 
+	@ManyToOne(type => Driver, {nullable: true})
+	@JoinColumn()
+	public driver: Driver;
+
   @OneToMany(type => Element, element => element.order, {nullable: false})
   public elements: Element[];
 
@@ -57,7 +62,7 @@ export class Order {
 
     let bookingEntity = new Order;
 
-	  bookingEntity.person = member;
+	  bookingEntity.member = member;
 	  bookingEntity.status = BookingStatus.VALIDATED;
 
     bookingEntity.pickupSlot = pickupSlot;

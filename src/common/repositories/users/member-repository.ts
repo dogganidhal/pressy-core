@@ -1,10 +1,10 @@
-import {MobileDevice} from './../model/entity/users/device';
+import {MobileDevice} from '../../model/entity/users/device';
 import {Repository} from "typeorm";
-import {exception} from "../errors";
-import {Member, PersonActivationCode} from '../model/entity/users/member';
-import {Person} from '../model/entity/users/person';
-import {BaseRepository} from './base-repository';
-import * as DTO from "../model/dto";
+import {exception} from "../../errors";
+import {Member} from '../../model/entity/users/member/member';
+import {ActivationCode, Person} from '../../model/entity/users/person';
+import {BaseRepository} from '../base-repository';
+import * as DTO from "../../model/dto/index";
 
 
 export class MemberRepository extends BaseRepository {
@@ -12,7 +12,7 @@ export class MemberRepository extends BaseRepository {
   private _memberRepository: Repository<Member> = this.connection.getRepository(Member);
   private _mobileDeviceRepository: Repository<MobileDevice> = this.connection.getRepository(MobileDevice);
   private _personRepository: Repository<Person> = this.connection.getRepository(Person);
-  private _personActivationCodeRepository: Repository<PersonActivationCode> = this.connection.getRepository(PersonActivationCode);
+  private _activationCodeRepository: Repository<ActivationCode> = this.connection.getRepository(ActivationCode);
 
   public async getAllMembers(): Promise<Member[]> {
     return (await this._memberRepository).find();
@@ -52,7 +52,7 @@ export class MemberRepository extends BaseRepository {
 
   }
 
-  public async createMember(createMemberRequest: DTO.member.CreateMemberRequest): Promise<Member> {
+  public async createMember(createMemberRequest: DTO.person.CreatePersonRequest): Promise<Member> {
 
     const { email, phone } = createMemberRequest;
 
@@ -86,11 +86,11 @@ export class MemberRepository extends BaseRepository {
     if (!person)
       return;
 
-    const personActivationCode = await this._personActivationCodeRepository.findOne({person: person});
+    const activationCode = await this._activationCodeRepository.findOne({person: person});
     const member = await this._memberRepository.findOne({person: person});
 
-    if (personActivationCode)
-      await this._personActivationCodeRepository.delete(personActivationCode);
+    if (activationCode)
+      await this._activationCodeRepository.delete(activationCode);
 
     if (member)
 	    await this._memberRepository.delete(member);
@@ -105,7 +105,7 @@ export class MemberRepository extends BaseRepository {
 
   }
 
-  public async registerMobileDevice(member: Member, mobileDeviceDTO: DTO.member.MobileDevice): Promise<MobileDevice> {
+  public async registerMobileDevice(member: Member, mobileDeviceDTO: DTO.person.MobileDevice): Promise<MobileDevice> {
 
     const device = MobileDevice.create(member.person, mobileDeviceDTO.deviceId);
     await this._mobileDeviceRepository.insert(device);

@@ -3,13 +3,13 @@ import {exception} from '../../common/errors';
 import {OrderRepository} from '../../common/repositories/order/order-repository';
 import {SlotRepository} from '../../common/repositories/slot-repository';
 import {DateUtils} from '../../common/utils';
-import {Member} from "../../common/model/entity/users/member";
+import {Member} from "../../common/model/entity/users/member/member";
 import {SlotType} from "../../common/model/entity/slot";
 import {BaseController} from "./base-controller";
 import {Authenticate, JSONResponse} from "../annotations";
 import {Database} from "../../common/db";
 import {crypto} from "../../common/services/crypto";
-import {MemberRepository} from "../../common/repositories/member-repository";
+import {MemberRepository} from "../../common/repositories/users/member-repository";
 import {http} from "../../common/utils/http";
 import * as DTO from "../../common/model/dto";
 import {Order} from "../../common/model/entity/order";
@@ -71,7 +71,7 @@ export class OrderController extends BaseController {
 			  formattedAddress: order.deliveryAddress.formattedAddress,
 			  zipCode: order.deliveryAddress.zipCode
 		  } : pickupAddress;
-	  	let member: DTO.member.IMemberInfo = {
+	  	let member: DTO.person.IPersonInfo = {
 			  id: order.member.id,
 			  firstName: order.member.person.firstName,
 			  lastName: order.member.person.lastName,

@@ -1,4 +1,4 @@
-import { MemberRepository } from '../../src/common/repositories/member-repository';
+import { MemberRepository } from '../../src/common/repositories/users/member-repository';
 import { Connection } from 'typeorm';
 import { API } from "../../src/api";
 import request from "supertest";
@@ -14,7 +14,7 @@ describe("Testing Authentication Endpoints", () => {
 	let connection: Connection;
 	let memberRepository: MemberRepository;
 	const api: API = new API;
-	const testMember: DTO.member.CreateMemberRequest = {
+	const testMember: DTO.person.createPersonRequest = {
 		firstName: RandomString.generate(10),
 		lastName: RandomString.generate(10),
 		email: `${RandomString.generate(10)}@email.com`,
@@ -44,7 +44,7 @@ describe("Testing Authentication Endpoints", () => {
       .expect(200)
       .then(response => {
 
-        const token: DTO.member.LoginResponse = response.body as DTO.member.LoginResponse;
+        const token: DTO.person.LoginResponse = response.body as DTO.person.LoginResponse;
 
         expect(token.accessToken).not.toBeNull();
         expect(token.refreshToken).not.toBeNull();
