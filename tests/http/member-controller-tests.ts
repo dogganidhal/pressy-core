@@ -34,12 +34,12 @@ describe("Testing MemberController Endpoints =>", () => {
     done();
   }, 60000);
 
-  it("Creates a new member with correct data", async done => {
+  it("Creates a new person with correct data", async done => {
 
     expect.assertions(4);
 
     return request(api.getApp())
-      .post("/api/v1/member")
+      .post("/api/v1/person")
       .set("Content-Type", "application/json")
       .send(memberDTO)
 	    .expect(200)
@@ -64,7 +64,7 @@ describe("Testing MemberController Endpoints =>", () => {
 		expect.assertions(2);
 
 		return request(api.getApp())
-			.post("/api/v1/member")
+			.post("/api/v1/person")
 			.set("Content-Type", "application/json")
 			.send(duplicateMemberDTO)
 			.expect(400)

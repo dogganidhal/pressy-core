@@ -101,13 +101,13 @@ export class MemberRepository extends BaseRepository {
 
   public async getMobileDevices(member: Member): Promise<MobileDevice[]> {
 
-    return this._mobileDeviceRepository.find({member: member});
+    return this._mobileDeviceRepository.find({person: member});
 
   }
 
   public async registerMobileDevice(member: Member, mobileDeviceDTO: DTO.member.MobileDevice): Promise<MobileDevice> {
 
-    const device = MobileDevice.create(member, mobileDeviceDTO.deviceId);
+    const device = MobileDevice.create(member.person, mobileDeviceDTO.deviceId);
     await this._mobileDeviceRepository.insert(device);
     return device;
 

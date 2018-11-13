@@ -1,5 +1,5 @@
-import { Member } from './member';
 import { Entity, PrimaryColumn, JoinColumn, ManyToOne } from "typeorm";
+import {Person} from "./person";
 
 
 @Entity()
@@ -8,15 +8,15 @@ export class MobileDevice {
   @PrimaryColumn()
   public id: string;
 
-  @ManyToOne(type => Member)
+  @ManyToOne(type => Person)
   @JoinColumn()
-  public member: Member;
+  public person: Person;
 
-  public static create(member: Member, deviceId: string): MobileDevice {
+  public static create(person: Person, deviceId: string): MobileDevice {
     const device = new MobileDevice();
 
     device.id = deviceId;
-    device.member = member;
+    device.person = person;
 
     return device;
   }

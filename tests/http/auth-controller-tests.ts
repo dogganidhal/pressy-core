@@ -38,7 +38,7 @@ describe("Testing Authentication Endpoints", () => {
   	expect.assertions(4);
 
     request(api.getApp())
-      .post("/api/v1/auth/member")
+      .post("/api/v1/auth/person")
       .set("Content-Type", "application/json")
       .send({email: testMember.email, password: "test"})
       .expect(200)
@@ -65,7 +65,7 @@ describe("Testing Authentication Endpoints", () => {
 		expect.assertions(3);
 
 		request(api.getApp())
-			.post("/api/v1/auth/member")
+			.post("/api/v1/auth/person")
 			.set("Content-Type", "application/json")
 			.send({email: testMember.email})
 			.expect(400)
@@ -91,7 +91,7 @@ describe("Testing Authentication Endpoints", () => {
 		expect.assertions(3);
 
 		request(api.getApp())
-			.post("/api/v1/auth/member")
+			.post("/api/v1/auth/person")
 			.set("Content-Type", "application/json")
 			.send({email: testMember.email})
 			.expect(400)
@@ -117,7 +117,7 @@ describe("Testing Authentication Endpoints", () => {
 		expect.assertions(3);
 
 		request(api.getApp())
-			.post("/api/v1/auth/member")
+			.post("/api/v1/auth/person")
 			.set("Content-Type", "application/json")
       .send()
 			.expect(400)
@@ -143,7 +143,7 @@ describe("Testing Authentication Endpoints", () => {
 	  expect.assertions(2);
 
 		request(api.getApp())
-			.post("/api/v1/auth/member")
+			.post("/api/v1/auth/person")
 			.set("Content-Type", "application/json")
 			.send({email: testMember.email, password: "wrongPassword"})
 			.expect(403)
@@ -168,7 +168,7 @@ describe("Testing Authentication Endpoints", () => {
 		expect.assertions(2);
 
 		request(api.getApp())
-			.post("/api/v1/auth/member")
+			.post("/api/v1/auth/person")
 			.set("Content-Type", "application/json")
 			.send({email: "doesNotExist@email.com", password: "test"})
 			.expect(404)

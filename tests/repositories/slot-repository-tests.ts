@@ -1,6 +1,6 @@
 import { Connection } from 'typeorm';
 import { SlotRepository } from "../../src/common/repositories/slot-repository";
-import { SlotType } from "../../src/common/model/entity/order/slot";
+import { SlotType } from "../../src/common/model/entity/slot";
 import {Database} from "../../src/common/db";
 
 

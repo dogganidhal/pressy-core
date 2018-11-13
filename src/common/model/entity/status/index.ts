@@ -1,5 +1,9 @@
+import {PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn} from "typeorm";
+import {Person} from "../users/person";
 
-import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn} from "typeorm";
+export enum StatusUpdateDoerIdentity {
+	MEMBER, DRIVER, LAUNDRER, ADMIN, SUPERUSER
+}
 
 export abstract class StatusUpdate {
 
@@ -8,5 +12,12 @@ export abstract class StatusUpdate {
 
   @CreateDateColumn()
   public time: Date;
+
+	@ManyToOne(type => Person)
+	@JoinColumn()
+	public doer: Person;
+
+	@Column({nullable: false})
+	public doerIdentity: StatusUpdateDoerIdentity;
 
 }

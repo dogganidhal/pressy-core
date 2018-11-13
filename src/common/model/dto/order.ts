@@ -1,4 +1,8 @@
-import { ElementType } from "../entity/booking/element";
+import {Required} from "../../annotations";
+import {slot} from "./slot";
+import {member} from "./member";
+import {address} from "./address";
+import {ElementType} from "../entity/order/element";
 
 export module order {
 
@@ -16,7 +20,7 @@ export module order {
 		public color: string;
 		public comment?: string;
 
-		constructor(element: IOrderElement) {
+		constructor(element: order.IOrderElement) {
 			this.bookingId = element.bookingId;
 			this.type = element.type;
 			this.color = element.color;
@@ -25,19 +29,64 @@ export module order {
 
 	}
 
-	interface ICreateOrderRequest {
-		elements: IOrderElement[];
-		bookingId: number;
+	export class CreateOrderElementRequest {
+
+		@Required()
+		public type: ElementType;
+
+		@Required()
+		public color: string;
+
+		public comment?: string;
+
 	}
 
 	export class CreateOrderRequest {
 
-		public elements: OrderElement[];
-		public bookingId: number;
+		@Required()
+		public pickupSlotId: number;
 
-		constructor(request: ICreateOrderRequest) {
-			this.bookingId = request.bookingId;
-			this.elements = request.elements.map(element => new OrderElement(element));
+		@Required()
+		public deliverySlotId: number;
+
+		@Required(address.CreateAddressRequest)
+		public pickupAddress: address.CreateAddressRequest;
+
+		public deliveryAddress?: address.CreateAddressRequest;
+
+		@Required(Array)
+		public elements: Array<CreateOrderElementRequest>;
+
+	}
+
+	export interface IOrder {
+		id: number;
+		pickupSlot: slot.ISlot;
+		deliverySlot: slot.ISlot;
+		pickupAddress: address.IAddress;
+		deliveryAddress: address.IAddress;
+		elements: Array<order.IOrderElement>;
+		member: member.IMemberInfo;
+	}
+
+	export class Order {
+
+		public id: number;
+		public pickupSlot: slot.Slot;
+		public deliverySlot: slot.Slot;
+		public pickupAddress: address.Address;
+		public deliveryAddress: address.Address;
+		public elements: Array<order.IOrderElement>;
+		public member: member.MemberInfo;
+
+		constructor(order: IOrder) {
+			this.id = order.id;
+			this.pickupSlot = new slot.Slot(order.pickupSlot);
+			this.deliverySlot = new slot.Slot(order.pickupSlot);
+			this.pickupAddress = new address.Address(order.pickupAddress);
+			this.deliveryAddress = new address.Address(order.deliveryAddress);
+			this.elements = order.elements.map(element => new OrderElement(element));
+			this.member = new member.MemberInfo(order.member);
 		}
 
 	}

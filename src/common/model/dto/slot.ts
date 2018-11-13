@@ -1,4 +1,4 @@
-import { SlotType } from '../entity/order/slot';
+import { SlotType } from '../entity/slot';
 
 export module slot {
 

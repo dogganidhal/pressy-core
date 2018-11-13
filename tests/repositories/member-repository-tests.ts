@@ -33,7 +33,7 @@ describe("MemberRepository Write/Delete Operations Tests", () => {
     done();
   });
 
-  test("Creates a new member from MemberRegistrationDTO", async done => {
+  test("Creates a new person from MemberRegistrationDTO", async done => {
 
     expect.assertions(5);
 
@@ -99,7 +99,7 @@ describe("MemberRepository Read Operations Tests", () => {
     done();
   }, 60000);
 
-  test("Gets an existing member from database with a correct Email", async () => {
+  test("Gets an existing person from database with a correct Email", async () => {
     expect.assertions(5);
     try {
       const member = await memberRepository.getMemberByEmail(memberDTO.email);
@@ -113,7 +113,7 @@ describe("MemberRepository Read Operations Tests", () => {
     }
   }, 60000);
 
-  test("Returns undefined from getMemberByEmail when no member with given email is found", async () => {
+  test("Returns undefined from getMemberByEmail when no person with given email is found", async () => {
     expect.assertions(1);
     try {
       const member = await memberRepository.getMemberByEmail(`does.not.exist@not.found`);
@@ -123,7 +123,7 @@ describe("MemberRepository Read Operations Tests", () => {
     }
   }, 60000);
 
-  test("Gets an existing member from database with a correct Phone", async () => {
+  test("Gets an existing person from database with a correct Phone", async () => {
     expect.assertions(5);
     try {
       const member = await memberRepository.getMemberByPhone(memberDTO.phone);
@@ -137,7 +137,7 @@ describe("MemberRepository Read Operations Tests", () => {
     }
   }, 60000);
 
-  test("Returns undefined from getMemberByPhone when no member with given phone is found", async () => {
+  test("Returns undefined from getMemberByPhone when no person with given phone is found", async () => {
     expect.assertions(1);
     try {
       const member = await memberRepository.getMemberByEmail(`00000000000`);

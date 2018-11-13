@@ -1,5 +1,5 @@
-import { SlotType } from '../model/entity/order/slot';
-import { Slot } from '../model/entity/order/slot';
+import { SlotType } from '../model/entity/slot';
+import { Slot } from '../model/entity/slot';
 import { Repository, Brackets } from "typeorm";
 import { DateUtils } from '../utils';
 import { BaseRepository } from './base-repository';

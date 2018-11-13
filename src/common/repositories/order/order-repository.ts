@@ -1,37 +1,37 @@
-import {Booking} from '../../model/entity/booking';
+import {Order} from '../../model/entity/order';
 import {Repository} from "typeorm";
 import {Member} from '../../model/entity/users/member';
 import {BaseRepository} from '../base-repository';
-import {BookingStatusManager} from "./booking-status-manager";
+import {OrderStatusManager} from "./order-status-manager";
 import * as DTO from "../../model/dto";
-import {Slot} from "../../model/entity/order/slot";
+import {Slot} from "../../model/entity/slot";
 import {exception} from "../../errors";
 import {GeocodeService} from "../../services/geocode-service";
 import {Address} from "../../model/entity/common/address";
 
 
-export class BookingRepository extends BaseRepository {
+export class OrderRepository extends BaseRepository {
 
-  private _bookingRepository: Repository<Booking> = this.connection.getRepository(Booking);
+  private _bookingRepository: Repository<Order> = this.connection.getRepository(Order);
   private _slotRepository: Repository<Slot> = this.connection.getRepository(Slot);
 	private _addressRepository: Repository<Address> = this.connection.getRepository(Address);
 
   private _geocodeService: GeocodeService = new GeocodeService;
-	private _bookingStatusManger: BookingStatusManager = new BookingStatusManager(this.connection);
+	private _bookingStatusManger: OrderStatusManager = new OrderStatusManager(this.connection);
 
-  public async getBookingsForMember(member: Member): Promise<Booking[]> {
+  public async getBookingsForMember(member: Member): Promise<Order[]> {
 
   return await this._bookingRepository.find({
 	    where: {member: member},
 	    relations: [
 		    "pickupAddress", "deliveryAddress",
-		    "pickupSlot", "deliverySlot", "member"
+		    "pickupSlot", "deliverySlot", "person"
 	    ]
     });
     
   }
 
-  public async createBooking(member: Member, createBookingRequest: DTO.booking.CreateBookingRequest): Promise<Booking> {
+  public async createBooking(member: Member, createBookingRequest: DTO.order.CreateOrderRequest): Promise<Order> {
 
   	let pickupSlot = await this._slotRepository.findOne(createBookingRequest.pickupSlotId);
 
@@ -65,7 +65,7 @@ export class BookingRepository extends BaseRepository {
 	  let pickupAddressEntity = Address.create(pickupAddress);
 	  let deliveryAddressEntity = deliveryAddress != pickupAddress ? Address.create(deliveryAddress) : pickupAddressEntity;
 
-	  let bookingEntity = await Booking.create(
+	  let bookingEntity = await Order.create(
 	  	member, pickupSlot, deliverySlot,
 		  pickupAddressEntity, deliveryAddressEntity,
 		  createBookingRequest.elements

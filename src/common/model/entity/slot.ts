@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-import {slot} from "../../dto";
+import {slot} from "../dto";
 
 export enum SlotType {
   LIGHT = 1,

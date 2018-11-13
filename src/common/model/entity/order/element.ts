@@ -1,4 +1,4 @@
-import { Booking } from './index';
+import { Order } from './index';
 import {Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column,} from "typeorm";
 import * as DTO from "../../dto";
 
@@ -17,9 +17,9 @@ export class Element {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @ManyToOne(type => Booking)
+  @ManyToOne(type => Order)
   @JoinColumn()
-  public booking: Booking;
+  public order: Order;
 
   @Column()
   public type: ElementType;
@@ -30,11 +30,11 @@ export class Element {
   @Column({nullable: true})
   public comment?: string;
 
-  public static create(booking: Booking, element: DTO.booking.CreateBookingElementRequest): Element {
+  public static create(booking: Order, element: DTO.order.CreateOrderElementRequest): Element {
 
     let elementEntity = new Element;
 
-    elementEntity.booking = booking;
+    elementEntity.order = booking;
     elementEntity.type = element.type;
 	  elementEntity.color = element.color;
 	  elementEntity.comment = element.comment;

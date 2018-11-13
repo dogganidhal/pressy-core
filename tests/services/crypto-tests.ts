@@ -26,7 +26,7 @@ describe("crypto Operations Tests", () => {
 		done();
 	}, 60000);
 
-	test("Returns auth credentials for a registered member", () => {
+	test("Returns auth credentials for a registered person", () => {
 
 		let authCredentials = crypto.signAuthToken(member.person, crypto.SigningCategory.MEMBER);
 
