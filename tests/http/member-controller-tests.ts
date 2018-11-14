@@ -6,6 +6,10 @@ import { MemberRepository } from '../../src/common/repositories/users/member-rep
 import {APIError} from "../../src/api/model/api-error";
 import {Database} from "../../src/common/db";
 import {person} from "../../src/common/model/dto";
+import uuid = require("uuid");
+import {MobileDevice} from "../../src/common/model/entity/users/device";
+import {crypto} from "../../src/common/services/crypto";
+import SigningCategory = crypto.SigningCategory;
 
 describe("Testing MemberController Endpoints =>", () => {
 
@@ -85,7 +89,51 @@ describe("Testing MemberController Endpoints =>", () => {
 
 	}, 60000);
 
-  afterAll(async done => {
+	it("Registers a MobileDevice for a given member", async done => {
+
+		expect.assertions(2);
+
+		let mobileDeviceId = uuid.v1().toString();
+		let mobileDevice: person.MobileDevice = {
+			deviceId: mobileDeviceId
+		};
+		let member = await memberRepository.createMember({
+			firstName: Randomstring.generate(10),
+			lastName: Randomstring.generate(10),
+			email: `${Randomstring.generate(10)}@email.com`,
+			password: Randomstring.generate(10),
+			phone: Randomstring.generate({length: 10, charset: "numerical"})
+		});
+
+		let {accessToken} = crypto.signAuthToken(member.person, SigningCategory.MEMBER);
+
+		return request(api.getApp())
+			.post("/api/v1/member/devices")
+			.set("Content-Type", "application/json")
+			.set("Authorization", `Bearer ${accessToken}`)
+			.send(mobileDevice)
+			.expect(201)
+			.then(async _ => {
+
+				let mobileDeviceRepository = connection.getRepository(MobileDevice);
+				let mobileDeviceEntity = await mobileDeviceRepository.findOneOrFail(mobileDeviceId, {relations: ["person"]});
+
+				expect(mobileDeviceEntity.id).toEqual(mobileDeviceId);
+				expect(mobileDeviceEntity.person.id).toEqual(member.person.id);
+
+				done();
+
+			})
+			.catch(async error => {
+				console.warn(error);
+				fail(error);
+				done();
+			});
+
+	}, 60000);
+
+
+	afterAll(async done => {
 	  await memberRepository.deleteMemberByEmail(duplicateMemberDTO.email);
     await memberRepository.deleteMemberByEmail(memberDTO.email);
     await connection.close();

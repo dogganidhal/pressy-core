@@ -38,7 +38,7 @@ export class MemberController extends BaseController {
   }
 
 	@JSONResponse
-  @Authenticate([crypto.SigningCategory.ADMIN, crypto.SigningCategory.MEMBER])
+  @Authenticate(crypto.SigningCategory.MEMBER)
   @GET
   public async getMemberInfo() {
 
@@ -82,8 +82,8 @@ export class MemberController extends BaseController {
 
   }
 
-  @Authenticate([crypto.SigningCategory.ADMIN, crypto.SigningCategory.MEMBER])
-  @Path("/devices/")
+  @Authenticate(crypto.SigningCategory.MEMBER)
+  @Path("/devices")
   @POST
   public async registerMobileDevice() {
 
@@ -92,7 +92,7 @@ export class MemberController extends BaseController {
     if (!member)
     	throw new exception.MemberNotFoundException(this.pendingPerson.email);
 
-    const mobileDevice = this.getPendingRequest().body as DTO.person.MobileDevice;
+    const mobileDevice = http.parseJSONBody(this.getPendingRequest().body, DTO.person.MobileDevice);
     
     await this._memberRepository.registerMobileDevice(member, mobileDevice);
 
@@ -101,8 +101,8 @@ export class MemberController extends BaseController {
   }
 
   @JSONResponse
-  @Authenticate([crypto.SigningCategory.ADMIN, crypto.SigningCategory.MEMBER])
-  @Path("/devices/")
+  @Authenticate(crypto.SigningCategory.MEMBER)
+  @Path("/devices")
   @GET
   public async getMobileDevices() {
 
@@ -110,9 +110,10 @@ export class MemberController extends BaseController {
 
 	  if (!member)
 		  throw new exception.MemberNotFoundException(this.pendingPerson.email);
-    
-    return (await this._memberRepository.getMobileDevices(member))
-    .map(device => ({deviceId: device.id}));
+
+	  let mobileDevices = await this._memberRepository.getMobileDevices(member);
+
+    return mobileDevices.map(device => ({deviceId: device.id}));
 
   }
 
