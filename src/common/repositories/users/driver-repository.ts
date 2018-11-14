@@ -87,13 +87,13 @@ export class DriverRepository extends BaseRepository {
 			return;
 
 		const personActivationCode = await this._personActivationCodeRepository.findOne({person: person});
-		const member = await this._driverRepository.findOne({person: person});
+		const driver = await this._driverRepository.findOne({person: person});
 
 		if (personActivationCode)
 			await this._personActivationCodeRepository.delete(personActivationCode);
 
-		if (member)
-			await this._driverRepository.delete(member);
+		if (driver)
+			await this._driverRepository.delete(driver);
 
 		await this._personRepository.delete(person);
 
@@ -105,9 +105,9 @@ export class DriverRepository extends BaseRepository {
 
 	}
 
-	public async registerMobileDevice(member: Driver, mobileDeviceDTO: DTO.person.MobileDevice): Promise<MobileDevice> {
+	public async registerMobileDevice(driver: Driver, mobileDeviceDTO: DTO.person.MobileDevice): Promise<MobileDevice> {
 
-		const device = MobileDevice.create(member.person, mobileDeviceDTO.deviceId);
+		const device = MobileDevice.create(driver.person, mobileDeviceDTO.deviceId);
 		await this._mobileDeviceRepository.insert(device);
 		return device;
 

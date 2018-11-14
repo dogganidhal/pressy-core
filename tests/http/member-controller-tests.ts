@@ -39,7 +39,7 @@ describe("Testing MemberController Endpoints =>", () => {
     expect.assertions(4);
 
     return request(api.getApp())
-      .post("/api/v1/person")
+      .post("/api/v1/member")
       .set("Content-Type", "application/json")
       .send(memberDTO)
 	    .expect(200)
@@ -64,7 +64,7 @@ describe("Testing MemberController Endpoints =>", () => {
 		expect.assertions(2);
 
 		return request(api.getApp())
-			.post("/api/v1/person")
+			.post("/api/v1/member")
 			.set("Content-Type", "application/json")
 			.send(duplicateMemberDTO)
 			.expect(400)

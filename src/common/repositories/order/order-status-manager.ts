@@ -5,14 +5,14 @@ import {Order} from "../../model/entity/order";
 
 export class OrderStatusManager {
 
-	private _bookingStatusRepository = this.connection.getRepository(OrderStatusUpdate);
+	private _orderStatusRepository = this.connection.getRepository(OrderStatusUpdate);
 
 	constructor(private connection: Connection) {}
 
-	public async registerBookingCreation(booking: Order): Promise<void> {
+	public async registerOrderCreation(order: Order): Promise<void> {
 
-		let bookingStatusUpdate = OrderStatusUpdate.create(booking, OrderStatusUpdateType.CREATED);
-		await this._bookingStatusRepository.insert(bookingStatusUpdate);
+		let orderStatusUpdate = OrderStatusUpdate.create(order, OrderStatusUpdateType.CREATED);
+		await this._orderStatusRepository.insert(orderStatusUpdate);
 
 	}
 

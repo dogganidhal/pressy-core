@@ -8,20 +8,22 @@ import {Slot} from "../../model/entity/slot";
 import {exception} from "../../errors";
 import {GeocodeService} from "../../services/geocode-service";
 import {Address} from "../../model/entity/common/address";
+import {Driver} from "../../model/entity/users/driver/driver";
+import {Element} from "../../model/entity/order/element";
 
 
 export class OrderRepository extends BaseRepository {
 
-  private _bookingRepository: Repository<Order> = this.connection.getRepository(Order);
+  private _orderRepository: Repository<Order> = this.connection.getRepository(Order);
   private _slotRepository: Repository<Slot> = this.connection.getRepository(Slot);
 	private _addressRepository: Repository<Address> = this.connection.getRepository(Address);
 
   private _geocodeService: GeocodeService = new GeocodeService;
-	private _bookingStatusManger: OrderStatusManager = new OrderStatusManager(this.connection);
+	private _orderStatusManger: OrderStatusManager = new OrderStatusManager(this.connection);
 
   public async getBookingsForMember(member: Member): Promise<Order[]> {
 
-  return await this._bookingRepository.find({
+  return await this._orderRepository.find({
 	    where: {member: member},
 	    relations: [
 		    "pickupAddress", "deliveryAddress",
@@ -31,56 +33,63 @@ export class OrderRepository extends BaseRepository {
     
   }
 
-  public async createBooking(member: Member, createBookingRequest: DTO.order.CreateOrderRequest): Promise<Order> {
+  public async createBooking(member: Member, createOrderRequest: DTO.order.CreateOrderRequest): Promise<Order> {
 
-  	let pickupSlot = await this._slotRepository.findOne(createBookingRequest.pickupSlotId);
+  	let pickupSlot = await this._slotRepository.findOne(createOrderRequest.pickupSlotId);
 
   	if (!pickupSlot)
-  		  throw new exception.SlotNotFoundException(createBookingRequest.pickupSlotId);
+  		  throw new exception.SlotNotFoundException(createOrderRequest.pickupSlotId);
 
-  	let deliverySlot = await this._slotRepository.findOne(createBookingRequest.deliverySlotId);
+  	let deliverySlot = await this._slotRepository.findOne(createOrderRequest.deliverySlotId);
 
 	  if (!deliverySlot)
-		  throw new exception.SlotNotFoundException(createBookingRequest.deliverySlotId);
+		  throw new exception.SlotNotFoundException(createOrderRequest.deliverySlotId);
 
 	  let pickupAddress: DTO.address.Address;
 	  let deliveryAddress: DTO.address.Address;
 
-	  if (createBookingRequest.pickupAddress.googlePlaceId)
-	  	pickupAddress = await this._geocodeService.getAddressWithPlaceId(createBookingRequest.pickupAddress.googlePlaceId);
-	  else if (createBookingRequest.pickupAddress.coordinates)
-		  pickupAddress = await this._geocodeService.getAddressWithCoordinates(createBookingRequest.pickupAddress.coordinates);
+	  if (createOrderRequest.pickupAddress.googlePlaceId)
+	  	pickupAddress = await this._geocodeService.getAddressWithPlaceId(createOrderRequest.pickupAddress.googlePlaceId);
+	  else if (createOrderRequest.pickupAddress.coordinates)
+		  pickupAddress = await this._geocodeService.getAddressWithCoordinates(createOrderRequest.pickupAddress.coordinates);
 	  else
 	  	throw new exception.CannotCreateAddressException;
 
-	  if (!createBookingRequest.deliveryAddress)
+	  if (!createOrderRequest.deliveryAddress)
 	  	  deliveryAddress = pickupAddress;
-	  else if (createBookingRequest.deliveryAddress.googlePlaceId)
-		  deliveryAddress = await this._geocodeService.getAddressWithPlaceId(createBookingRequest.deliveryAddress.googlePlaceId);
-	  else if (createBookingRequest.deliveryAddress.coordinates)
-		  deliveryAddress = await this._geocodeService.getAddressWithCoordinates(createBookingRequest.deliveryAddress.coordinates);
+	  else if (createOrderRequest.deliveryAddress.googlePlaceId)
+		  deliveryAddress = await this._geocodeService.getAddressWithPlaceId(createOrderRequest.deliveryAddress.googlePlaceId);
+	  else if (createOrderRequest.deliveryAddress.coordinates)
+		  deliveryAddress = await this._geocodeService.getAddressWithCoordinates(createOrderRequest.deliveryAddress.coordinates);
 	  else
 		  throw new exception.CannotCreateAddressException;
 
 	  let pickupAddressEntity = Address.create(pickupAddress);
 	  let deliveryAddressEntity = deliveryAddress != pickupAddress ? Address.create(deliveryAddress) : pickupAddressEntity;
 
-	  let bookingEntity = await Order.create(
-	  	member, pickupSlot, deliverySlot,
-		  pickupAddressEntity, deliveryAddressEntity,
-		  createBookingRequest.elements
-	  );
+	  let order = await Order.create({
+		  member: member, pickupSlot: pickupSlot, deliverySlot: deliverySlot,
+		  pickupAddress: pickupAddressEntity, deliveryAddress: deliveryAddressEntity
+	  });
+	  order.elements = createOrderRequest.elements.map(element => Element.create(order, element));
 
 	  await this._addressRepository.insert(pickupAddressEntity);
 	  if (deliveryAddress !== pickupAddress)
 		  await this._addressRepository.insert(deliveryAddressEntity);
 
-	  await this._bookingRepository.insert(bookingEntity);
+	  await this._orderRepository.insert(order);
 
-	  this._bookingStatusManger.registerBookingCreation(bookingEntity)
-		  .then(() => console.warn(`Started Tracking Booking ${bookingEntity}`));
+	  this._orderStatusManger.registerOrderCreation(order)
+		  .then(() => console.warn(`Started Tracking Booking ${order}`));
 
-	  return bookingEntity;
+	  return order;
+
+  }
+
+  public async assignDriverToOrder(order: Order, driver: Driver): Promise<void> {
+
+  	order.driver = driver;
+  	await this._orderRepository.save(order);
 
   }
   

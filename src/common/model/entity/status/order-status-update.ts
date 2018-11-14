@@ -26,17 +26,17 @@ export class OrderStatusUpdate extends StatusUpdate {
 	public type: OrderStatusUpdateType;
 
 	public static create(
-		booking: Order, type: OrderStatusUpdateType, doer: Person = booking.member.person,
+		order: Order, type: OrderStatusUpdateType, doer: Person = order.member.person,
 		doerIdentity: StatusUpdateDoerIdentity = StatusUpdateDoerIdentity.MEMBER
 	): OrderStatusUpdate {
-		let bookingStatusUpdate = new OrderStatusUpdate;
+		let orderStatusUpdate = new OrderStatusUpdate;
 
-		bookingStatusUpdate.order = booking;
-		bookingStatusUpdate.doer = doer;
-		bookingStatusUpdate.type = type;
-		bookingStatusUpdate.doerIdentity = doerIdentity;
+		orderStatusUpdate.order = order;
+		orderStatusUpdate.doer = doer;
+		orderStatusUpdate.type = type;
+		orderStatusUpdate.doerIdentity = doerIdentity;
 
-		return bookingStatusUpdate;
+		return orderStatusUpdate;
 	}
 
 }

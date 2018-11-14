@@ -5,8 +5,9 @@ import { Member } from '../users/member/member';
 import { Element } from './element';
 import * as DTO from "../../dto/";
 import {Driver} from "../users/driver/driver";
+import {LaundryPartner} from "../users/laundry";
 
-export enum BookingStatus {
+export enum OrderStatus {
   VALIDATED = 0,
   TRANSIT_PICKUP = 1,
   TREATMENT = 2,
@@ -14,6 +15,17 @@ export enum BookingStatus {
   DELIVERED = 4
 }
 
+export interface IOrder {
+	pickupSlot: Slot;
+	deliverySlot: Slot;
+	pickupAddress: Address;
+	deliveryAddress: Address;
+	member: Member;
+	driver?: Driver;
+	laundryPartner?: LaundryPartner;
+	status?: OrderStatus;
+	elements?: Element[];
+}
 
 @Entity()
 export class Order {
@@ -48,31 +60,32 @@ export class Order {
 	@JoinColumn()
 	public driver: Driver;
 
+	@ManyToOne(type => LaundryPartner, {nullable: true})
+	@JoinColumn()
+	public laundryPartner: LaundryPartner;
+
   @OneToMany(type => Element, element => element.order, {nullable: false})
   public elements: Element[];
 
   @Column({nullable: false})
-  public status: BookingStatus;
+  public status: OrderStatus;
 
-  public static async create(
-    member: Member, pickupSlot: Slot, deliverySlot: Slot,
-    pickupAddress: Address, deliveryAddress: Address = pickupAddress,
-    elements: Array<DTO.order.CreateOrderElementRequest>
-  ): Promise<Order> {
+  public static async create(order: IOrder): Promise<Order> {
 
-    let bookingEntity = new Order;
+    let orderEntity = new Order;
 
-	  bookingEntity.member = member;
-	  bookingEntity.status = BookingStatus.VALIDATED;
+	  orderEntity.member = order.member;
+	  orderEntity.status = order.status || OrderStatus.VALIDATED;
 
-    bookingEntity.pickupSlot = pickupSlot;
-	  bookingEntity.deliverySlot = deliverySlot;
-	  bookingEntity.pickupAddress = pickupAddress;
-	  bookingEntity.deliveryAddress = deliveryAddress;
+    orderEntity.pickupSlot = order.pickupSlot;
+	  orderEntity.deliverySlot = order.deliverySlot;
+	  orderEntity.pickupAddress = order.pickupAddress;
+	  orderEntity.deliveryAddress = order.deliveryAddress;
 
-	  bookingEntity.elements = elements.map(element => Element.create(bookingEntity, element));
+	  if (order.elements)
+		  orderEntity.elements = order.elements;
 
-    return bookingEntity;
+    return orderEntity;
 
   }
 

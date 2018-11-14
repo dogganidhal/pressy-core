@@ -10,7 +10,7 @@ export interface Config {
 
 }
 
-var cachedConfig: Config;
+let cachedConfig: Config;
 
 export function getConfig(): Config {
 

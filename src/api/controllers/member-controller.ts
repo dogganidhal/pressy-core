@@ -12,7 +12,7 @@ import {http} from "../../common/utils/http";
 import * as DTO from "../../common/model/dto";
 
 
-@Path('/api/v1/person/')
+@Path('/api/v1/member/')
 export class MemberController extends BaseController {
 
   private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
