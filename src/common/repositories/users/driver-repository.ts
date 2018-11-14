@@ -1,10 +1,11 @@
 import {MobileDevice} from '../../model/entity/users/device';
 import {Repository} from "typeorm";
 import {exception} from "../../errors";
-import {Person, ActivationCode} from '../../model/entity/users/person';
+import {ActivationCode, Person} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
 import * as DTO from "../../model/dto/index";
 import {Driver} from "../../model/entity/users/driver/driver";
+import {DriverAvailability} from "../../model/entity/users/driver/driver-availability";
 
 
 export class DriverRepository extends BaseRepository {
@@ -110,6 +111,20 @@ export class DriverRepository extends BaseRepository {
 		const device = MobileDevice.create(driver.person, mobileDeviceDTO.deviceId);
 		await this._mobileDeviceRepository.insert(device);
 		return device;
+
+	}
+
+	public async assignDriverAvailabilities(driver: Driver, availabilities: DTO.driver.CreateDriverAvailabilityRequest[]): Promise<Driver> {
+
+		driver.availabilities = availabilities.map(availability => DriverAvailability.create({
+			driver: driver,
+			startDate: availability.startDate,
+			endDate: availability.endDate
+		}));
+
+		await this._driverRepository.save(driver);
+
+		return driver;
 
 	}
 
