@@ -9,7 +9,7 @@ export class Member implements IUser {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @OneToOne(type => Person)
+  @OneToOne(type => Person, {eager: true})
   @JoinColumn()
   public person: Person;
 

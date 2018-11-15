@@ -108,6 +108,12 @@ export namespace exception {
     }
   }
 
+	export class DriverSlotNotFoundException extends APIException {
+		constructor(slotId: number) {
+			super('DriverSlotNotFoundException', 404, `No driver slot with id ${slotId} was found`);
+		}
+	}
+
   export class InvalidDateException extends APIException {
     constructor(dateString: string) {
       super('InvalidDateException', 400, `Invalid date string '${dateString}'`);

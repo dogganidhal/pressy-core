@@ -2,7 +2,7 @@ import {Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToMany, OneToM
 import { Person } from "../person";
 import * as DTO from "../../../dto/index";
 import {IUser} from "..";
-import {DriverAvailability} from "./driver-availability";
+import {DriverSlot} from "./driver-slot";
 
 
 @Entity()
@@ -11,12 +11,12 @@ export class Driver implements IUser {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
-	@OneToOne(type => Person)
+	@OneToOne(type => Person, {eager: true})
 	@JoinColumn()
 	public person: Person;
 
-	@OneToMany(type => DriverAvailability, driverAvailability => driverAvailability.driver)
-	public availabilities: Array<DriverAvailability>;
+	@OneToMany(type => DriverSlot, driverSlot => driverSlot.driver)
+	public slots: Array<DriverSlot>;
 
 	public static create(createDriverRequest: DTO.person.CreatePersonRequest): Driver {
 

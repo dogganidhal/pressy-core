@@ -60,7 +60,7 @@ export class ActivationCode {
 	@PrimaryColumn()
 	public code: string;
 
-	@OneToOne(type => Person)
+	@OneToOne(type => Person, {eager: true})
 	@JoinColumn()
 	public person: Person;
 

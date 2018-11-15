@@ -6,6 +6,7 @@ import {BaseRepository} from '../base-repository';
 import * as DTO from "../../model/dto/index";
 import {Driver} from "../../model/entity/users/driver/driver";
 import {DriverAvailability} from "../../model/entity/users/driver/driver-availability";
+import {DriverSlot} from "../../model/entity/users/driver/driver-slot";
 
 
 export class DriverRepository extends BaseRepository {
@@ -14,6 +15,7 @@ export class DriverRepository extends BaseRepository {
 	private _mobileDeviceRepository: Repository<MobileDevice> = this.connection.getRepository(MobileDevice);
 	private _personRepository: Repository<Person> = this.connection.getRepository(Person);
 	private _personActivationCodeRepository: Repository<ActivationCode> = this.connection.getRepository(ActivationCode);
+	private _driverSlotRepository: Repository<DriverSlot> = this.connection.getRepository(DriverSlot);
 
 	public async getAllDrivers(): Promise<Driver[]> {
 		return (await this._driverRepository).find();
@@ -114,13 +116,22 @@ export class DriverRepository extends BaseRepository {
 
 	}
 
-	public async assignDriverAvailabilities(driver: Driver, availabilities: DTO.driver.CreateDriverAvailabilityRequest[]): Promise<Driver> {
+	public async assignDriverSlots(driver: Driver, slots: DTO.driver.AssignDriverSlotsRequest[]): Promise<Driver> {
 
-		driver.availabilities = availabilities.map(availability => DriverAvailability.create({
-			driver: driver,
-			startDate: availability.startDate,
-			endDate: availability.endDate
-		}));
+		let driverSlots: DriverSlot[] = [];
+
+		slots.map(async slot => {
+
+			let driverSlot = await this._driverSlotRepository.findOne(slot.driverSlotId);
+
+			if (driverSlot)
+				driverSlots.push(driverSlot);
+			else
+				throw new exception.DriverSlotNotFoundException(slot.driverSlotId);
+
+		});
+
+		driver.slots = driverSlots;
 
 		await this._driverRepository.save(driver);
 

@@ -121,13 +121,15 @@ describe("Testing MemberController Endpoints =>", () => {
 				expect(mobileDeviceEntity.id).toEqual(mobileDeviceId);
 				expect(mobileDeviceEntity.person.id).toEqual(member.person.id);
 
+				await memberRepository.deleteMemberByEmail(member.person.email);
+
 				done();
 
 			})
 			.catch(async error => {
 				console.warn(error);
-				fail(error);
-				done();
+				await memberRepository.deleteMemberByEmail(member.person.email);
+				done.fail(error);
 			});
 
 	}, 60000);

@@ -10,7 +10,7 @@ export class PasswordResetCode {
   @PrimaryColumn()
   public id: string;
 
-  @ManyToOne(type => Person)
+  @ManyToOne(type => Person, {eager: true})
   public person: Person;
 
   @CreateDateColumn()

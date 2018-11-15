@@ -2,25 +2,20 @@ import {Required} from "../../annotations";
 
 export module driver {
 
-	export interface ICreateDriverAvailabilityRequest {
-		startDate: Date;
-		endDate: Date;
+	export interface IAssignDriverSlotsRequest {
+		driverSlotId: number;
 	}
 
-	export class CreateDriverAvailabilityRequest {
+	export class AssignDriverSlotsRequest {
 
 		@Required()
-		public startDate: Date;
+		public driverSlotId: number;
 
-		@Required()
-		public endDate: Date;
+		public static create(request: IAssignDriverSlotsRequest): AssignDriverSlotsRequest {
 
-		public static create(request: ICreateDriverAvailabilityRequest): CreateDriverAvailabilityRequest {
+			let createDriverAvailabilityRequest = new AssignDriverSlotsRequest;
 
-			let createDriverAvailabilityRequest = new CreateDriverAvailabilityRequest;
-
-			createDriverAvailabilityRequest.startDate = request.startDate;
-			createDriverAvailabilityRequest.endDate = request.endDate;
+			createDriverAvailabilityRequest.driverSlotId = request.driverSlotId;
 
 			return createDriverAvailabilityRequest;
 
