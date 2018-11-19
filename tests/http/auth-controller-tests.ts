@@ -14,7 +14,7 @@ describe("Testing Authentication Endpoints", () => {
 	let connection: Connection;
 	let memberRepository: MemberRepository;
 	const api: API = new API;
-	const testMember: DTO.person.createPersonRequest = {
+	const testMember: DTO.person.CreatePersonRequest = {
 		firstName: RandomString.generate(10),
 		lastName: RandomString.generate(10),
 		email: `${RandomString.generate(10)}@email.com`,

@@ -9,7 +9,7 @@ describe("Geocoding service test suit", async () => {
 
   beforeAll(async done => {
     connection = await Database.createConnection();
-    service = new GeocodeService(connection);
+    service = new GeocodeService;
     done();
   });
 

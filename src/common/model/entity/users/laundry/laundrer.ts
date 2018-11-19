@@ -14,7 +14,7 @@ export class Laundrer implements IUser {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
-	@OneToOne(type => Person, {eager: true})
+	@OneToOne(type => Person)
 	@JoinColumn()
 	public person: Person;
 

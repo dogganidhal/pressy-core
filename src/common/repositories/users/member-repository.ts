@@ -87,7 +87,12 @@ export class MemberRepository extends BaseRepository {
       return;
 
     const activationCode = await this._activationCodeRepository.findOne({person: person});
-    const member = await this._memberRepository.findOne({person: person});
+    const member = await this._memberRepository.findOne({person: person}, {relations: ["person"]});
+
+    if (member) {
+	    let mobileDevices = await this.getMobileDevices(member);
+	    mobileDevices.map(async mobileDevice => await this._mobileDeviceRepository.delete(mobileDevice));
+    }
 
     if (activationCode)
       await this._activationCodeRepository.delete(activationCode);
@@ -101,7 +106,7 @@ export class MemberRepository extends BaseRepository {
 
   public async getMobileDevices(member: Member): Promise<MobileDevice[]> {
 
-    return this._mobileDeviceRepository.find({person: member});
+    return this._mobileDeviceRepository.find({person: member.person});
 
   }
 

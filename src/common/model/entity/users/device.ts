@@ -8,7 +8,7 @@ export class MobileDevice {
   @PrimaryColumn()
   public id: string;
 
-  @ManyToOne(type => Person, {eager: true})
+  @ManyToOne(type => Person)
   @JoinColumn()
   public person: Person;
 
