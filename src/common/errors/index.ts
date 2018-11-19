@@ -90,6 +90,24 @@ export namespace exception {
     }
   }
 
+	export class InvalidEmailException extends APIException {
+		constructor(email: string) {
+			super('InvalidEmailException', 400, `Email '${email}' is not valid`);
+		}
+	}
+
+	export class InvalidPhoneException extends APIException {
+		constructor(phone: string) {
+			super('InvalidPhoneException', 400, `Phone '${phone}' is not valid`);
+		}
+	}
+
+	export class InvalidPasswordException extends APIException {
+		constructor(message: string) {
+			super('InvalidPasswordException', 400, `Invalid password: ${message}`);
+		}
+	}
+
   export class ActivationCodeNotFoundException extends APIException {
     constructor(code: string) {
       super('ActivationCodeNotFoundException', 401, `Activation code '${code}' was not found`);

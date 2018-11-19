@@ -5,6 +5,7 @@ import {Member} from '../../model/entity/users/member/member';
 import {ActivationCode, Person} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
 import * as DTO from "../../model/dto/index";
+import {validation} from "../../utils";
 
 
 export class MemberRepository extends BaseRepository {
@@ -54,13 +55,23 @@ export class MemberRepository extends BaseRepository {
 
   public async createMember(createMemberRequest: DTO.person.CreatePersonRequest): Promise<Member> {
 
-    const { email, phone } = createMemberRequest;
+    const { email, phone, password } = createMemberRequest;
 
     if (!email)
       throw new exception.MissingFieldsException("email");
 
     if (!phone)
 	    throw new exception.MissingFieldsException("phone");
+
+    if (!validation.validateEmail(email))
+      throw new exception.InvalidEmailException(email);
+
+    if (!validation.validatePhoneNumber(phone))
+      throw new exception.InvalidPhoneException(phone);
+
+    let invalidPasswordReason = validation.validatePassword(password);
+	  if (invalidPasswordReason != null)
+		  throw new exception.InvalidPasswordException(invalidPasswordReason);
 
     const memberWithSameEmail = await this.getMemberByEmail(email);
     if (memberWithSameEmail)

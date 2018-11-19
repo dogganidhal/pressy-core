@@ -1,8 +1,9 @@
-export namespace Validation {
+export namespace validation {
 
   const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const passwordContainsLetterRegex = /[a-zA-Z]/;
   const passwordContainsDigitRegex = /[0-9]/;
+  const phoneNumberRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g;
 
   function matchesRegex(word: string, regex: RegExp): boolean {
     const matches = word.match(regex);
@@ -32,6 +33,10 @@ export namespace Validation {
 
     return null;
 
+  }
+
+  export function validatePhoneNumber(phone: string): boolean {
+    return matchesRegex(phone, phoneNumberRegex);
   }
 
 }

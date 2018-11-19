@@ -18,7 +18,7 @@ describe("Testing Authentication Endpoints", () => {
 		firstName: RandomString.generate(10),
 		lastName: RandomString.generate(10),
 		email: `${RandomString.generate(10)}@email.com`,
-		password: "test",
+		password: RandomString.generate(12),
 		phone: RandomString.generate({length: 10, charset: "numeric"}),
 	};
 
@@ -40,7 +40,7 @@ describe("Testing Authentication Endpoints", () => {
     request(api.getApp())
       .post("/api/v1/auth/person")
       .set("Content-Type", "application/json")
-      .send({email: testMember.email, password: "test"})
+      .send({email: testMember.email, password: testMember.password})
       .expect(200)
       .then(response => {
 
@@ -170,7 +170,7 @@ describe("Testing Authentication Endpoints", () => {
 		request(api.getApp())
 			.post("/api/v1/auth/person")
 			.set("Content-Type", "application/json")
-			.send({email: "doesNotExist@email.com", password: "test"})
+			.send({email: "doesNotExist@email.com", password: testMember.password})
 			.expect(404)
 			.then(response => {
 

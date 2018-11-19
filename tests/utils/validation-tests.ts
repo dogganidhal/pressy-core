@@ -1,23 +1,23 @@
-import { Validation } from "../../src/common/utils";
+import { validation } from "../../src/common/utils";
 
 
-describe("Validation Test Suite", () => {
+describe("validation Test Suite", () => {
 
-  it("Email Validation is correct", () => {
+  it("Email validation is correct", () => {
 
-    expect(Validation.validateEmail("test@some.com")).toBeTruthy();
-    expect(Validation.validateEmail("@some.com")).toBeFalsy();
-    expect(Validation.validateEmail("test@some")).toBeFalsy();
-    expect(Validation.validateEmail("testsome.com")).toBeFalsy();
+    expect(validation.validateEmail("test@some.com")).toBeTruthy();
+    expect(validation.validateEmail("@some.com")).toBeFalsy();
+    expect(validation.validateEmail("test@some")).toBeFalsy();
+    expect(validation.validateEmail("testsome.com")).toBeFalsy();
 
   });
 
-  it("Password Validation is correct", () => {
+  it("Password validation is correct", () => {
 
-    expect(Validation.validatePassword("1gdf")).toEqual(Validation.InvalidPasswordReason.MINUMUM_LENGTH);
-    expect(Validation.validatePassword("18274351824")).toEqual(Validation.InvalidPasswordReason.LETTERS);
-    expect(Validation.validatePassword("aiyfiqef")).toEqual(Validation.InvalidPasswordReason.NUMERIC);
-    expect(Validation.validatePassword("1gd!@13f31f")).toBeNull();
+    expect(validation.validatePassword("1gdf")).toEqual(validation.InvalidPasswordReason.MINUMUM_LENGTH);
+    expect(validation.validatePassword("18274351824")).toEqual(validation.InvalidPasswordReason.LETTERS);
+    expect(validation.validatePassword("aiyfiqef")).toEqual(validation.InvalidPasswordReason.NUMERIC);
+    expect(validation.validatePassword("1gd!@13f31f")).toBeNull();
 
   });
 

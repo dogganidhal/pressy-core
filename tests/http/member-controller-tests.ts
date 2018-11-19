@@ -21,14 +21,14 @@ describe("Testing MemberController Endpoints =>", () => {
     lastName: Randomstring.generate(10),
     email: `${Randomstring.generate(10)}@test.com`,
     phone: Randomstring.generate({length: 10, charset: "numeric"}),
-    password: Randomstring.generate(6)
+    password: 'qwerty2018'
   };
 	const duplicateMemberDTO = {
 		firstName: Randomstring.generate(10),
 		lastName: Randomstring.generate(10),
 		email: `${Randomstring.generate(10)}@test.com`,
 		phone: Randomstring.generate({length: 10, charset: "numeric"}),
-		password: Randomstring.generate(6)
+		password: 'qwerty2018'
 	} as person.CreatePersonRequest;
 
   beforeAll(async done => {
@@ -58,6 +58,7 @@ describe("Testing MemberController Endpoints =>", () => {
 		    done();
 	    })
 	    .catch(error => {
+	    	console.warn(error);
 		    done.fail(error);
 	    });
 
@@ -102,7 +103,7 @@ describe("Testing MemberController Endpoints =>", () => {
 			lastName: Randomstring.generate(10),
 			email: `${Randomstring.generate(10)}@email.com`,
 			password: Randomstring.generate(10),
-			phone: Randomstring.generate({length: 10, charset: "numerical"})
+			phone: Randomstring.generate({length: 10, charset: "numeric"})
 		});
 
 		let {accessToken} = crypto.signAuthToken(member.person, SigningCategory.MEMBER);
