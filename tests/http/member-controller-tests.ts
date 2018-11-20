@@ -10,6 +10,7 @@ import uuid = require("uuid");
 import {MobileDevice} from "../../src/common/model/entity/users/device";
 import {crypto} from "../../src/common/services/crypto";
 import SigningCategory = crypto.SigningCategory;
+import {http} from "../../src/common/utils/http";
 
 describe("Testing MemberController Endpoints =>", () => {
 
@@ -46,7 +47,7 @@ describe("Testing MemberController Endpoints =>", () => {
       .post("/api/v1/member")
       .set("Content-Type", "application/json")
       .send(memberDTO)
-	    .expect(200)
+	    .expect(http.HttpStatus.HTTP_STATUS_OK)
 	    .then(response => {
 		    const member: person.CreatePersonRequest = response.body;
 
@@ -72,7 +73,7 @@ describe("Testing MemberController Endpoints =>", () => {
 			.post("/api/v1/member")
 			.set("Content-Type", "application/json")
 			.send(duplicateMemberDTO)
-			.expect(400)
+			.expect(http.HttpStatus.HTTP_STATUS_BAD_REQUEST)
 			.then(async response => {
 
 				const error: APIError = response.body;
@@ -113,7 +114,7 @@ describe("Testing MemberController Endpoints =>", () => {
 			.set("Content-Type", "application/json")
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send(mobileDevice)
-			.expect(201)
+			.expect(http.HttpStatus.HTTP_STATUS_CREATED)
 			.then(async _ => {
 
 				let mobileDeviceRepository = connection.getRepository(MobileDevice);

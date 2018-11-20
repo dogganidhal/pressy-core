@@ -21,7 +21,7 @@ export class OrderRepository extends BaseRepository {
   private _geocodeService: GeocodeService = new GeocodeService;
 	private _orderStatusManger: OrderStatusManager = new OrderStatusManager(this.connection);
 
-  public async getBookingsForMember(member: Member): Promise<Order[]> {
+  public async getOrdersForMember(member: Member): Promise<Order[]> {
 
   return await this._orderRepository.find({
 	    where: {member: member},
@@ -33,7 +33,7 @@ export class OrderRepository extends BaseRepository {
     
   }
 
-  public async createBooking(member: Member, createOrderRequest: DTO.order.CreateOrderRequest): Promise<Order> {
+  public async createOrder(member: Member, createOrderRequest: DTO.order.CreateOrderRequest): Promise<Order> {
 
   	if (!member.isActive())
   		throw new exception.InvalidEmailException();

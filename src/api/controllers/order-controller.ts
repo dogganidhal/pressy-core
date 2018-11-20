@@ -25,12 +25,12 @@ export class OrderController extends BaseController {
   @JSONResponse
   @Authenticate(crypto.SigningCategory.MEMBER)
   @POST
-  public async createBooking() {
+  public async createOrder() {
 
 	  const dto = http.parseJSONBody(this.getPendingRequest().body, DTO.order.CreateOrderRequest);
 	  const member: Member = await this._memberRepository.getMemberFromPersonOrFail(this.pendingPerson);
 
-	  await this._orderRepository.createBooking(member, dto);
+	  await this._orderRepository.createOrder(member, dto);
 
 	  return new Return.RequestAccepted("/api/v1/order");
 
@@ -39,10 +39,10 @@ export class OrderController extends BaseController {
   @JSONResponse
   @Authenticate(crypto.SigningCategory.MEMBER)
   @GET
-  public async getBookings() {
+  public async getOrders() {
 
   	let member = await this._memberRepository.getMemberFromPersonOrFail(this.pendingPerson);
-	  let orders = await this._orderRepository.getBookingsForMember(member);
+	  let orders = await this._orderRepository.getOrdersForMember(member);
 	  return orders.map((order: Order) => {
 
 	  	let pickupSlot: DTO.slot.ISlot = {
@@ -80,7 +80,7 @@ export class OrderController extends BaseController {
 			  created: order.member.person.created
 		  };
 	  	let elements: Array<DTO.order.IOrderElement> = order.elements.map(e => new DTO.order.OrderElement({
-			  type: e.type, bookingId: order.id, color: e.color, comment: e.comment
+			  type: e.type, orderId: order.id, color: e.color, comment: e.comment
 		  }));
 
 	  	return new DTO.order.Order({

@@ -8,6 +8,7 @@ import {Database} from "../../src/common/db";
 import {crypto} from "../../src/common/services/crypto";
 import AuthTokenType = crypto.AuthTokenType;
 import * as DTO from "../../src/common/model/dto";
+import {http} from "../../src/common/utils/http";
 
 describe("Testing Authentication Endpoints", () => {
 
@@ -41,7 +42,7 @@ describe("Testing Authentication Endpoints", () => {
       .post("/api/v1/auth/person")
       .set("Content-Type", "application/json")
       .send({email: testMember.email, password: testMember.password})
-      .expect(200)
+      .expect(http.HttpStatus.HTTP_STATUS_OK)
       .then(response => {
 
         const token: DTO.person.LoginResponse = response.body as DTO.person.LoginResponse;
@@ -68,13 +69,13 @@ describe("Testing Authentication Endpoints", () => {
 			.post("/api/v1/auth/person")
 			.set("Content-Type", "application/json")
 			.send({email: testMember.email})
-			.expect(400)
+			.expect(http.HttpStatus.HTTP_STATUS_BAD_REQUEST)
 			.then(response => {
 
 				const error = response.body as APIError;
 
 				expect(error.name).toEqual("MissingFieldsException");
-				expect(error.statusCode).toEqual(400);
+				expect(error.statusCode).toEqual(http.HttpStatus.HTTP_STATUS_BAD_REQUEST);
 				expect(error.message).not.toBeNull();
 
 				done();
@@ -94,13 +95,13 @@ describe("Testing Authentication Endpoints", () => {
 			.post("/api/v1/auth/person")
 			.set("Content-Type", "application/json")
 			.send({email: testMember.email})
-			.expect(400)
+			.expect(http.HttpStatus.HTTP_STATUS_BAD_REQUEST)
 			.then(response => {
 
 				const error = response.body as APIError;
 
 				expect(error.name).toEqual("MissingFieldsException");
-				expect(error.statusCode).toEqual(400);
+				expect(error.statusCode).toEqual(http.HttpStatus.HTTP_STATUS_BAD_REQUEST);
 				expect(error.message).not.toBeNull();
 
 				done();
@@ -120,13 +121,13 @@ describe("Testing Authentication Endpoints", () => {
 			.post("/api/v1/auth/person")
 			.set("Content-Type", "application/json")
       .send()
-			.expect(400)
+			.expect(http.HttpStatus.HTTP_STATUS_BAD_REQUEST)
 			.then(response => {
 
 				const error = response.body as APIError;
 
 				expect(error.name).toEqual("MissingFieldsException");
-				expect(error.statusCode).toEqual(400);
+				expect(error.statusCode).toEqual(http.HttpStatus.HTTP_STATUS_BAD_REQUEST);
 				expect(error.message).not.toBeNull();
 
 				done();
@@ -146,12 +147,12 @@ describe("Testing Authentication Endpoints", () => {
 			.post("/api/v1/auth/person")
 			.set("Content-Type", "application/json")
 			.send({email: testMember.email, password: "wrongPassword"})
-			.expect(401)
+			.expect(http.HttpStatus.HTTP_STATUS_UNAUTHORIZED)
 			.then(response => {
 
 				const error = response.body as APIError;
 
-				expect(error.statusCode).toEqual(401);
+				expect(error.statusCode).toEqual(http.HttpStatus.HTTP_STATUS_UNAUTHORIZED);
 				expect(error.message).not.toBeNull();
 
 				done();
@@ -171,12 +172,12 @@ describe("Testing Authentication Endpoints", () => {
 			.post("/api/v1/auth/person")
 			.set("Content-Type", "application/json")
 			.send({email: "doesNotExist@email.com", password: testMember.password})
-			.expect(404)
+			.expect(http.HttpStatus.HTTP_STATUS_NOT_FOUND)
 			.then(response => {
 
 				const error = response.body as APIError;
 
-				expect(error.statusCode).toEqual(404);
+				expect(error.statusCode).toEqual(http.HttpStatus.HTTP_STATUS_NOT_FOUND);
 				expect(error.message).not.toBeNull();
 
 				done();

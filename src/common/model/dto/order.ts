@@ -1,13 +1,13 @@
 import {Required} from "../../annotations";
 import {slot} from "./slot";
-import {member} from "./member";
 import {address} from "./address";
+import {person} from "./person";
 import {ElementType} from "../entity/order/element";
 
 export module order {
 
 	export interface IOrderElement {
-		bookingId: number;
+		orderId: number;
 		type: ElementType;
 		color: string;
 		comment?: string;
@@ -15,13 +15,13 @@ export module order {
 
 	export class OrderElement {
 
-		public bookingId: number;
+		public orderId: number;
 		public type: ElementType;
 		public color: string;
 		public comment?: string;
 
 		constructor(element: order.IOrderElement) {
-			this.bookingId = element.bookingId;
+			this.orderId = element.orderId;
 			this.type = element.type;
 			this.color = element.color;
 			this.comment = element.comment;
@@ -66,7 +66,7 @@ export module order {
 		pickupAddress: address.IAddress;
 		deliveryAddress: address.IAddress;
 		elements: Array<order.IOrderElement>;
-		member: member.IMemberInfo;
+		member: person.IPersonInfo;
 	}
 
 	export class Order {
@@ -77,7 +77,7 @@ export module order {
 		public pickupAddress: address.Address;
 		public deliveryAddress: address.Address;
 		public elements: Array<order.IOrderElement>;
-		public member: member.MemberInfo;
+		public member: person.IPersonInfo;
 
 		constructor(order: IOrder) {
 			this.id = order.id;
@@ -86,7 +86,7 @@ export module order {
 			this.pickupAddress = new address.Address(order.pickupAddress);
 			this.deliveryAddress = new address.Address(order.deliveryAddress);
 			this.elements = order.elements.map(element => new OrderElement(element));
-			this.member = new member.MemberInfo(order.member);
+			this.member = new person.PersonInfo(order.member);
 		}
 
 	}

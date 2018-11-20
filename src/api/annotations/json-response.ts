@@ -37,7 +37,7 @@ export function JSONResponse<TController extends BaseController>(target: TContro
 					// TODO: Log the error, because it shouldn't happen
 					console.trace();
 					console.warn(error);
-					return APIError.InteralServerError(error.message);
+					return APIError.InternalServerError(error.message);
 
 				}
 			}

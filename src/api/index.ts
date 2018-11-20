@@ -3,7 +3,6 @@ import { Server } from "typescript-rest";
 import * as bodyParser from "body-parser";
 import { DocumentationController } from "./controllers/doc-controller";
 import { OrderController } from "./controllers/order-controller";
-import { OrderController } from "./controllers/order-controller";
 import { DriverController } from "./controllers/driver-controller";
 import { MemberController } from "./controllers/member-controller";
 import { AuthController } from "./controllers/auth-controller";
@@ -27,7 +26,6 @@ export class API {
     this.registerController(DriverController);
     this.registerController(MemberController);
     this.registerController(AuthController);
-    this.registerController(OrderController);
     this.registerController(OrderController);
   }
 
