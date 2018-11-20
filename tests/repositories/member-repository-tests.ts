@@ -16,14 +16,14 @@ describe("MemberRepository Write/Delete Operations Tests", () => {
 		lastName: RandomString.generate(10),
 		email: `${RandomString.generate(10)}@email.com`,
 		phone: RandomString.generate({length: 10, charset: "numeric"}),
-    password: RandomString.generate(20)
+    password: "qwerty2018"
 	} as DTO.person.CreatePersonRequest;
 	const testMember2 = {
 		firstName: RandomString.generate(10),
 		lastName: RandomString.generate(10),
 		email: `${RandomString.generate(10)}@email.com`,
 		phone: RandomString.generate({length: 10, charset: "numeric"}),
-		password: RandomString.generate(20)
+		password: "qwerty2018"
 	} as DTO.person.CreatePersonRequest;
 
   beforeAll(async done => {
@@ -32,7 +32,7 @@ describe("MemberRepository Write/Delete Operations Tests", () => {
     done();
   });
 
-  test("Creates a new person from MemberRegistrationDTO", async done => {
+  test("Creates a new person", async done => {
 
     expect.assertions(5);
 

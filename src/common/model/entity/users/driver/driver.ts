@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToMany, OneToMany} from "typeorm";
-import { Person } from "../person";
+import {Person, PersonStatus} from "../person";
 import * as DTO from "../../../dto/index";
 import {IUser} from "..";
 import {DriverSlot} from "./driver-slot";
@@ -17,6 +17,10 @@ export class Driver implements IUser {
 
 	@OneToMany(type => DriverSlot, driverSlot => driverSlot.driver)
 	public slots: Array<DriverSlot>;
+
+	public isActive(): boolean {
+		return this.person.status === PersonStatus.ACTIVE;
+	}
 
 	public static create(createDriverRequest: DTO.person.CreatePersonRequest): Driver {
 

@@ -146,12 +146,12 @@ describe("Testing Authentication Endpoints", () => {
 			.post("/api/v1/auth/person")
 			.set("Content-Type", "application/json")
 			.send({email: testMember.email, password: "wrongPassword"})
-			.expect(403)
+			.expect(401)
 			.then(response => {
 
 				const error = response.body as APIError;
 
-				expect(error.statusCode).toEqual(403);
+				expect(error.statusCode).toEqual(401);
 				expect(error.message).not.toBeNull();
 
 				done();

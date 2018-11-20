@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
-import { Person } from "../person";
+import {Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Person, PersonStatus} from "../person";
 import * as DTO from "../../../dto/index";
 import {IUser} from "..";
 
@@ -12,6 +12,10 @@ export class Member implements IUser {
   @OneToOne(type => Person)
   @JoinColumn()
   public person: Person;
+
+	public isActive(): boolean {
+		return this.person.status === PersonStatus.ACTIVE;
+	}
 
   public static create(createPersonRequest: DTO.person.CreatePersonRequest): Member {
     

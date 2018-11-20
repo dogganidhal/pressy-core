@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne} from "typeorm";
-import { Person } from "../person";
+import {Person, PersonStatus} from "../person";
 import * as DTO from "../../../dto";
 import {IUser} from "..";
 import {LaundryPartner} from ".";
@@ -21,6 +21,10 @@ export class Laundrer implements IUser {
 	@ManyToOne(type => LaundryPartner)
 	@JoinColumn()
 	public laundryPartner: LaundryPartner;
+
+	public isActive(): boolean {
+		return this.person.status === PersonStatus.ACTIVE;
+	}
 
 	public static create(laundrer: ILaundrer): Laundrer {
 

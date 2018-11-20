@@ -1,4 +1,5 @@
-
+import {Member} from "../model/entity/users/member/member";
+import {constants} from "http2";
 
 export namespace exception {
 
@@ -8,139 +9,139 @@ export namespace exception {
 
 	export class MissingFieldsException extends APIException {
 		constructor(fields: string) {
-			super('MissingFieldsException', 400, `Missing required fields ${fields}`);
+			super('MissingFieldsException', constants.HTTP_STATUS_BAD_REQUEST, `Missing required fields ${fields}`);
 		}
 	}
 
   export class PasswordResetCodeNotFoundException extends APIException {
     constructor(code: string) {
-      super('PasswordResetCodeNotFoundException', 404, `Reset code ${code} was not found`);
+      super('PasswordResetCodeNotFoundException', constants.HTTP_STATUS_NOT_FOUND, `Reset code ${code} was not found`);
     }
   }
 
   export class PasswordResetCodeExpiredException extends APIException {
     constructor(code: string) {
-      super('PasswordResetCodeExpiredException', 400, `Reset code ${code} has already expired`);
+      super('PasswordResetCodeExpiredException', constants.HTTP_STATUS_BAD_REQUEST, `Reset code ${code} has already expired`);
     }
   }
 
   export class WrongPasswordException extends APIException {
     constructor() {
-      super('WrongPasswordException', 403, `The given password does not match our records`);
+      super('WrongPasswordException', constants.HTTP_STATUS_UNAUTHORIZED, `The given password does not match our records`);
     }
   }
 
   export class MemberNotFoundException extends APIException {
     constructor(email: string) {
-      super('MemberNotFoundException', 404, `No registered member with email '${email}' was found`);
+      super('MemberNotFoundException', constants.HTTP_STATUS_NOT_FOUND, `No registered member with email '${email}' was found`);
     }
   }
 
   export class UnauthorizedRequestException extends APIException {
     constructor() {
-      super('UnauthorizedRequestException', 403, `Access denied to requested resource`);
+      super('UnauthorizedRequestException', constants.HTTP_STATUS_UNAUTHORIZED, `Access denied to requested resource`);
     }
   }
 
   export class UnauthenticatedRequestException extends APIException {
     constructor() {
-      super('UnauthenticatedRequestException', 401, `Must provide auth token to access requested resource`);
+      super('UnauthenticatedRequestException', constants.HTTP_STATUS_UNAUTHORIZED, `Must provide auth token to access requested resource`);
     }
   }
 
   export class AccessTokenNotFoundException extends APIException {
     constructor() {
-      super('AccessTokenNotFoundException', 403, `Access token not found`);
+      super('AccessTokenNotFoundException', constants.HTTP_STATUS_UNAUTHORIZED, `Access token not found`);
     }
   }
 
   export class AccessTokenExpiredException extends APIException {
     constructor() {
-      super('AccessTokenExpiredException', 403, `Access token expired`);
+      super('AccessTokenExpiredException', constants.HTTP_STATUS_UNAUTHORIZED, `Access token expired`);
     }
   }
 
   export class InvalidAccessTokenException extends APIException {
     constructor() {
-      super('InvalidAccessTokenException', 403, `Invalid access token`);
+      super('InvalidAccessTokenException', constants.HTTP_STATUS_UNAUTHORIZED, `Invalid access token`);
     }
   }
 
 	export class InvalidRefreshTokenException extends APIException {
 		constructor() {
-			super('InvalidRefreshTokenException', 403, `Invalid access token`);
+			super('InvalidRefreshTokenException', constants.HTTP_STATUS_UNAUTHORIZED, `Invalid access token`);
 		}
 	}
 
-  export class RequiredFieldNotFoundException extends APIException {
-    constructor() {
-      super('RequiredFieldNotFoundException', 400, `One or more required fields are missing`);
-    }
-  }
+	export class InactiveMemberException extends APIException {
+		constructor(member: Member) {
+			super('InactiveMemberException', constants.HTTP_STATUS_FORBIDDEN, `Member with email '${member.person.email}' is not active, activate your account before ordering`);
+		}
+	}
 
   export class EmailAlreadyExistsException extends APIException {
     constructor(email?: string) {
-      super('DuplicateUser', 400, `Email ${email ? "'" + email + "' " : ""}already exists`);
+      super('DuplicateUser', constants.HTTP_STATUS_BAD_REQUEST, `Email ${email ? "'" + email + "' " : ""}already exists`);
     }
   }
 
   export class PhoneAlreadyExists extends APIException {
     constructor(phone?: string) {
-      super('DuplicateUser', 400, `Phone ${phone ? "'" + phone + "' " : ""}already exists`);
+      super('DuplicateUser', constants.HTTP_STATUS_BAD_REQUEST, `Phone ${phone ? "'" + phone + "' " : ""}already exists`);
     }
   }
 
 	export class InvalidEmailException extends APIException {
 		constructor(email: string) {
-			super('InvalidEmailException', 400, `Email '${email}' is not valid`);
+			super('InvalidEmailException', constants.HTTP_STATUS_BAD_REQUEST, `Email '${email}' is not valid`);
 		}
 	}
 
 	export class InvalidPhoneException extends APIException {
 		constructor(phone: string) {
-			super('InvalidPhoneException', 400, `Phone '${phone}' is not valid`);
+			super('InvalidPhoneException', constants.HTTP_STATUS_BAD_REQUEST, `Phone '${phone}' is not valid`);
 		}
 	}
 
 	export class InvalidPasswordException extends APIException {
 		constructor(message: string) {
-			super('InvalidPasswordException', 400, `Invalid password: ${message}`);
+			super('InvalidPasswordException', constants.HTTP_STATUS_BAD_REQUEST, `Invalid password: ${message}`);
 		}
 	}
 
   export class ActivationCodeNotFoundException extends APIException {
     constructor(code: string) {
-      super('ActivationCodeNotFoundException', 401, `Activation code '${code}' was not found`);
+      super('ActivationCodeNotFoundException', constants.HTTP_STATUS_UNAUTHORIZED, `Activation code '${code}' was not found`);
     }
   }
 
   export class SlotNotFoundException extends APIException {
     constructor(slotId: number) {
-      super('SlotNotFoundException', 404, `No slot with id ${slotId} was found`);
+      super('SlotNotFoundException', constants.HTTP_STATUS_NOT_FOUND, `No slot with id ${slotId} was found`);
     }
   }
 
   export class InvalidSlotTypeException extends APIException {
     constructor(slotType: number) {
-      super('InvalidSlotTypeException', 400, `Invalid slot type '${slotType}'`);
+      super('InvalidSlotTypeException', constants.HTTP_STATUS_BAD_REQUEST, `Invalid slot type '${slotType}'`);
     }
   }
 
 	export class DriverSlotNotFoundException extends APIException {
 		constructor(slotId: number) {
-			super('DriverSlotNotFoundException', 404, `No driver slot with id ${slotId} was found`);
+			super('DriverSlotNotFoundException', constants.HTTP_STATUS_NOT_FOUND, `No driver slot with id ${slotId} was found`);
 		}
 	}
 
   export class InvalidDateException extends APIException {
     constructor(dateString: string) {
-      super('InvalidDateException', 400, `Invalid date string '${dateString}'`);
+      super('InvalidDateException', constants.HTTP_STATUS_BAD_REQUEST, `Invalid date string '${dateString}'`);
     }
   }
 
   export class CannotCreateAddressException extends APIException {
 	  constructor() {
-		  super('CannotCreateAddressException', 400, `Can't create address, must provide either Google Place id or Coordinates`);
+		  super('CannotCreateAddressException', constants.HTTP_STATUS_BAD_REQUEST, `Can't create address, must provide either Google Place id or Coordinates`);
 	  }
   }
 
