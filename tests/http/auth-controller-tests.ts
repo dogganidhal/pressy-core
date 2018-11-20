@@ -18,7 +18,7 @@ describe("Testing Authentication Endpoints", () => {
 		firstName: RandomString.generate(10),
 		lastName: RandomString.generate(10),
 		email: `${RandomString.generate(10)}@email.com`,
-		password: RandomString.generate(12),
+		password: "qwerty2018",
 		phone: RandomString.generate({length: 10, charset: "numeric"}),
 	};
 

@@ -86,7 +86,7 @@ describe("MemberRepository Read Operations Tests", () => {
   const memberDTO: DTO.person.CreatePersonRequest = {
     firstName: RandomString.generate(10),
     lastName: RandomString.generate(10),
-    password: RandomString.generate(10),
+    password: "qwerty2018",
     phone: RandomString.generate({length: 10, charset: "numeric"}),
     email : `${RandomString.generate(10)}@email.com`
   };

@@ -102,7 +102,7 @@ describe("Testing MemberController Endpoints =>", () => {
 			firstName: Randomstring.generate(10),
 			lastName: Randomstring.generate(10),
 			email: `${Randomstring.generate(10)}@email.com`,
-			password: Randomstring.generate(10),
+			password: "qwerty2018",
 			phone: Randomstring.generate({length: 10, charset: "numeric"})
 		});
 
