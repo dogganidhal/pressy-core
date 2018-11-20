@@ -18,7 +18,7 @@ export class Slot {
   @Column({nullable: false})
   public type: SlotType = SlotType.LIGHT;
 
-  public static create(slot: slot.ISlot): Slot {
+  public static create(slot: slot.CreateSlotRequest): Slot {
 
     let slotEntity = new Slot;
 

@@ -8,11 +8,12 @@ import {Driver} from "../users/driver/driver";
 import {LaundryPartner} from "../users/laundry";
 
 export enum OrderStatus {
-  VALIDATED = 0,
-  TRANSIT_PICKUP = 1,
-  TREATMENT = 2,
-  TRANSIT_DELIVERY = 3,
-  DELIVERED = 4
+  VALIDATED = "validated",
+  TRANSIT_PICKUP = "transit pickup",
+  TREATMENT = "treatment",
+  TRANSIT_DELIVERY = "transit",
+  DELIVERED = "delivered",
+	UNVALIDATED = "unvalidated"
 }
 
 export interface IOrder {
@@ -75,7 +76,7 @@ export class Order {
     let orderEntity = new Order;
 
 	  orderEntity.member = order.member;
-	  orderEntity.status = order.status || OrderStatus.VALIDATED;
+	  orderEntity.status = order.status || OrderStatus.UNVALIDATED;
 
     orderEntity.pickupSlot = order.pickupSlot;
 	  orderEntity.deliverySlot = order.deliverySlot;

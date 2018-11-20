@@ -32,9 +32,9 @@ export class Address {
     address.city = dto.city;
 	  address.country = dto.country;
 	  address.formattedAddress = dto.formattedAddress;
-	  address.streetName = dto.city;
-	  address.streetNumber = dto.city;
-	  address.zipCode = dto.city;
+	  address.streetName = dto.streetName;
+	  address.streetNumber = dto.streetNumber;
+	  address.zipCode = dto.zipCode;
 
     return address;
 

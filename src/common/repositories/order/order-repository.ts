@@ -36,7 +36,7 @@ export class OrderRepository extends BaseRepository {
   public async createOrder(member: Member, createOrderRequest: DTO.order.CreateOrderRequest): Promise<Order> {
 
   	if (!member.isActive())
-  		throw new exception.InvalidEmailException();
+  		throw new exception.InactiveMemberException(member);
 
   	let pickupSlot = await this._slotRepository.findOne(createOrderRequest.pickupSlotId);
 

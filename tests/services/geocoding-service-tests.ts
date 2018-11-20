@@ -34,7 +34,7 @@ describe("Geocoding service test suit", async () => {
 
     const homeCoordinates = {
       latitude: 48.8144503, longitude: 2.2314194
-    }
+    };
 
     const address = await service.getAddressWithCoordinates(homeCoordinates);
     

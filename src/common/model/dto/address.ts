@@ -3,8 +3,8 @@ export module address {
 
 	export class CreateAddressRequest {
 
-		public googlePlaceId: string;
-		public coordinates: {
+		public googlePlaceId?: string;
+		public coordinates?: {
 			latitude: number;
 			longitude: number;
 		}

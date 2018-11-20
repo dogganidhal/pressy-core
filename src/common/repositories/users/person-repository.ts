@@ -1,10 +1,10 @@
-import { BaseRepository } from '../base-repository';
-import { PasswordResetCode } from '../../model/entity/users/password-reset-code';
-import { Repository } from "typeorm";
+import {BaseRepository} from '../base-repository';
+import {PasswordResetCode} from '../../model/entity/users/password-reset-code';
+import {Repository} from "typeorm";
 import bcrypt from "bcrypt";
-import { exception } from "../../errors";
-import { DateUtils } from "../../utils";
-import {Person, ActivationCode} from '../../model/entity/users/person';
+import {exception} from "../../errors";
+import {DateUtils} from "../../utils";
+import {ActivationCode, Person, PersonStatus} from '../../model/entity/users/person';
 import * as DTO from "../../model/dto/index";
 
 
@@ -78,6 +78,16 @@ export class PersonRepository extends BaseRepository {
     const activationCode = ActivationCode.create(person);
     await this._activationCodeRepository.insert(activationCode);
     return activationCode;
+
+  }
+
+  public async activatePerson(person: Person, activationCode: ActivationCode): Promise<void> {
+
+    if (activationCode.person.id !== person.id)
+      throw new exception.ActivationCodeNotFoundException(activationCode.code);
+
+    person.status = PersonStatus.ACTIVE;
+    await this._personRepository.save(person);
 
   }
 

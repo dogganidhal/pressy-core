@@ -112,7 +112,11 @@ export class OrderController extends BaseController {
     if (isNaN(endDate.getTime()))
 	    throw new exception.InvalidDateException(to);
 
-    const slots = await this._slotsRepository.searchSlots(types, startDate, endDate);
+    const slots = await this._slotsRepository.searchSlots({
+	    from: startDate,
+	    to: endDate,
+	    types: this._parseSlotTypesFromString(typeString)
+    });
 
 	  return slots.map(slot => new DTO.slot.Slot(slot));
 

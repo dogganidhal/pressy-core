@@ -1,8 +1,9 @@
-import { SlotType } from '../model/entity/slot';
-import { Slot } from '../model/entity/slot';
-import { Repository, Brackets } from "typeorm";
-import { DateUtils } from '../utils';
-import { BaseRepository } from './base-repository';
+import {Slot} from '../model/entity/slot';
+import {Brackets, Repository} from "typeorm";
+import {DateUtils} from '../utils';
+import {BaseRepository} from './base-repository';
+import {slot} from "../model/dto";
+import SearchSlotRequest = slot.SearchSlotRequest;
 
 
 export class SlotRepository extends BaseRepository {
@@ -13,7 +14,19 @@ export class SlotRepository extends BaseRepository {
     return this._slotRepository.findOne(id);
   }
 
-  public async searchSlots(types: SlotType[], from: Date, to: Date): Promise<Slot[]> {
+  public async createSlot(createSlotRequest: slot.CreateSlotRequest): Promise<Slot> {
+
+    let slot = Slot.create(createSlotRequest);
+
+    slot = await this._slotRepository.save(slot, {});
+
+    return slot;
+
+  }
+
+  public async searchSlots(request: SearchSlotRequest): Promise<Slot[]> {
+
+    let {from, to, types} = request;
 
     const queryBuilder = this._slotRepository.createQueryBuilder()
       .where("startdate >= :startDate", {startDate: from})
@@ -32,10 +45,8 @@ export class SlotRepository extends BaseRepository {
         }
 
       }));
-    
-    const slots = await queryBuilder.getMany();
 
-    return slots;
+  return await queryBuilder.getMany();
 
   }
 
