@@ -39,7 +39,7 @@ describe("Testing Authentication Endpoints", () => {
   	expect.assertions(4);
 
     request(api.getApp())
-      .post("/api/v1/auth/person")
+      .post("/api/v1/auth")
       .set("Content-Type", "application/json")
       .send({email: testMember.email, password: testMember.password})
       .expect(http.HttpStatus.HTTP_STATUS_OK)
@@ -66,7 +66,7 @@ describe("Testing Authentication Endpoints", () => {
 		expect.assertions(3);
 
 		request(api.getApp())
-			.post("/api/v1/auth/person")
+			.post("/api/v1/auth")
 			.set("Content-Type", "application/json")
 			.send({email: testMember.email})
 			.expect(http.HttpStatus.HTTP_STATUS_BAD_REQUEST)
@@ -92,7 +92,7 @@ describe("Testing Authentication Endpoints", () => {
 		expect.assertions(3);
 
 		request(api.getApp())
-			.post("/api/v1/auth/person")
+			.post("/api/v1/auth")
 			.set("Content-Type", "application/json")
 			.send({email: testMember.email})
 			.expect(http.HttpStatus.HTTP_STATUS_BAD_REQUEST)
@@ -118,7 +118,7 @@ describe("Testing Authentication Endpoints", () => {
 		expect.assertions(3);
 
 		request(api.getApp())
-			.post("/api/v1/auth/person")
+			.post("/api/v1/auth")
 			.set("Content-Type", "application/json")
       .send()
 			.expect(http.HttpStatus.HTTP_STATUS_BAD_REQUEST)
@@ -144,7 +144,7 @@ describe("Testing Authentication Endpoints", () => {
 	  expect.assertions(2);
 
 		request(api.getApp())
-			.post("/api/v1/auth/person")
+			.post("/api/v1/auth")
 			.set("Content-Type", "application/json")
 			.send({email: testMember.email, password: "wrongPassword"})
 			.expect(http.HttpStatus.HTTP_STATUS_UNAUTHORIZED)
@@ -169,7 +169,7 @@ describe("Testing Authentication Endpoints", () => {
 		expect.assertions(2);
 
 		request(api.getApp())
-			.post("/api/v1/auth/person")
+			.post("/api/v1/auth")
 			.set("Content-Type", "application/json")
 			.send({email: "doesNotExist@email.com", password: testMember.password})
 			.expect(http.HttpStatus.HTTP_STATUS_NOT_FOUND)
