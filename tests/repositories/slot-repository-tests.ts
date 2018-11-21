@@ -1,6 +1,6 @@
-import { Connection } from 'typeorm';
-import { SlotRepository } from "../../src/common/repositories/slot-repository";
-import { SlotType } from "../../src/common/model/entity/slot";
+import {Connection} from 'typeorm';
+import {SlotRepository} from "../../src/common/repositories/slot-repository";
+import {SlotType} from "../../src/common/model/entity/slot";
 import {Database} from "../../src/common/db";
 
 
@@ -17,7 +17,11 @@ describe("Slot repository operation related tests", () => {
 
   it("Retrieves single-type slots from database", async (done) => {
 
-    const slots = await slotRepository.searchSlots([SlotType.EXPRESS], new Date("2008"), new Date("3000"));
+    const slots = await slotRepository.searchSlots({
+      from: new Date("2008"),
+      to: new Date(3000),
+      types: [SlotType.LIGHT]
+    });
     console.log(slots);
     done();
 

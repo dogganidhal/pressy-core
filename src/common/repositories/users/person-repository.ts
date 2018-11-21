@@ -6,6 +6,8 @@ import {exception} from "../../errors";
 import {DateUtils} from "../../utils";
 import {ActivationCode, Person, PersonStatus} from '../../model/entity/users/person';
 import * as DTO from "../../model/dto/index";
+import {Member} from "../../model/entity/users/member/member";
+import {person} from "../../model/dto/index";
 
 
 export class PersonRepository extends BaseRepository {
@@ -80,6 +82,29 @@ export class PersonRepository extends BaseRepository {
     return activationCode;
 
   }
+
+	public async updatePersonInfo(person: Person,request: person.UpdatePersonInfoRequest): Promise<void> {
+
+    if (request.email) {
+	    let personWithSameEmail = await this.getPersonByEmail(request.email);
+	    if (personWithSameEmail)
+	      throw new exception.EmailAlreadyExistsException(request.email);
+    }
+
+    if (request.phone) {
+      let personWithSamePhone = await this.getPersonByPhone(request.phone);
+      if (personWithSamePhone)
+        throw new exception.PhoneAlreadyExists(request.phone);
+    }
+
+		person.email = request.email || person.email;
+		person.phone = request.phone || person.phone;
+		person.firstName = request.firstName || person.firstName;
+		person.lastName = request.lastName || person.lastName;
+
+		await this._personRepository.save(person);
+
+	}
 
   public async activatePerson(person: Person, activationCode: ActivationCode): Promise<void> {
 

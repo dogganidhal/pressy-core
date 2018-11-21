@@ -6,6 +6,7 @@ import {ActivationCode, Person} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
 import * as DTO from "../../model/dto/index";
 import {validation} from "../../utils";
+import {person} from "../../model/dto/index";
 
 
 export class MemberRepository extends BaseRepository {

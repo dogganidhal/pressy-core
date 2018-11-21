@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from "typeorm";
 import * as DTO from "../../dto";
+import {Member} from "../users/member/member";
 
 @Entity()
 export class Address {
@@ -24,6 +25,10 @@ export class Address {
 
   @Column()
   public formattedAddress: string;
+
+  @ManyToOne(type => Member, member => member.addresses, {nullable: true})
+  @JoinColumn()
+  public member: Member;
 
   public static create(dto: DTO.address.Address): Address {
 

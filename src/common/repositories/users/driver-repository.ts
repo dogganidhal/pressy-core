@@ -5,7 +5,6 @@ import {ActivationCode, Person} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
 import * as DTO from "../../model/dto/index";
 import {Driver} from "../../model/entity/users/driver/driver";
-import {DriverAvailability} from "../../model/entity/users/driver/driver-availability";
 import {DriverSlot} from "../../model/entity/users/driver/driver-slot";
 
 

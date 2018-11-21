@@ -1,5 +1,5 @@
 import {PersonStatus} from '../../common/model/entity/users/person';
-import {GET, Path, PathParam, POST, QueryParam, Return} from "typescript-rest";
+import {GET, PATCH, Path, PathParam, POST, QueryParam, Return} from "typescript-rest";
 import {Member} from "../../common/model/entity/users/member/member";
 import {PersonRepository} from '../../common/repositories/users/person-repository';
 import {MemberRepository} from '../../common/repositories/users/member-repository';
@@ -114,6 +114,17 @@ export class MemberController extends BaseController {
 	  let mobileDevices = await this._memberRepository.getMobileDevices(member);
 
     return mobileDevices.map(device => ({deviceId: device.id}));
+
+  }
+
+  @Authenticate(crypto.SigningCategory.MEMBER)
+  @PATCH
+  @Path("/info")
+  public async updateMemberInfo() {
+
+  	let person = this.pendingPerson;
+  	let updateRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.person.UpdatePersonInfoRequest);
+  	await this._personRepository.updatePersonInfo(person, updateRequest);
 
   }
 

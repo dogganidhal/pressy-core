@@ -6,11 +6,15 @@ import {Member} from "../../src/common/model/entity/users/member/member";
 import {Person} from "../../src/common/model/entity/users/person";
 import {Database} from "../../src/common/db";
 import * as DTO from "../../src/common/model/dto";
+import {PersonRepository} from "../../src/common/repositories/users/person-repository";
+import {exception} from "../../src/common/errors";
+
 
 describe("MemberRepository Write/Delete Operations Tests", () => {
 
   let connection: Connection;
   let memberRepository: MemberRepository;
+
 	const testMember = {
 		firstName: RandomString.generate(10),
 		lastName: RandomString.generate(10),
@@ -83,6 +87,7 @@ describe("MemberRepository Read Operations Tests", () => {
 
   let connection: Connection;
   let memberRepository: MemberRepository;
+	let personRepository: PersonRepository;
   const memberDTO: DTO.person.CreatePersonRequest = {
     firstName: RandomString.generate(10),
     lastName: RandomString.generate(10),
@@ -94,6 +99,7 @@ describe("MemberRepository Read Operations Tests", () => {
   beforeAll(async (done) => {
     connection = await Database.createConnection();
     memberRepository = new MemberRepository(connection);
+    personRepository = new PersonRepository(connection);
     await memberRepository.createMember(memberDTO);
     done();
   }, 60000);
@@ -145,6 +151,100 @@ describe("MemberRepository Read Operations Tests", () => {
       fail(error)
     }
   }, 60000);
+
+  test("Updates the member info on the person Table", async done => {
+
+  	expect.assertions(2);
+
+  	let memberToUpdate = await memberRepository.createMember({
+		  firstName: RandomString.generate(10),
+		  lastName: RandomString.generate(10),
+		  email: `${RandomString.generate(10)}@mail.com`,
+		  phone: `${RandomString.generate({length: 10, charset: "numeric"})}`,
+		  password: "qwerty2018",
+	  });
+
+  	await personRepository.updatePersonInfo(memberToUpdate.person, {
+  		firstName: "John",
+		  lastName: "DOE"
+	  });
+
+  	let updatedMember = await memberRepository.getMemberByEmail(memberToUpdate.person.email) || done.fail();
+
+  	expect(updatedMember.person.firstName).toEqual("John");
+	  expect(updatedMember.person.lastName).toEqual("DOE");
+
+	  done();
+
+
+  }, 60000);
+
+	test("Throws an error when new email already exists", async done => {
+
+		expect.assertions(1);
+
+		let duplicateEmail = `${RandomString.generate(10)}@mail.com`;
+
+		await memberRepository.createMember({
+			firstName: RandomString.generate(10),
+			lastName: RandomString.generate(10),
+			email: duplicateEmail,
+			phone: `${RandomString.generate({length: 10, charset: "numeric"})}`,
+			password: "qwerty2018",
+		});
+		let memberToUpdate = await memberRepository.createMember({
+			firstName: RandomString.generate(10),
+			lastName: RandomString.generate(10),
+			email: `${RandomString.generate(10)}@mail.com`,
+			phone: `${RandomString.generate({length: 10, charset: "numeric"})}`,
+			password: "qwerty2018",
+		});
+
+		try {
+			await personRepository.updatePersonInfo(memberToUpdate.person, {
+				email: duplicateEmail
+			});
+			done.fail();
+		} catch (error) {
+			expect(error instanceof exception.EmailAlreadyExistsException).toBeTruthy();
+			done();
+		}
+
+	}, 60000);
+
+	test("Throws an error when new phone already exists", async done => {
+
+		expect.assertions(1);
+
+		let duplicatePhone = RandomString.generate({length: 10, charset: "numeric"});
+
+		await memberRepository.createMember({
+			firstName: RandomString.generate(10),
+			lastName: RandomString.generate(10),
+			email: `${RandomString.generate(10)}@mail.com`,
+			phone: duplicatePhone,
+			password: "qwerty2018",
+		});
+		let memberToUpdate = await memberRepository.createMember({
+			firstName: RandomString.generate(10),
+			lastName: RandomString.generate(10),
+			email: `${RandomString.generate(10)}@mail.com`,
+			phone: `${RandomString.generate({length: 10, charset: "numeric"})}`,
+			password: "qwerty2018",
+		});
+
+		try {
+			await personRepository.updatePersonInfo(memberToUpdate.person, {
+				phone: duplicatePhone
+			});
+			done.fail();
+		} catch (error) {
+			expect(error instanceof exception.PhoneAlreadyExists).toBeTruthy();
+			done();
+		}
+
+
+	}, 60000);
 
   afterAll(async (done) => {
     await memberRepository.deleteMemberByEmail(memberDTO.email);

@@ -46,6 +46,15 @@ export module person {
 
 	}
 
+	export class UpdatePersonInfoRequest {
+
+		public firstName?: string;
+		public lastName?: string;
+		public email?: string;
+		public phone?: string;
+
+	}
+
 	export class ResetCode {
 
 		@Required()

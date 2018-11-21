@@ -1,5 +1,13 @@
+import {Required} from "../../annotations";
 
 export module address {
+
+	export class DeleteAddressRequest {
+
+		@Required()
+		public addressId: number;
+
+	}
 
 	export class CreateAddressRequest {
 

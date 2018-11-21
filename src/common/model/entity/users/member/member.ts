@@ -1,7 +1,8 @@
-import {Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Person, PersonStatus} from "../person";
 import * as DTO from "../../../dto/index";
 import {IUser} from "..";
+import {Address} from "../../common/address";
 
 @Entity()
 export class Member implements IUser {
@@ -12,6 +13,10 @@ export class Member implements IUser {
   @OneToOne(type => Person)
   @JoinColumn()
   public person: Person;
+
+  @OneToMany(type => Address, address => address.member)
+  @JoinColumn()
+  public addresses: Address[];
 
 	public isActive(): boolean {
 		return this.person.status === PersonStatus.ACTIVE;
