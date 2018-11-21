@@ -19,7 +19,6 @@ export class AuthController extends BaseController {
   private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
 
   @JSONResponse
-  @Path("/person/")
   @POST
   public async login() {
 
