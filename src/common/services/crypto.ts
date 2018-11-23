@@ -112,7 +112,7 @@ export namespace crypto {
 					return;
 				}
 
-				reject(new exception.UnauthorizedRequestException);
+				reject(new exception.InvalidAccessTokenException);
 
 			});
 

@@ -9,7 +9,8 @@ import {Database} from "../../common/db";
 import {crypto} from "../../common/services/crypto";
 import {http} from "../../common/utils/http";
 import * as DTO from "../../common/model/dto";
-
+import {Driver} from "../../common/model/entity/users/driver/driver";
+import SigningCategory = crypto.SigningCategory;
 
 
 @Path('/api/v1/auth/')
@@ -23,16 +24,18 @@ export class AuthController extends BaseController {
   public async login() {
 
 	  let loginRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.person.LoginRequest);
-	  let member = await this._memberRepository.getMemberByEmail(loginRequest.email);
+	  let person = await this._personRepository.getPersonByEmail(loginRequest.email);
 
-	  if (!member)
-		  throw new exception.MemberNotFoundException(loginRequest.email);
+	  if (!person)
+		  throw new exception.AccountNotFoundException(loginRequest.email);
 
-	  if (!bcrypt.compareSync(loginRequest.password, member.person.passwordHash))
+	  if (!bcrypt.compareSync(loginRequest.password, person.passwordHash))
 		  throw new exception.WrongPasswordException;
 
-	  return crypto.signAuthToken(member.person, crypto.SigningCategory.MEMBER);
+	  let user = await this._personRepository.getUserWithPerson(person);
+	  let signingCategory = user instanceof Driver ? SigningCategory.DRIVER : SigningCategory.MEMBER;
 
+	  return crypto.signAuthToken(person, signingCategory);
   }
 
   @JSONResponse
@@ -55,7 +58,7 @@ export class AuthController extends BaseController {
 	  const person = await this._personRepository.getPersonByEmail(resetCodeRequest.email);
 
 	  if (person == undefined)
-	    throw new exception.MemberNotFoundException(resetCodeRequest.email);
+	    throw new exception.AccountNotFoundException(resetCodeRequest.email);
 
 	  const resetCode = await this._personRepository.createPasswordResetCode(person);
 

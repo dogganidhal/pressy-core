@@ -31,9 +31,9 @@ export namespace exception {
     }
   }
 
-  export class MemberNotFoundException extends APIException {
+  export class AccountNotFoundException extends APIException {
     constructor(email: string) {
-      super('MemberNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No registered member with email '${email}' was found`);
+      super('AccountNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No registered account with email '${email}' was found`);
     }
   }
 

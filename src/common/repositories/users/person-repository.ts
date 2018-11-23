@@ -8,6 +8,9 @@ import {ActivationCode, Person, PersonStatus} from '../../model/entity/users/per
 import * as DTO from "../../model/dto/index";
 import {Member} from "../../model/entity/users/member/member";
 import {person} from "../../model/dto/index";
+import {Driver} from "../../model/entity/users/driver/driver";
+import {MemberRepository} from "./member-repository";
+import {IUser} from "../../model/entity/users";
 
 
 export class PersonRepository extends BaseRepository {
@@ -25,7 +28,7 @@ export class PersonRepository extends BaseRepository {
   }
 
   public async getPersonByEmail(email: string): Promise<Person | undefined> {
-    return this._personRepository.findOneOrFail({email: email});
+    return this._personRepository.findOne({email: email});
   }
 
   public async getPersonByPhone(phone: string): Promise<Person | undefined> {
@@ -128,6 +131,26 @@ export class PersonRepository extends BaseRepository {
       .from(ActivationCode)
       .where("code = :code", {code: code})
       .execute();
+
+  }
+
+  /**
+   * Gets Member / Driver / Admin from a Person
+   */
+  public async getUserWithPerson(person: Person): Promise<IUser | undefined> {
+
+    let memberRepository = this.connection.getRepository(Member);
+	  let driverRepository = this.connection.getRepository(Driver);
+
+    let member = await memberRepository.findOne({person: person});
+    let driver = await driverRepository.findOne({person: person});
+    // TODO: Add other segments of users
+
+    if (member)
+      return member;
+
+    if (driver)
+      return driver;
 
   }
 

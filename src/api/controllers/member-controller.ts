@@ -90,7 +90,7 @@ export class MemberController extends BaseController {
     const member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
 
     if (!member)
-    	throw new exception.MemberNotFoundException(this.pendingPerson.email);
+    	throw new exception.AccountNotFoundException(this.pendingPerson.email);
 
     const mobileDevice = http.parseJSONBody(this.getPendingRequest().body, DTO.person.MobileDevice);
     
@@ -109,7 +109,7 @@ export class MemberController extends BaseController {
 	  const member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
 
 	  if (!member)
-		  throw new exception.MemberNotFoundException(this.pendingPerson.email);
+		  throw new exception.AccountNotFoundException(this.pendingPerson.email);
 
 	  let mobileDevices = await this._memberRepository.getMobileDevices(member);
 
