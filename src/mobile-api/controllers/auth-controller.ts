@@ -2,21 +2,19 @@ import {Path, PathParam, POST, Return} from "typescript-rest";
 import {exception} from "../../common/errors";
 import bcrypt from "bcrypt";
 import {PersonRepository} from "../../common/repositories/users/person-repository";
-import {MemberRepository} from "../../common/repositories/users/member-repository";
-import {BaseController} from "./base-controller";
-import {JSONResponse} from "../annotations";
+import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
 import {crypto} from "../../common/services/crypto";
 import {http} from "../../common/utils/http";
 import * as DTO from "../../common/model/dto";
 import {Driver} from "../../common/model/entity/users/driver/driver";
 import SigningCategory = crypto.SigningCategory;
+import {JSONResponse} from "../../common/annotations";
 
 
 @Path('/api/v1/auth/')
 export class AuthController extends BaseController {
 
-  private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
   private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
 
   @JSONResponse
@@ -32,10 +30,8 @@ export class AuthController extends BaseController {
 	  if (!bcrypt.compareSync(loginRequest.password, person.passwordHash))
 		  throw new exception.WrongPasswordException;
 
-	  let user = await this._personRepository.getUserWithPerson(person);
-	  let signingCategory = user instanceof Driver ? SigningCategory.DRIVER : SigningCategory.MEMBER;
+	  return crypto.signAuthToken(person, crypto.SigningCategory.MEMBER);
 
-	  return crypto.signAuthToken(person, signingCategory);
   }
 
   @JSONResponse

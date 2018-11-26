@@ -1,6 +1,7 @@
-import {APIError} from "../model/api-error";
-import {BaseController} from "../controllers/base-controller";
-import {exception} from "../../common/errors";
+import {APIError} from "../errors/api-error";
+import {BaseController} from "../controller/base-controller";
+import {exception} from "../errors/index";
+import {ReferencedResource, Return} from "typescript-rest";
 
 export function JSONResponse<TController extends BaseController>(target: TController, property: string, propertyDescriptor: PropertyDescriptor) {
 
@@ -15,7 +16,8 @@ export function JSONResponse<TController extends BaseController>(target: TContro
 			const returnValue = originalMethod.call(context, args);
 
 			if (returnValue instanceof Promise) {
-				return await returnValue;
+				let futureValue = await returnValue;
+				return futureValue;
 			} else {
 				return returnValue;
 			}
@@ -35,7 +37,6 @@ export function JSONResponse<TController extends BaseController>(target: TContro
 
 					response.status(500);
 					// TODO: Log the error, because it shouldn't happen
-					console.trace();
 					console.warn(error);
 					return APIError.InternalServerError(error.message);
 

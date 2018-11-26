@@ -44,7 +44,7 @@ export namespace http {
 
 	}
 
-	export function parseJSONBody<Type extends any>(body: string, classRef: {new(): Type}) {
+	export function parseJSONBody<Type extends any>(body: string, classRef: {new(): Type}): Type {
 
 		let obj = new classRef;
 
@@ -58,6 +58,29 @@ export namespace http {
 			throw new exception.MissingFieldsException(`[${missingFields.join(",")}]`);
 
 		return obj;
+
+	}
+
+	export function parseJSONArrayBody<Type extends any>(body: string, classRef: {new(): Type}): Type[] {
+
+		let objects: Type[] = [];
+
+		for (let object of JSON.parse(body)) {
+			let obj = new classRef;
+
+			try {
+				Object.assign(obj, obj, object);
+			} catch (_) {}
+
+			let missingFields = getMissingRequiredFields(obj, classRef);
+
+			if (missingFields.length > 0)
+				throw new exception.MissingFieldsException(`[${missingFields.join(",")}]`);
+
+			objects.push(obj);
+		}
+
+		return objects;
 
 	}
 

@@ -2,8 +2,9 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import {slot} from "../dto";
 
 export enum SlotType {
-  LIGHT = 1,
-  EXPRESS = 2
+  GOLD = "gold",
+  SILVER = "silver",
+  PLATINIUM = "platinium"
 }
 
 @Entity()
@@ -16,7 +17,7 @@ export class Slot {
   public startDate: Date;
 
   @Column({nullable: false})
-  public type: SlotType = SlotType.LIGHT;
+  public type: SlotType = SlotType.GOLD;
 
   public static create(slot: slot.CreateSlotRequest): Slot {
 
@@ -32,10 +33,25 @@ export class Slot {
   public static getDurationInMinutes(type: SlotType): number {
 
     switch(type) {
-      case SlotType.LIGHT:
+      case SlotType.GOLD:
         return 120;
-      case SlotType.EXPRESS:
+      case SlotType.SILVER:
         return 30;
+      case SlotType.PLATINIUM:
+        return 30;
+    }
+
+  }
+
+  public static getDeliveryFees(type: SlotType): number {
+
+    switch (type) {
+      case SlotType.GOLD:
+        return 2.99;
+      case SlotType.SILVER:
+        return 0.00;
+      case SlotType.PLATINIUM:
+        return 6.99;
     }
 
   }

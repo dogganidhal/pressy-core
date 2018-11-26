@@ -1,9 +1,8 @@
-import {Slot} from '../model/entity/slot';
+import {Slot, SlotType} from '../model/entity/slot';
 import {Brackets, Repository} from "typeorm";
 import {DateUtils} from '../utils';
 import {BaseRepository} from './base-repository';
 import {slot} from "../model/dto";
-import SearchSlotRequest = slot.SearchSlotRequest;
 
 
 export class SlotRepository extends BaseRepository {
@@ -24,21 +23,22 @@ export class SlotRepository extends BaseRepository {
 
   }
 
-  public async searchSlots(request: SearchSlotRequest): Promise<Slot[]> {
+  public async getNextAvailableSlots(): Promise<Slot[]> {
 
-    let {from, to, types} = request;
+    let startDate = DateUtils.addDays(new Date(), 1);
+    let endDate = DateUtils.addDays(new Date(), 8);
 
     const queryBuilder = this._slotRepository.createQueryBuilder()
-      .where("startdate >= :startDate", {startDate: from})
+      .where("startdate >= :startDate", {startDate: startDate})
       .andWhere(new Brackets((subqb) => {
 
-        for (const type of types) {
+        for (const type of [SlotType.GOLD, SlotType.SILVER, SlotType.PLATINIUM]) {
           const durationInMinutes = Slot.getDurationInMinutes(type);
           subqb.orWhere(new Brackets((typeqb) => {
 
-            const safeStartDate = DateUtils.dateBySubsctractingTimeInterval(to, durationInMinutes * 1000000);
+            const safeStartDate = DateUtils.dateBySubsctractingTimeInterval(endDate, durationInMinutes * 1000000);
 
-            typeqb.where(`type = ${type}`)
+            typeqb.where(`type = ${type}`);
             typeqb.andWhere(`startdate <= '${safeStartDate.toISOString()}'::DATE`);
 
           }));
@@ -46,7 +46,7 @@ export class SlotRepository extends BaseRepository {
 
       }));
 
-  return await queryBuilder.getMany();
+    return await queryBuilder.getMany();
 
   }
 

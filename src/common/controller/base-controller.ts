@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import {ContextRequest, ContextResponse} from "typescript-rest";
 import {Request, Response} from "express";
-import {Person} from "../../common/model/entity/users/person";
+import {Person} from "../model/entity/users/person";
 
 export abstract class BaseController {
 

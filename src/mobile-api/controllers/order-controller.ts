@@ -5,14 +5,14 @@ import {SlotRepository} from '../../common/repositories/slot-repository';
 import {DateUtils} from '../../common/utils';
 import {Member} from "../../common/model/entity/users/member/member";
 import {SlotType} from "../../common/model/entity/slot";
-import {BaseController} from "./base-controller";
-import {Authenticate, JSONResponse} from "../annotations";
+import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
 import {crypto} from "../../common/services/crypto";
 import {MemberRepository} from "../../common/repositories/users/member-repository";
 import {http} from "../../common/utils/http";
 import * as DTO from "../../common/model/dto";
 import {Order} from "../../common/model/entity/order";
+import {Authenticate, JSONResponse} from "../../common/annotations";
 
 
 @Path('/api/v1/order/')
@@ -96,41 +96,14 @@ export class OrderController extends BaseController {
   @JSONResponse
   @Path("/slots")
   @GET
-  public async getSlots(
-    @QueryParam("types") typeString: string, 
-    @QueryParam("from") from: string = DateUtils.now().toISOString(),
-    @QueryParam("to") to: string = DateUtils.addDaysFromNow(7).toISOString()
-  ) {
+  public async getSlots() {
 
-	  const types = this._parseSlotTypesFromString(typeString);
-    const startDate = new Date(from);
-	  const endDate = new Date(to);
+    const startDate = DateUtils.addDays(new Date(), 1);
 
-    if (isNaN(startDate.getTime()))
-      throw new exception.InvalidDateException(from);
-
-    if (isNaN(endDate.getTime()))
-	    throw new exception.InvalidDateException(to);
-
-    const slots = await this._slotsRepository.searchSlots({
-	    from: startDate,
-	    to: endDate,
-	    types: this._parseSlotTypesFromString(typeString)
-    });
+    const slots = await this._slotsRepository.getNextAvailableSlots();
 
 	  return slots.map(slot => new DTO.slot.Slot(slot));
 
-  }
-
-  private _parseSlotTypesFromString(string: string): SlotType[] {
-    const types: SlotType[] = string.split(",").map(char => {
-      const type = parseInt(char);
-      if (type < SlotType.LIGHT || type > SlotType.EXPRESS) {
-	      throw new exception.InvalidSlotTypeException(type);
-      }
-      return type;
-    });
-    return types.filter((type, index) => types.indexOf(type) == index);
   }
 
 }

@@ -2,6 +2,7 @@ import {Address} from '../model/entity/common/address';
 import {RestClient} from "typed-rest-client";
 import {getConfig} from '../../config';
 import * as DTO from "../model/dto";
+import {exception} from "../errors";
 
 export interface ICoordinates {
   latitude: number;
@@ -33,11 +34,11 @@ export class GeocodeService {
     const results: any = (await response.result);
     
     if (results.status != "OK")
-      throw new Error(`Can't fetch address components for place_id ${placeId}`);
+      throw new exception.CannotCreateAddressException;
     
     const placeDetails: IPlaceDetails = (results as any).result;
 
-    var components: IGeocodeAddressComponents = {} as IGeocodeAddressComponents;
+    let components: IGeocodeAddressComponents = {} as IGeocodeAddressComponents;
     placeDetails.address_components.map((component: any) => {
       component.types.map((category: string) => components[category] = component.long_name);
     });
@@ -61,16 +62,19 @@ ${coordinates.latitude},${coordinates.longitude}&key=${getConfig().googleMapsAPI
     const result: any = (await response.result as any);
     
     if (result == null || response.statusCode >= 400 || result.status != "OK")
-      throw new Error(`Can't fetch address components for coordinates ${coordinates}`);
+      throw new exception.CannotCreateAddressException;
     
     const placeDetails: IPlaceDetails = result.results[0];
+
+    if (!placeDetails)
+      throw new exception.CannotCreateAddressException;
 
     let components: IGeocodeAddressComponents = {} as IGeocodeAddressComponents;
     placeDetails.address_components.map((component: any) => {
       component.types.map((category: string) => components[category] = component.long_name);
     });
 
-  return new DTO.address.Address({
+    return new DTO.address.Address({
 	    city: components.locality,
 	    country: components.political,
 	    zipCode: components.postal_code,

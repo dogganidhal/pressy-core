@@ -27,7 +27,9 @@ export class OrderRepository extends BaseRepository {
 	    where: {member: member},
 	    relations: [
 		    "pickupAddress", "deliveryAddress",
-		    "pickupSlot", "deliverySlot", "person"
+		    "pickupSlot", "deliverySlot",
+		    "member", "member.person",
+		    "elements"
 	    ]
     });
     
@@ -93,6 +95,8 @@ export class OrderRepository extends BaseRepository {
 
   	order.driver = driver;
   	await this._orderRepository.save(order);
+  	// noinspection JSIgnoredPromiseFromCall
+	  this._orderStatusManger.assignDriverToOrder(order, driver);
 
   }
   

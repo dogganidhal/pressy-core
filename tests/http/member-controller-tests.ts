@@ -1,9 +1,9 @@
 import Randomstring from 'randomstring';
 import request from "supertest";
 import { Connection } from 'typeorm';
-import { API } from "../../src/api";
+import { MobileAPI } from "../../src/mobile-api";
 import { MemberRepository } from '../../src/common/repositories/users/member-repository';
-import {APIError} from "../../src/api/model/api-error";
+import {APIError} from "../../src/common/errors/api-error";
 import {Database} from "../../src/common/db";
 import {person} from "../../src/common/model/dto";
 import uuid = require("uuid");
@@ -16,7 +16,7 @@ describe("Testing MemberController Endpoints =>", () => {
 
   let connection: Connection;
   let memberRepository: MemberRepository;
-  const api: API = new API;
+  const api: MobileAPI = new MobileAPI;
   const memberDTO: person.CreatePersonRequest = {
     firstName: Randomstring.generate(10),
     lastName: Randomstring.generate(10),
@@ -41,21 +41,12 @@ describe("Testing MemberController Endpoints =>", () => {
 
   it("Creates a new person with correct data", async done => {
 
-    expect.assertions(4);
-
     return request(api.getApp())
       .post("/api/v1/member")
       .set("Content-Type", "application/json")
       .send(memberDTO)
-	    .expect(http.HttpStatus.HTTP_STATUS_OK)
-	    .then(response => {
-		    const member: person.CreatePersonRequest = response.body;
-
-		    expect(member.firstName).toEqual(memberDTO.firstName);
-		    expect(member.lastName).toEqual(memberDTO.lastName);
-		    expect(member.email).toEqual(memberDTO.email);
-		    expect(member.phone).toEqual(memberDTO.phone);
-
+	    .expect(http.HttpStatus.HTTP_STATUS_CREATED)
+	    .then(() => {
 		    done();
 	    })
 	    .catch(error => {

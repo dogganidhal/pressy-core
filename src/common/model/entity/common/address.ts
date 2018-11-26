@@ -17,7 +17,7 @@ export class Address {
   @Column()
   public country: string;
 
-  @Column()
+  @Column({nullable: true})
   public streetNumber: string;
 
   @Column()

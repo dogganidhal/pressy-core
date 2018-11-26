@@ -6,6 +6,7 @@ import {Person} from "../users/person";
 
 export enum OrderStatusUpdateType {
 	CREATED,
+	ASSIGNED_TO_DRIVER,
 	PICKEDUP_FROM_CLIENT,
 	ARRIVED_TO_LAUNDRER,
 	FINISHED_LAUNDRY,

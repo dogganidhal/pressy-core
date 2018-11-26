@@ -7,9 +7,8 @@ import {DateUtils} from "../../utils";
 import {ActivationCode, Person, PersonStatus} from '../../model/entity/users/person';
 import * as DTO from "../../model/dto/index";
 import {Member} from "../../model/entity/users/member/member";
-import {person} from "../../model/dto/index";
+import {person} from "../../model/dto";
 import {Driver} from "../../model/entity/users/driver/driver";
-import {MemberRepository} from "./member-repository";
 import {IUser} from "../../model/entity/users";
 
 

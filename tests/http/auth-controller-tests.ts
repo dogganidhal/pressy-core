@@ -1,8 +1,8 @@
 import { MemberRepository } from '../../src/common/repositories/users/member-repository';
 import { Connection } from 'typeorm';
-import { API } from "../../src/api";
+import { MobileAPI } from "../../src/mobile-api";
 import request from "supertest";
-import {APIError} from "../../src/api/model/api-error";
+import {APIError} from "../../src/common/errors/api-error";
 import RandomString from "randomstring";
 import {Database} from "../../src/common/db";
 import {crypto} from "../../src/common/services/crypto";
@@ -14,7 +14,7 @@ describe("Testing Authentication Endpoints", () => {
 
 	let connection: Connection;
 	let memberRepository: MemberRepository;
-	const api: API = new API;
+	const api: MobileAPI = new MobileAPI;
 	const testMember: DTO.person.CreatePersonRequest = {
 		firstName: RandomString.generate(10),
 		lastName: RandomString.generate(10),

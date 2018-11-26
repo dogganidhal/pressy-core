@@ -6,7 +6,8 @@ import {ActivationCode, Person} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
 import * as DTO from "../../model/dto/index";
 import {validation} from "../../utils";
-import {person} from "../../model/dto/index";
+import {address, person} from "../../model/dto/index";
+import {Address} from "../../model/entity/common/address";
 
 
 export class MemberRepository extends BaseRepository {
@@ -15,21 +16,22 @@ export class MemberRepository extends BaseRepository {
   private _mobileDeviceRepository: Repository<MobileDevice> = this.connection.getRepository(MobileDevice);
   private _personRepository: Repository<Person> = this.connection.getRepository(Person);
   private _activationCodeRepository: Repository<ActivationCode> = this.connection.getRepository(ActivationCode);
+  private _addressRepository: Repository<Address> = this.connection.getRepository(Address);
 
   public async getAllMembers(): Promise<Member[]> {
     return (await this._memberRepository).find();
   }
 
   public async getMemberFromPerson(person:Person): Promise<Member | undefined> {
-    return await this._memberRepository.findOne({person: person}, {relations: ["person"]});
+    return await this._memberRepository.findOne({person: person}, {relations: ["person", "addresses"]});
   }
 
 	public async getMemberFromPersonOrFail(person:Person): Promise<Member> {
-		return await this._memberRepository.findOneOrFail({person: person}, {relations: ["person"]});
+		return await this._memberRepository.findOneOrFail({person: person}, {relations: ["person", "addresses"]});
 	}
 
   public async getMemberById(id: number): Promise<Member | undefined> {
-    return this._memberRepository.findOne(id, {relations: ["person"]});
+    return this._memberRepository.findOne(id, {relations: ["person", "addresses"]});
   }
 
   public async getMemberByEmail(email: string): Promise<Member | undefined> {
@@ -39,7 +41,7 @@ export class MemberRepository extends BaseRepository {
     if (!person)
       return undefined;
 
-    return await this._memberRepository.findOne({person: person}, {relations: ["person"]});
+    return await this._memberRepository.findOne({person: person}, {relations: ["person", "addresses"]});
     
   }
 
@@ -50,7 +52,7 @@ export class MemberRepository extends BaseRepository {
     if (!person)
       return undefined;
 
-    return await this._memberRepository.findOne({person: {id: person.id}}, {relations: ["person"]});
+    return await this._memberRepository.findOne({person: {id: person.id}}, {relations: ["person", "addresses"]});
 
   }
 
@@ -99,7 +101,7 @@ export class MemberRepository extends BaseRepository {
       return;
 
     const activationCode = await this._activationCodeRepository.findOne({person: person});
-    const member = await this._memberRepository.findOne({person: person}, {relations: ["person"]});
+    const member = await this._memberRepository.findOne({person: person}, {relations: ["person", "addresses"]});
 
     if (member) {
 	    let mobileDevices = await this.getMobileDevices(member);
@@ -127,6 +129,16 @@ export class MemberRepository extends BaseRepository {
     const device = MobileDevice.create(member.person, mobileDeviceDTO.deviceId);
     await this._mobileDeviceRepository.insert(device);
     return device;
+
+  }
+
+  public async setMemberAddresses(member: Member, addresses: Address[]): Promise<void> {
+
+    for (let address of addresses) {
+    	await this.connection.manager.save(address);
+    }
+	  member.addresses = addresses;
+    await this.connection.manager.save(member);
 
   }
 

@@ -1,14 +1,12 @@
 import express, { Application } from "express";
 import { Server } from "typescript-rest";
 import * as bodyParser from "body-parser";
-import { DocumentationController } from "./controllers/doc-controller";
 import { OrderController } from "./controllers/order-controller";
-import { DriverController } from "./controllers/driver-controller";
 import { MemberController } from "./controllers/member-controller";
 import { AuthController } from "./controllers/auth-controller";
 import {Database} from "../common/db";
 
-export class API {
+export class MobileAPI {
 
 	private readonly _express: Application;
 
@@ -22,8 +20,6 @@ export class API {
 
 	private async _config() {
 		await Database.createConnection();
-    this.registerController(DocumentationController);
-    this.registerController(DriverController);
     this.registerController(MemberController);
     this.registerController(AuthController);
     this.registerController(OrderController);

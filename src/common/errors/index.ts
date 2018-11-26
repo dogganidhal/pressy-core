@@ -1,5 +1,6 @@
 import {Member} from "../model/entity/users/member/member";
 import {http} from "../utils/http";
+import {Person} from "../model/entity/users/person";
 
 export namespace exception {
 
@@ -143,6 +144,12 @@ export namespace exception {
 	  constructor() {
 		  super('CannotCreateAddressException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Can't create address, must provide either Google Place id or Coordinates`);
 	  }
-  }
+	}
+
+	export class CannotFindMemberException extends APIException {
+		constructor(email: string) {
+			super('CannotFindMemberException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Can't find member with email '${email}'`);
+		}
+	}
 
 }

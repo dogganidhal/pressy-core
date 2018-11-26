@@ -3,3 +3,4 @@ export {person} from "./person";
 export {slot} from "./slot";
 export {order} from "./order";
 export {driver} from "./driver";
+export {member} from "./member";

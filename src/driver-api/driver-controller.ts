@@ -1,12 +1,11 @@
 import {Path, POST, Return} from "typescript-rest";
-import {MemberRepository} from "../../common/repositories/users/member-repository";
-import {Authenticate, JSONResponse} from "../annotations";
-import {BaseController} from "./base-controller";
-import {Database} from "../../common/db";
-import {crypto} from "../../common/services/crypto";
-import {person} from "../../common/model/dto";
-import {http} from "../../common/utils/http";
-import {DriverRepository} from "../../common/repositories/users/driver-repository";
+import {BaseController} from "../common/controller/base-controller";
+import {Database} from "../common/db/index";
+import {crypto} from "../common/services/crypto";
+import {person} from "../common/model/dto/index";
+import {http} from "../common/utils/http";
+import {DriverRepository} from "../common/repositories/users/driver-repository";
+import {Authenticate, JSONResponse} from "../common/annotations/index";
 
 
 @Path("/api/v1/driver/")
