@@ -10,7 +10,7 @@ deploy:
   provider: heroku
   api_key:
     secure: okAUvwHWx0EOuikrKTy89cp8DGXrdyoa4GwEtzxI14eVZzqXBrDEswLoo+eyGYr5VqXwYUe4NZKdSBKvWlVzagpZs9C0ifiH/BFSDIGDfomR4N/h7ALTEYNHBv8m2G7NZrN/0Vu2WhsI0MmGypWULyl0tHO7H9DKznA4OImOzLn4nqxTPC5a3HyAtkG5TaihhL1Xc6sHEM5C2Fr6IZBdObE6zdgYu29KFLqURj/vTSzWdKaZ1wdn0iHNY3HHEQGWySu3prDh/TfmIDZ16StfpEdG9gCaSDqzsU2D7HrE5cTtWvtmgFt61vhXIdha63KNaqE50v/JSJP9sef4v8yYoASZPAy2zAIlTeFgng4x6h3hIh13VS9Up9sctOZnsV1Tw7SMaL4g44O+gq3UN4Jdp2WAkm6Oy146CbS3GgCCC9CPtYD79DlfRoyAZFgq4ulS/QEqb58i6JGh5oyCsOHQUFMhVPWTUxzHWthhPteJmwrzb25QXaQxzjGtpAFlRdxkZ7CrkgOFNPqCb5aBwGVQQALo4np6iujlZBsW7+fsH/Gqfjc++I+V2tAdL5HuHmwUoQzGotPP3XhUAb0T5jMgqGmjHs7mA9ZgNJNIt1h/UeQYXGYQ6SO/kvz6KzhVu2rUN5y+WIXYlS4/DVLkV/rf9YxCWjpDyCxqG8yUFTcjNKE=
-  app: pressy-core
+  app: pressy-dev
   on:
     repo: dogganidhal/pressy-core
     branch: develop
