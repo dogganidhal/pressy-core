@@ -98,9 +98,7 @@ export class OrderController extends BaseController {
   @GET
   public async getSlots() {
 
-    const startDate = DateUtils.addDays(new Date(), 1);
-
-    const slots = await this._slotsRepository.getNextAvailableSlots();
+    let slots = await this._slotsRepository.getNextAvailableSlots();
 
 	  return slots.map(slot => new DTO.slot.Slot(slot));
 

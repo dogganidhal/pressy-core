@@ -1,11 +1,12 @@
 import {MobileDevice} from '../../model/entity/users/device';
-import {Repository} from "typeorm";
+import {LessThan, MoreThan, Repository} from "typeorm";
 import {exception} from "../../errors";
 import {ActivationCode, Person} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
 import * as DTO from "../../model/dto/index";
 import {Driver} from "../../model/entity/users/driver/driver";
 import {DriverSlot} from "../../model/entity/users/driver/driver-slot";
+import {start} from "repl";
 
 
 export class DriverRepository extends BaseRepository {
@@ -112,6 +113,23 @@ export class DriverRepository extends BaseRepository {
 		const device = MobileDevice.create(driver.person, mobileDeviceDTO.deviceId);
 		await this._mobileDeviceRepository.insert(device);
 		return device;
+
+	}
+
+	public async getDriverSlots(driver: Driver): Promise<DriverSlot[]> {
+		return await this._driverSlotRepository.find({driver: driver});
+	}
+
+	public async getAllDriverSlots(startDate: Date, endDate: Date): Promise<DriverSlot[]> {
+
+		let queryBuilder = this._driverSlotRepository.createQueryBuilder("driverSlot");
+
+		queryBuilder
+			.select()
+			.where(`driverSlot.endDate >= :startDate`, {startDate: startDate})
+			.orWhere("driverSlot.startDate <= :endDate", {endDate: endDate});
+
+		return await queryBuilder.getMany();
 
 	}
 

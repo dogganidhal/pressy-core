@@ -13,7 +13,7 @@ export class Slot {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column({name: "startdate", nullable: false})
+  @Column({nullable: false})
   public startDate: Date;
 
   @Column({nullable: false})
@@ -42,6 +42,19 @@ export class Slot {
     }
 
   }
+
+	public getDurationInMinutes(): number {
+
+		switch(this.type) {
+			case SlotType.GOLD:
+				return 120;
+			case SlotType.SILVER:
+				return 30;
+			case SlotType.PLATINIUM:
+				return 30;
+		}
+
+	}
 
   public static getDeliveryFees(type: SlotType): number {
 

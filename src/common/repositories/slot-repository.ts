@@ -1,13 +1,16 @@
 import {Slot, SlotType} from '../model/entity/slot';
-import {Brackets, Repository} from "typeorm";
+import {Brackets, MoreThan, Raw, Repository} from "typeorm";
 import {DateUtils} from '../utils';
 import {BaseRepository} from './base-repository';
-import {slot} from "../model/dto";
+import {driver, slot} from "../model/dto";
+import {DriverRepository} from "./users/driver-repository";
+import {DriverSlot} from "../model/entity/users/driver/driver-slot";
 
 
 export class SlotRepository extends BaseRepository {
 
   private _slotRepository: Repository<Slot> = this.connection.getRepository(Slot);
+  private _driverRepository: DriverRepository = new DriverRepository(this.connection);
 
   public async getSlotById(id: number): Promise<Slot | undefined> {
     return this._slotRepository.findOne(id);
@@ -28,8 +31,8 @@ export class SlotRepository extends BaseRepository {
     let startDate = DateUtils.addDays(new Date(), 1);
     let endDate = DateUtils.addDays(new Date(), 8);
 
-    const queryBuilder = this._slotRepository.createQueryBuilder()
-      .where("startdate >= :startDate", {startDate: startDate})
+    const queryBuilder = this._slotRepository.createQueryBuilder("slot")
+      .where(`slot.startDate >= '${startDate.toISOString()}'::DATE`)
       .andWhere(new Brackets((subqb) => {
 
         for (const type of [SlotType.GOLD, SlotType.SILVER, SlotType.PLATINIUM]) {
@@ -38,15 +41,47 @@ export class SlotRepository extends BaseRepository {
 
             const safeStartDate = DateUtils.dateBySubsctractingTimeInterval(endDate, durationInMinutes * 1000000);
 
-            typeqb.where(`type = ${type}`);
-            typeqb.andWhere(`startdate <= '${safeStartDate.toISOString()}'::DATE`);
+            typeqb.where(`slot.type = '${type}'`);
+            typeqb.andWhere(`slot.startDate <= '${safeStartDate.toISOString()}'::DATE`);
 
           }));
         }
 
       }));
 
-    return await queryBuilder.getMany();
+    let driverSlots: DriverSlot[];
+    let slots: Slot[];
+
+    await Promise.all([
+      driverSlots = await this._driverRepository.getAllDriverSlots(startDate, endDate),
+      slots = await queryBuilder.getMany()
+    ]);
+
+    console.log(driverSlots);
+
+    return SlotRepository._computeAvailableSlots(driverSlots, slots);
+
+  }
+
+  private static _computeAvailableSlots(driverSlots: DriverSlot[], slots: Slot[]): Slot[] {
+    // TODO: Adjust availability compute logic
+
+    let availableSlots: Slot[] = [];
+
+    for (let slot of slots) {
+	    for (let driverSlot of driverSlots) {
+
+		    let slotEndDate = DateUtils.addMinutes(slot.startDate, slot.getDurationInMinutes());
+
+		    if (driverSlot.startDate < slot.startDate && driverSlot.endDate > slotEndDate) {
+			    availableSlots.push(slot);
+			    break;
+        }
+
+	    }
+    }
+
+    return availableSlots;
 
   }
 
