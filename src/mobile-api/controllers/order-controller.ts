@@ -1,10 +1,7 @@
-import {GET, Path, POST, QueryParam, Return} from "typescript-rest";
-import {exception} from '../../common/errors';
+import {GET, Path, POST, Return} from "typescript-rest";
 import {OrderRepository} from '../../common/repositories/order/order-repository';
 import {SlotRepository} from '../../common/repositories/slot-repository';
-import {DateUtils} from '../../common/utils';
 import {Member} from "../../common/model/entity/users/member/member";
-import {SlotType} from "../../common/model/entity/slot";
 import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
 import {crypto} from "../../common/services/crypto";
@@ -15,7 +12,7 @@ import {Order} from "../../common/model/entity/order";
 import {Authenticate, JSONResponse} from "../../common/annotations";
 
 
-@Path('/api/v1/order/')
+@Path('/v1/order/')
 export class OrderController extends BaseController {
 
 	private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
@@ -32,7 +29,7 @@ export class OrderController extends BaseController {
 
 	  await this._orderRepository.createOrder(member, dto);
 
-	  return new Return.RequestAccepted("/api/v1/order");
+	  return new Return.RequestAccepted("/v1/order");
 
   }
 

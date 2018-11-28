@@ -12,7 +12,7 @@ import SigningCategory = crypto.SigningCategory;
 import {JSONResponse} from "../../common/annotations";
 
 
-@Path('/api/v1/auth/')
+@Path('/v1/auth/')
 export class AuthController extends BaseController {
 
   private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
@@ -73,7 +73,7 @@ export class AuthController extends BaseController {
 	  const resetPasswordRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.person.ResetPasswordRequest);
 	  const person = await this._personRepository.resetPassword(code, resetPasswordRequest);
 
-	  return new Return.RequestAccepted(`/api/v1/member/${person.id}`);
+	  return new Return.RequestAccepted(`/v1/member/${person.id}`);
 
   }
 

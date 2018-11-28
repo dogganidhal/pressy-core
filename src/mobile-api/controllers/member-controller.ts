@@ -13,7 +13,7 @@ import {GeocodeService} from "../../common/services/geocode-service";
 import {Address} from "../../common/model/entity/common/address";
 
 
-@Path('/api/v1/member/')
+@Path('/v1/member/')
 export class MemberController extends BaseController {
 
   private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
@@ -51,7 +51,7 @@ export class MemberController extends BaseController {
 	  const member = await this._memberRepository.createMember(newMember);
 	  const personActivationCode = await this._personRepository.createActivationCode(member.person);
 	  // TODO: Send the activation URL by email !!
-	  return new Return.NewResource("/api/v1/member/info");
+	  return new Return.NewResource("/v1/member/info");
 
   }
 
@@ -65,7 +65,7 @@ export class MemberController extends BaseController {
 	  await this._personRepository.savePerson(person);
 	  await this._personRepository.deleteActivationCode(code);
 
-	  return new Return.RequestAccepted(`/api/v1/member/`);
+	  return new Return.RequestAccepted(`/v1/member/`);
 
   }
 
@@ -83,7 +83,7 @@ export class MemberController extends BaseController {
     
     await this._memberRepository.registerMobileDevice(member, mobileDevice);
 
-    return new Return.NewResource(`/api/v1/member/devices`);
+    return new Return.NewResource(`/v1/member/devices`);
 
   }
 
@@ -146,7 +146,7 @@ export class MemberController extends BaseController {
 
 		await this._memberRepository.setMemberAddresses(member, addressEntities);
 
-		return new Return.NewResource("/api/v1/member/info");
+		return new Return.NewResource("/v1/member/info");
 
   }
 

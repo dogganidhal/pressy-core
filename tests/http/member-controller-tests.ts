@@ -42,7 +42,7 @@ describe("Testing MemberController Endpoints =>", () => {
   it("Creates a new person with correct data", async done => {
 
     return request(api.getApp())
-      .post("/api/v1/member")
+      .post("/v1/member")
       .set("Content-Type", "application/json")
       .send(memberDTO)
 	    .expect(http.HttpStatus.HTTP_STATUS_CREATED)
@@ -61,7 +61,7 @@ describe("Testing MemberController Endpoints =>", () => {
 		expect.assertions(2);
 
 		return request(api.getApp())
-			.post("/api/v1/member")
+			.post("/v1/member")
 			.set("Content-Type", "application/json")
 			.send(duplicateMemberDTO)
 			.expect(http.HttpStatus.HTTP_STATUS_BAD_REQUEST)
@@ -101,7 +101,7 @@ describe("Testing MemberController Endpoints =>", () => {
 		let {accessToken} = crypto.signAuthToken(member.person, SigningCategory.MEMBER);
 
 		return request(api.getApp())
-			.post("/api/v1/member/devices")
+			.post("/v1/member/devices")
 			.set("Content-Type", "application/json")
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send(mobileDevice)

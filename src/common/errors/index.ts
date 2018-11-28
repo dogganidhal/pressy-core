@@ -116,6 +116,12 @@ export namespace exception {
     }
   }
 
+	export class RouteNotFoundException extends APIException {
+		constructor() {
+			super('RouteNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Route not found`);
+		}
+	}
+
   export class SlotNotFoundException extends APIException {
     constructor(slotId: number) {
       super('SlotNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No slot with id ${slotId} was found`);

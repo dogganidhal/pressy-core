@@ -9,14 +9,19 @@
     "url": "https://github.com/dogganidhal/pressy-core"
   },
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "NODE_ENV=local ./node_modules/nodemon/bin/nodemon.js",
-    "staging": "NODE_ENV=staging ts-node src/index.ts",
-    "prod": "NODE_ENV=production ts-node src/index.ts",
+
+    "mobile-api-dev": "NODE_ENV=local node scripts/start mobile-api",
+    "mobile-api-staging": "NODE_ENV=staging node scripts/start mobile-api",
+    "mobile-api-prod": "NODE_ENV=production node scripts/start mobile-api",
+
+    "driver-api-dev": "NODE_ENV=local node scripts/start driver-api",
+    "driver-api-staging": "NODE_ENV=staging node scripts/start driver-api",
+    "driver-api-prod": "NODE_ENV=production node scripts/start driver-api",
+
     "sync-local": "node scripts/sync.js",
     "sync-staging": "node scripts/sync.js heroku",
     "sync-prod": "node scripts/sync.js heroku",
-    "debug": "node --inspect-brk=3333 ./node_modules/ts-node/dist/bin.js src/index.ts && ./node_modules/nodemon/bin/nodemon.js",
+
     "test": "jest --detectOpenHandles"
   },
   "author": "Nidhal DOGGA <dogga.nidhal@gmail.com>",

@@ -5,6 +5,8 @@ import { OrderController } from "./controllers/order-controller";
 import { MemberController } from "./controllers/member-controller";
 import { AuthController } from "./controllers/auth-controller";
 import {Database} from "../common/db";
+import {http} from "../common/utils/http";
+import {exception} from "../common/errors";
 
 export class MobileAPI {
 
@@ -14,7 +16,7 @@ export class MobileAPI {
     this._express = express();
     this._middleware();
     this._config()
-	    .then(_ => console.info("Successfully connected to database"))
+	    .then(_ => console.info("Finished loading configuration"))
 	    .catch(error => console.warn(error));
   }
 
@@ -23,6 +25,10 @@ export class MobileAPI {
     this.registerController(MemberController);
     this.registerController(AuthController);
     this.registerController(OrderController);
+		this._express.all("*", (request, response) => {
+			response.setHeader("Content-Type", "application/json");
+			response.status(http.HttpStatus.HTTP_STATUS_NOT_FOUND).send(JSON.stringify(new exception.RouteNotFoundException));
+		});
   }
 
 	private _middleware() {
