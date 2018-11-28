@@ -9,6 +9,11 @@ if (!app) {
     process.exit(1);
 }
 
+let config = require('../config');
+let databaseURL = config.databaseURL[nodeEnv];
+
+process.env["DATABASE_URL"] = databaseURL;
+
 let command = `ts-node src/index.${app}.ts`;
 
 if (nodeEnv === "local")
