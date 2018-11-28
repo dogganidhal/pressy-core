@@ -10,13 +10,15 @@
   },
   "scripts": {
 
-    "mobile-api-dev": "NODE_ENV=local node scripts/start mobile-api",
-    "mobile-api-staging": "NODE_ENV=staging node scripts/start mobile-api",
-    "mobile-api-prod": "NODE_ENV=production node scripts/start mobile-api",
+    "start": "",
 
-    "driver-api-dev": "NODE_ENV=local node scripts/start driver-api",
-    "driver-api-staging": "NODE_ENV=staging node scripts/start driver-api",
-    "driver-api-prod": "NODE_ENV=production node scripts/start driver-api",
+    "mobile-api-dev": "NODE_ENV=local node scripts/launch mobile-api",
+    "mobile-api-staging": "NODE_ENV=staging node scripts/launch mobile-api",
+    "mobile-api-prod": "NODE_ENV=production node scripts/launch mobile-api",
+
+    "driver-api-dev": "NODE_ENV=local node scripts/launch driver-api",
+    "driver-api-staging": "NODE_ENV=staging node scripts/launch driver-api",
+    "driver-api-prod": "NODE_ENV=production node scripts/launch driver-api",
 
     "sync-local": "node scripts/sync.js",
     "sync-staging": "node scripts/sync.js heroku",
