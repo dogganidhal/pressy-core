@@ -6,5 +6,19 @@
   "databaseURL": {
     "staging": "postgres://rsqhwbycjlvzuu:cac9efedcb4ea55297638432ad0b4e5abc3c92e0b6cdd7cefacab7b39ce04c43@ec2-79-125-127-60.eu-west-1.compute.amazonaws.com:5432/d8r87077slmlfm",
     "prod": "postgres://rsqhwbycjlvzuu:cac9efedcb4ea55297638432ad0b4e5abc3c92e0b6cdd7cefacab7b39ce04c43@ec2-79-125-127-60.eu-west-1.compute.amazonaws.com:5432/d8r87077slmlfm"
+  },
+  "services": {
+    "local": {
+      "mobile-api": "mobile-api-dev",
+      "driver-api": "driver-api-dev"
+    },
+    "staging": {
+      "mobile-api": "mobile-api-staging",
+      "driver-api": "driver-api-staging"
+    },
+    "prod": {
+      "mobile-api": "mobile-api-prod",
+      "driver-api": "driver-api-prod"
+    }
   }
 }

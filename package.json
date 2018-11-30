@@ -10,7 +10,7 @@
   },
   "scripts": {
 
-    "start": "",
+    "start": "node scripts/start",
 
     "mobile-api-dev": "NODE_ENV=local node scripts/launch mobile-api",
     "mobile-api-staging": "NODE_ENV=staging node scripts/launch mobile-api",
@@ -92,7 +92,6 @@
       "jsx",
       "json",
       "node"
-    ],
-    "setupTestFrameworkScriptFile": "<rootDir>/setup-jest.js"
+    ]
   }
 }
