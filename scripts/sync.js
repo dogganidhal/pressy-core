@@ -5,7 +5,7 @@ let { readFileSync, writeFileSync } = require("fs");
 
 let buffer = readFileSync("ormconfig.json");
 let config = JSON.parse(buffer);
-let oldConfig = config;
+let oldConfig = Array.isArray(config) ? [...config] : {...config};
 let connectionName = process.argv[2] || "local";
 
 if (!databaseURL && connectionName !== "local") {
