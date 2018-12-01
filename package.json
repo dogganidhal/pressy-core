@@ -16,10 +16,8 @@
     "driver-api-dev": "NODE_ENV=local node scripts/launch driver-api",
     "driver-api-staging": "NODE_ENV=staging node scripts/launch driver-api",
     "driver-api-prod": "NODE_ENV=production node scripts/launch driver-api",
-    "sync-local": "node scripts/sync.js",
-    "sync-staging": "node scripts/sync.js heroku",
-    "sync-prod": "node scripts/sync.js heroku",
-    "test": "jest --detectOpenHandles"
+    "sync": "node scripts/sync.js",
+    "test": "TEST_ENV=$NODE_ENV jest --detectOpenHandles"
   },
   "author": "Nidhal DOGGA <dogga.nidhal@gmail.com>",
   "license": "ISC",
@@ -74,6 +72,9 @@
     "nodemon": "^1.18.4"
   },
   "jest": {
+    "globals": {
+      "__TESTS__": true
+    },
     "verbose": true,
     "transform": {
       "^.+\\.tsx?$": "ts-jest"

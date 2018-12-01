@@ -13,31 +13,12 @@ export namespace Database {
 
 	export async function createConnection(): Promise<Connection> {
 
-		if (process.env.NODE_ENV != "staging" && process.env.NODE_ENV != "production") {
-			// Local
-			connectionName = "local";
-			return createTypeORMConnection("local");
-		}
+		if (process.env.TEST_ENV)
+			connectionName = process.env.TEST_ENV || "local";
+		else
+			connectionName = process.env.NODE_ENV || "local";
 
-		// Staging/Production ...
-
-		connectionName = "heroku";
-
-		let options: PostgresConnectionOptions = await getConnectionOptions("heroku") as PostgresConnectionOptions;
-		let url = process.env.DATABASE_URL;
-
-		if (!url) {
-			console.warn("Can't find postgres database URL");
-			process.abort();
-		}
-
-		options = {
-			...options,
-			url: url
-		};
-
-		// TODO: Deal with production environment
-		return createTypeORMConnection(options);
+		return createTypeORMConnection(connectionName);
 
 	}
 

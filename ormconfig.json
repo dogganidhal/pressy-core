@@ -2,11 +2,7 @@
   {
     "name": "local",
     "type": "postgres",
-    "host": "localhost",
-    "port": 5432,
-    "username": "root",
-    "password": "",
-    "database": "pressy",
+    "url": "postgres://root@localhost:5432/pressy",
     "logging": true,
     "logger": "file",
     "synchronize": false,
@@ -15,8 +11,21 @@
     ]
   },
   {
-    "name": "heroku",
+    "name": "staging",
     "type": "postgres",
+    "url": "postgres://rsqhwbycjlvzuu:cac9efedcb4ea55297638432ad0b4e5abc3c92e0b6cdd7cefacab7b39ce04c43@ec2-79-125-127-60.eu-west-1.compute.amazonaws.com:5432/d8r87077slmlfm",
+    "logging": true,
+    "logger": "file",
+    "synchronize": false,
+    "entities": [
+      "src/common/model/entity/**/*"
+    ],
+    "ssl": true
+  },
+  {
+    "name": "production",
+    "type": "postgres",
+    "url": "postgres://mramijqpdzryzj:ae6ca19ac107e447e31404bd8f1f8909371fd6b4e3e616669a29eb5b4901fdd8@ec2-54-246-117-62.eu-west-1.compute.amazonaws.com:5432/d93humrasp2dne",
     "logging": true,
     "logger": "file",
     "synchronize": false,
