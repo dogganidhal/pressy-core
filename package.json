@@ -38,6 +38,8 @@
     "@types/superagent": "^3.8.4",
     "@types/supertest": "^2.0.6",
     "@types/uuid": "^3.4.4",
+    "@types/randomstring": "^1.1.6",
+    "randomstring": "^1.1.5",
     "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
     "crypto": "^1.0.1",
@@ -67,9 +69,7 @@
     "jest": "^23.6.0"
   },
   "devDependencies": {
-    "@types/randomstring": "^1.1.6",
     "nodemon": "^1.18.4",
-    "randomstring": "^1.1.5",
     "supertest": "^3.3.0",
     "supertest-as-promised": "^4.0.2"
   },
