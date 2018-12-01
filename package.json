@@ -63,16 +63,15 @@
     "typescript": "^3.0.3",
     "typescript-rest": "^1.7.0",
     "uuid": "^3.3.2",
-    "uuid-token-generator": "^1.0.0"
+    "uuid-token-generator": "^1.0.0",
+    "jest": "^23.6.0"
   },
   "devDependencies": {
-    "@types/moxios": "^0.4.8",
     "@types/randomstring": "^1.1.6",
-    "jest": "^23.6.0",
+    "nodemon": "^1.18.4",
     "randomstring": "^1.1.5",
     "supertest": "^3.3.0",
-    "supertest-as-promised": "^4.0.2",
-    "nodemon": "^1.18.4"
+    "supertest-as-promised": "^4.0.2"
   },
   "jest": {
     "verbose": true,
