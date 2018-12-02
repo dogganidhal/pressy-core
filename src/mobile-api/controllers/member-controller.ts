@@ -59,13 +59,7 @@ export class MemberController extends BaseController {
   @GET
   public async activateMember(@PathParam("code") code: string) {
 
-	  const person = await this._personRepository.getActivationCodePerson(code);
-	  person.status = PersonStatus.ACTIVE;
-
-	  await this._personRepository.savePerson(person);
-	  await this._personRepository.deleteActivationCode(code);
-
-	  return new Return.RequestAccepted(`/v1/member/`);
+	  await this._personRepository.activatePerson(code);
 
   }
 

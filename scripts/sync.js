@@ -1,5 +1,4 @@
 let {exec} = require("child_process");
-let { readFileSync } = require("fs");
 
 let connectionName = process.argv[2];
 

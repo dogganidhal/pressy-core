@@ -17,7 +17,7 @@ export class Element {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @ManyToOne(type => Order)
+  @ManyToOne(type => Order, order => order.elements)
   @JoinColumn()
   public order: Order;
 
@@ -30,11 +30,11 @@ export class Element {
   @Column({nullable: true})
   public comment?: string;
 
-  public static create(booking: Order, element: DTO.order.CreateOrderElementRequest): Element {
+  public static create(order: Order, element: DTO.order.CreateOrderElementRequest): Element {
 
     let elementEntity = new Element;
 
-    elementEntity.order = booking;
+    elementEntity.order = order;
     elementEntity.type = element.type;
 	  elementEntity.color = element.color;
 	  elementEntity.comment = element.comment;

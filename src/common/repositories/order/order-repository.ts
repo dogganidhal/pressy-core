@@ -17,6 +17,7 @@ export class OrderRepository extends BaseRepository {
   private _orderRepository: Repository<Order> = this.connection.getRepository(Order);
   private _slotRepository: Repository<Slot> = this.connection.getRepository(Slot);
 	private _addressRepository: Repository<Address> = this.connection.getRepository(Address);
+	private _elementRepository: Repository<Element> = this.connection.getRepository(Element);
 
   private _geocodeService: GeocodeService = new GeocodeService;
 	private _orderStatusManger: OrderStatusManager = new OrderStatusManager(this.connection);
@@ -76,16 +77,21 @@ export class OrderRepository extends BaseRepository {
 		  member: member, pickupSlot: pickupSlot, deliverySlot: deliverySlot,
 		  pickupAddress: pickupAddressEntity, deliveryAddress: deliveryAddressEntity
 	  });
-	  order.elements = createOrderRequest.elements.map(element => Element.create(order, element));
+	  let elements = createOrderRequest.elements.map(element => {
+	  	let e = Element.create(order, element);
+	  	e.order = order;
+	  	return e;
+	  });
+	  order.elements = elements;
 
 	  await this._addressRepository.insert(pickupAddressEntity);
+
 	  if (deliveryAddress !== pickupAddress)
 		  await this._addressRepository.insert(deliveryAddressEntity);
 
 	  await this._orderRepository.insert(order);
-
-	  this._orderStatusManger.registerOrderCreation(order)
-		  .then(() => console.warn(`Started Tracking Booking ${order}`));
+	  await this._elementRepository.insert(elements);
+	  await this._orderStatusManger.registerOrderCreation(order);
 
 	  return order;
 

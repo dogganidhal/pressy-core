@@ -34,14 +34,18 @@ export class PersonRepository extends BaseRepository {
     return this._personRepository.findOneOrFail({phone: phone});
   }
   
-  public async getActivationCodePerson(code: string): Promise<Person> {
+  public async activatePerson(code: string): Promise<void> {
     
-    const activationCode = await this._activationCodeRepository.findOne(code, {relations: []});
+    const activationCode = await this._activationCodeRepository.findOne(code, {relations: ["person"]});
 
     if (!activationCode)
       throw new exception.ActivationCodeNotFoundException(code);
 
-    return activationCode.person;
+    let person = activationCode.person;
+
+    person.status = PersonStatus.ACTIVE;
+
+    await this._personRepository.save(person);
 
   }
 
@@ -107,16 +111,6 @@ export class PersonRepository extends BaseRepository {
 		await this._personRepository.save(person);
 
 	}
-
-  public async activatePerson(person: Person, activationCode: ActivationCode): Promise<void> {
-
-    if (activationCode.person.id !== person.id)
-      throw new exception.ActivationCodeNotFoundException(activationCode.code);
-
-    person.status = PersonStatus.ACTIVE;
-    await this._personRepository.save(person);
-
-  }
 
   public async deleteActivationCode(code: string): Promise<void> {
 

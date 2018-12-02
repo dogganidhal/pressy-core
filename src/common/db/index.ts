@@ -2,9 +2,7 @@ import {
 	Connection,
 	createConnection as createTypeORMConnection,
 	getConnection as getTypeORMConnection,
-	getConnectionOptions
 } from "typeorm";
-import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnectionOptions";
 
 
 export namespace Database {
