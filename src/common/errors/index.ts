@@ -158,4 +158,10 @@ export namespace exception {
 		}
 	}
 
+	export class EmptyOrderException extends APIException {
+		constructor() {
+			super('EmptyOrderException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `No elements in this order, please select some`);
+		}
+	}
+
 }

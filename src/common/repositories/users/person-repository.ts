@@ -34,7 +34,7 @@ export class PersonRepository extends BaseRepository {
     return this._personRepository.findOneOrFail({phone: phone});
   }
   
-  public async activatePerson(code: string): Promise<void> {
+  public async activatePerson(code: string): Promise<Person> {
     
     const activationCode = await this._activationCodeRepository.findOne(code, {relations: ["person"]});
 
@@ -45,7 +45,7 @@ export class PersonRepository extends BaseRepository {
 
     person.status = PersonStatus.ACTIVE;
 
-    await this._personRepository.save(person);
+    return await this._personRepository.save(person);
 
   }
 

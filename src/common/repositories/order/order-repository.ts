@@ -41,6 +41,9 @@ export class OrderRepository extends BaseRepository {
   	if (!member.isActive())
   		throw new exception.InactiveMemberException(member);
 
+  	if (createOrderRequest.elements.length === 0)
+  		throw new exception.EmptyOrderException;
+
   	let pickupSlot = await this._slotRepository.findOne(createOrderRequest.pickupSlotId);
 
   	if (!pickupSlot)
@@ -77,11 +80,13 @@ export class OrderRepository extends BaseRepository {
 		  member: member, pickupSlot: pickupSlot, deliverySlot: deliverySlot,
 		  pickupAddress: pickupAddressEntity, deliveryAddress: deliveryAddressEntity
 	  });
+
 	  let elements = createOrderRequest.elements.map(element => {
-	  	let e = Element.create(order, element);
-	  	e.order = order;
-	  	return e;
+		  let e = Element.create(order, element);
+		  e.order = order;
+		  return e;
 	  });
+
 	  order.elements = elements;
 
 	  await this._addressRepository.insert(pickupAddressEntity);

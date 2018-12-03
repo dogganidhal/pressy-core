@@ -10,6 +10,8 @@ import {SlotRepository} from "../../src/common/repositories/slot-repository";
 import {DateUtils} from "../../src/common/utils";
 import {OrderStatus} from "../../src/common/model/entity/order";
 import {exception} from "../../src/common/errors";
+import {Element} from "../../src/common/model/entity/order/element";
+import * as DTO from "../../src/common/model/dto";
 
 
 describe("OrderRepository Operations", () => {
@@ -23,6 +25,7 @@ describe("OrderRepository Operations", () => {
 	let deliverySlot: Slot;
 	let activeMember: Member;
 	let inactiveMember: Member;
+	let elements: Element[];
 
 	async function createResources() {
 		// Create Database connection and repositories
@@ -48,7 +51,7 @@ describe("OrderRepository Operations", () => {
 		});
 
 		let activationCode = await personRepository.createActivationCode(activeMember.person);
-		await personRepository.activatePerson(activeMember.person, activationCode);
+		activeMember.person = await personRepository.activatePerson(activationCode.code);
 
 		// Create Slots
 		pickupSlot = await slotRepository.createSlot({
@@ -67,45 +70,59 @@ describe("OrderRepository Operations", () => {
 		await createResources();
 		done();
 
-	});
+	}, 60000);
 
 	test("Creates Order for an active member", async done => {
 
 		expect.assertions(14);
 
-		let order = await orderRepository.createOrder(activeMember, {
-			pickupSlotId: pickupSlot.id,
-			deliverySlotId: deliverySlot.id,
-			pickupAddress: {
-				googlePlaceId: "ChIJPZVtpz1u5kcRQyeKkuEZ2LQ"
-			},
-			elements: []
-		});
+		try {
+			let order = await orderRepository.createOrder(activeMember, {
+				pickupSlotId: pickupSlot.id,
+				deliverySlotId: deliverySlot.id,
+				pickupAddress: {
+					googlePlaceId: "ChIJPZVtpz1u5kcRQyeKkuEZ2LQ"
+				},
+				elements: [
+					<DTO.order.CreateOrderElementRequest>{
+						type: 1,
+						color: "green"
+					},
+					<DTO.order.CreateOrderElementRequest> {
+						type: 2,
+						color: "gray",
+						comment: "Hello World Comment"
+					}
+				]
+			});
 
-		expect(order.elements.length).toEqual(0);
-		expect(order.status).toEqual(OrderStatus.UNVALIDATED);
+			expect(order.elements.length).toEqual(2);
+			expect(order.status).toEqual(OrderStatus.UNVALIDATED);
 
-		expect(order.driver).toBeUndefined();
-		expect(order.member).toEqual(activeMember);
+			expect(order.driver).toBeUndefined();
+			expect(order.member).toEqual(activeMember);
 
-		expect(order.pickupSlot.type).toEqual(SlotType.GOLD);
-		expect(order.deliverySlot.type).toEqual(SlotType.GOLD);
+			expect(order.pickupSlot.type).toEqual(SlotType.GOLD);
+			expect(order.deliverySlot.type).toEqual(SlotType.GOLD);
 
-		expect(order.pickupAddress).toEqual(order.deliveryAddress);
-		expect(order.pickupAddress.city).toEqual("Paris");
-		expect(order.pickupAddress.country).toEqual("France");
-		expect(order.pickupAddress.formattedAddress).toEqual("142 Rue Montmartre, 75002 Paris, France");
-		expect(order.pickupAddress.streetName).toEqual("Rue Montmartre");
-		expect(order.pickupAddress.streetNumber).toEqual("142");
-		expect(order.pickupAddress.zipCode).toEqual("75002");
+			expect(order.pickupAddress).toEqual(order.deliveryAddress);
+			expect(order.pickupAddress.city).toEqual("Paris");
+			expect(order.pickupAddress.country).toEqual("France");
+			expect(order.pickupAddress.formattedAddress).toEqual("142 Rue Montmartre, 75002 Paris, France");
+			expect(order.pickupAddress.streetName).toEqual("Rue Montmartre");
+			expect(order.pickupAddress.streetNumber).toEqual("142");
+			expect(order.pickupAddress.zipCode).toEqual("75002");
 
-		expect(order.laundryPartner).toBeUndefined();
+			expect(order.laundryPartner).toBeUndefined();
 
-		done();
+			done();
+ 		} catch (error) {
+			done.fail(error);
+		}
 
 	}, 60000);
 
-	test("Throws an error when created with unactive member", async done => {
+	test("Throws an error when created with inactive member", async done => {
 
 		expect.assertions(1);
 
