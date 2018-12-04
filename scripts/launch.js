@@ -9,10 +9,15 @@ if (!app) {
     process.exit(1);
 }
 
+// Staging || Production
 let command = `ts-node src/index.${app}.ts`;
 
+// Local
 if (nodeEnv === "local")
-    command += " && nodemon";
+    command = `nodemon --exec 'ts-node' src/index.${app}.ts`;
+
+console.warn(`Running program : ${command}`);
+
 
 let executable = exec(command, error => {
 

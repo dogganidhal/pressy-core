@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { MobileAPI } from "./mobile-api";
 
 const port = process.env.PORT || 3000;

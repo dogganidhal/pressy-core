@@ -16,8 +16,11 @@
     "driver-api-dev": "NODE_ENV=local node scripts/launch driver-api",
     "driver-api-staging": "NODE_ENV=staging node scripts/launch driver-api",
     "driver-api-prod": "NODE_ENV=production node scripts/launch driver-api",
+    "admin-api-dev": "NODE_ENV=local node scripts/launch admin-api",
+    "admin-api-staging": "NODE_ENV=staging node scripts/launch admin-api",
+    "admin-api-prod": "NODE_ENV=production node scripts/launch admin-api",
     "sync": "node scripts/sync.js",
-    "test": "TEST_ENV=$NODE_ENV jest --detectOpenHandles"
+    "test": "export TEST_ENV=$NODE_ENV && jest --detectOpenHandles"
   },
   "author": "Nidhal DOGGA <dogga.nidhal@gmail.com>",
   "license": "ISC",
