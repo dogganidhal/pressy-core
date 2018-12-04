@@ -39,8 +39,10 @@ export class DriverController extends BaseController {
 	@Path("send-test-mail")
 	@GET
 	public async sendTestMail() {
+		let excelGenerator = new ExcelGenerator;
 		let mailingService = new MailingService;
-		return await mailingService.sendTestMail();
+		let excelPath = await excelGenerator.generateTestExcelFile();
+		return await mailingService.sendTestMail(excelPath);
 	}
 
 	@JSONResponse

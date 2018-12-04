@@ -1,10 +1,13 @@
+import { Stats } from "fs";
+import {exec, execSync} from "child_process";
+
 let ExcelEngine = require("excel4node");
 
 export class ExcelGenerator {
 
-  public async generateTestExcelFile(): Promise<any> {
+  public async generateTestExcelFile(): Promise<string> {
     
-    let promise = new Promise(resolve => {
+    return new Promise<string>(resolve => {
 
       let workBook = new ExcelEngine.Workbook();
       let workSheet = workBook.addWorksheet('Test Sheet');
@@ -44,13 +47,17 @@ export class ExcelGenerator {
         .style(style)
         .style({font: {size: 14}});
       
-      workBook.write(`${new Date().getTime()}-workbook.xlsx`);
+      let workBookPath = `/tmp/workbook-${new Date().getTime()}.xlsx`;
 
-      resolve();
+      workBook.write(workBookPath, (error: Error, stats: Stats) => {
+        
+        if (error)
+          console.error(error);
+
+        resolve(workBookPath);
+      });
 
     });
-
-    return promise;
 
   }
 
