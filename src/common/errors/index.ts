@@ -138,7 +138,13 @@ export namespace exception {
 		constructor(slotId: number) {
 			super('DriverSlotNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No driver slot with id ${slotId} was found`);
 		}
-	}
+  }
+  
+  export class DriverNotFoundException extends APIException {
+		constructor(driverId: number) {
+			super('DriverNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No driver with id ${driverId} was found`);
+		}
+  }
 
   export class InvalidDateException extends APIException {
     constructor(dateString: string) {
@@ -161,6 +167,12 @@ export namespace exception {
 	export class EmptyOrderException extends APIException {
 		constructor() {
 			super('EmptyOrderException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `No elements in this order, please select some`);
+		}
+  }
+  
+  export class OrderNotFoundException extends APIException {
+		constructor(orderId: number) {
+			super('OrderNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No order with id ${orderId} was found`);
 		}
 	}
 
