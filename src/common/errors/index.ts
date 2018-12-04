@@ -1,6 +1,5 @@
 import {Member} from "../model/entity/users/member/member";
 import {http} from "../utils/http";
-import {Person} from "../model/entity/users/person";
 
 export namespace exception {
 

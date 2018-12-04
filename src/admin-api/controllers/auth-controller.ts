@@ -7,7 +7,7 @@ import { Database } from "../../common/db";
 import * as DTO from "../../common/model/dto";
 import { exception } from "../../common/errors";
 import bcrypt from "bcrypt";
-import { crypto } from "../../common/services/crypto";
+import { crypto } from "../../services/crypto";
 
 
 @Path("/v1/auth")

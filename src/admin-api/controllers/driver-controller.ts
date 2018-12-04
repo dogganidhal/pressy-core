@@ -1,13 +1,12 @@
 import {BaseController} from "../../common/controller/base-controller";
-import {Path, POST} from "typescript-rest";
+import {Path, POST, GET} from "typescript-rest";
 import {Authenticate, JSONResponse} from "../../common/annotations";
-import {crypto} from "../../common/services/crypto";
+import {crypto} from "../../services/crypto";
 import {http} from "../../common/utils/http";
 import {person, driver} from "../../common/model/dto";
 import {DriverRepository} from "../../common/repositories/users/driver-repository";
 import {Database} from "../../common/db";
-import { PersonRepository } from "../../common/repositories/users/person-repository";
-
+import { MailingService } from "../../services/mailing-service";
 
 @Path("/v1/driver")
 export class DriverController extends BaseController {
@@ -33,6 +32,14 @@ export class DriverController extends BaseController {
 		let request = http.parseJSONBody(this.getPendingRequest().body, driver.AssignOrderDriverRequest);
 		await this._driverRepository.assignDriverToOrder(request);
 
+	}
+
+	@JSONResponse
+	@Path("send-test-mail")
+	@GET
+	public async sendTestMail() {
+		let mailingService = new MailingService;
+		return await mailingService.sendTestMail();
 	}
 
 }

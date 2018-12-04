@@ -7,6 +7,14 @@
     "staging": "postgres://rsqhwbycjlvzuu:cac9efedcb4ea55297638432ad0b4e5abc3c92e0b6cdd7cefacab7b39ce04c43@ec2-79-125-127-60.eu-west-1.compute.amazonaws.com:5432/d8r87077slmlfm",
     "production": "postgres://mramijqpdzryzj:ae6ca19ac107e447e31404bd8f1f8909371fd6b4e3e616669a29eb5b4901fdd8@ec2-54-246-117-62.eu-west-1.compute.amazonaws.com:5432/d93humrasp2dne"
   },
+  "mailingService": {
+    "host": "in-v3.mailjet.com",
+    "port": 587,
+    "auth": {
+      "user": "cbc97d082e3407f79cb6245252f46bf6",
+      "pass": "9979bfbe913edd27695a977ffaacc0ae"
+    }
+  },
   "services": {
     "local": {
       "mobile-api": "mobile-api-dev",

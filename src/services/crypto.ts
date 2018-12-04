@@ -1,9 +1,9 @@
 import {sign, verify, SignOptions, VerifyOptions, JsonWebTokenError, TokenExpiredError} from "jsonwebtoken";
-import {getConfig} from "../../config";
-import {exception} from "../errors";
-import {Database} from "../db";
-import {Person} from "../model/entity/users/person";
-import {PersonRepository} from "../repositories/users/person-repository";
+import {getConfig} from "../config";
+import {exception} from "../common/errors";
+import {Database} from "../common/db";
+import {Person} from "../common/model/entity/users/person";
+import {PersonRepository} from "../common/repositories/users/person-repository";
 
 
 export namespace crypto {

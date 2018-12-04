@@ -1,8 +1,8 @@
-import {Address} from '../model/entity/common/address';
+import {Address} from '../common/model/entity/common/address';
 import {RestClient} from "typed-rest-client";
-import {getConfig} from '../../config';
-import * as DTO from "../model/dto";
-import {exception} from "../errors";
+import {getConfig} from '../config';
+import * as DTO from "../common/model/dto";
+import {exception} from "../common/errors";
 
 export interface ICoordinates {
   latitude: number;

@@ -1,12 +1,22 @@
 import { Config } from './index';
 import { readFileSync } from 'fs';
 
+interface MailingConfig {
+  host: string;
+  port: number;
+  auth: {
+    user: string;
+    pass: string
+  }
+}
+
 export interface Config {
 
-  logEntriesLoggerAPIKey: string,
-  googleMapsAPIKey: string,
-  authenticationPublicKey: string,
-  authenticationPrivateKey: string
+  logEntriesLoggerAPIKey: string;
+  googleMapsAPIKey: string;
+  authenticationPublicKey: string;
+  authenticationPrivateKey: string;
+  mailingService: MailingConfig;
 
 }
 

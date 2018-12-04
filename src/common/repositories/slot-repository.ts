@@ -1,8 +1,8 @@
 import {Slot, SlotType} from '../model/entity/slot';
-import {Brackets, MoreThan, Raw, Repository} from "typeorm";
+import {Brackets, Repository} from "typeorm";
 import {DateUtils} from '../utils';
 import {BaseRepository} from './base-repository';
-import {driver, slot} from "../model/dto";
+import {slot} from "../model/dto";
 import {DriverRepository} from "./users/driver-repository";
 import {DriverSlot} from "../model/entity/users/driver/driver-slot";
 

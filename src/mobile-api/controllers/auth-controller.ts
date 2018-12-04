@@ -4,11 +4,9 @@ import bcrypt from "bcrypt";
 import {PersonRepository} from "../../common/repositories/users/person-repository";
 import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
-import {crypto} from "../../common/services/crypto";
+import {crypto} from "../../services/crypto";
 import {http} from "../../common/utils/http";
 import * as DTO from "../../common/model/dto";
-import {Driver} from "../../common/model/entity/users/driver/driver";
-import SigningCategory = crypto.SigningCategory;
 import {JSONResponse} from "../../common/annotations";
 
 

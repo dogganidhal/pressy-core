@@ -1,7 +1,6 @@
 import {APIError} from "../errors/api-error";
 import {BaseController} from "../controller/base-controller";
 import {exception} from "../errors/index";
-import {ReferencedResource, Return} from "typescript-rest";
 
 export function JSONResponse<TController extends BaseController>(target: TController, property: string, propertyDescriptor: PropertyDescriptor) {
 

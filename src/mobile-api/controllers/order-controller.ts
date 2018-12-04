@@ -4,7 +4,7 @@ import {SlotRepository} from '../../common/repositories/slot-repository';
 import {Member} from "../../common/model/entity/users/member/member";
 import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
-import {crypto} from "../../common/services/crypto";
+import {crypto} from "../../services/crypto";
 import {MemberRepository} from "../../common/repositories/users/member-repository";
 import {http} from "../../common/utils/http";
 import * as DTO from "../../common/model/dto";

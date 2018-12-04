@@ -6,7 +6,7 @@ import {OrderStatusManager} from "./order-status-manager";
 import * as DTO from "../../model/dto";
 import {Slot} from "../../model/entity/slot";
 import {exception} from "../../errors";
-import {GeocodeService} from "../../services/geocode-service";
+import {GeocodeService} from "../../../services/geocode-service";
 import {Address} from "../../model/entity/common/address";
 import {Driver} from "../../model/entity/users/driver/driver";
 import {Element} from "../../model/entity/order/element";

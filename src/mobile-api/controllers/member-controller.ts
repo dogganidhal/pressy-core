@@ -1,15 +1,14 @@
-import {PersonStatus} from '../../common/model/entity/users/person';
 import {GET, PATCH, Path, PathParam, POST, Return} from "typescript-rest";
 import {PersonRepository} from '../../common/repositories/users/person-repository';
 import {MemberRepository} from '../../common/repositories/users/member-repository';
 import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
-import {crypto} from "../../common/services/crypto";
+import {crypto} from "../../services/crypto";
 import {exception} from "../../common/errors";
 import {http} from "../../common/utils/http";
 import * as DTO from "../../common/model/dto";
 import {Authenticate, JSONResponse} from "../../common/annotations";
-import {GeocodeService} from "../../common/services/geocode-service";
+import {GeocodeService} from "../../services/geocode-service";
 import {Address} from "../../common/model/entity/common/address";
 
 
