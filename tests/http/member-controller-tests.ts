@@ -8,7 +8,7 @@ import {Database} from "../../src/common/db";
 import {person} from "../../src/common/model/dto";
 import uuid = require("uuid");
 import {MobileDevice} from "../../src/common/model/entity/users/device";
-import {crypto} from "../../src/common/services/crypto";
+import {crypto} from "../../src/services/crypto";
 import SigningCategory = crypto.SigningCategory;
 import {http} from "../../src/common/utils/http";
 

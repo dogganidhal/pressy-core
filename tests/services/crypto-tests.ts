@@ -3,7 +3,7 @@ import {MemberRepository} from '../../src/common/repositories/users/member-repos
 import RandomString from "randomstring";
 import {Member} from "../../src/common/model/entity/users/member/member";
 import {Database} from "../../src/common/db";
-import {crypto} from "../../src/common/services/crypto";
+import {crypto} from "../../src/services/crypto";
 import {exception} from "../../src/common/errors";
 
 

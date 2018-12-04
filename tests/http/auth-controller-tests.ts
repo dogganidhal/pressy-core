@@ -5,7 +5,7 @@ import request from "supertest";
 import {APIError} from "../../src/common/errors/api-error";
 import RandomString from "randomstring";
 import {Database} from "../../src/common/db";
-import {crypto} from "../../src/common/services/crypto";
+import {crypto} from "../../src/services/crypto";
 import AuthTokenType = crypto.AuthTokenType;
 import * as DTO from "../../src/common/model/dto";
 import {http} from "../../src/common/utils/http";

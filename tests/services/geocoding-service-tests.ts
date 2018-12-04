@@ -1,4 +1,4 @@
-import { GeocodeService } from "../../src/common/services/geocode-service";
+import { GeocodeService } from "../../src/services/geocode-service";
 import {Connection} from "typeorm";
 import {Database} from "../../src/common/db";
 
