@@ -1,3 +1,4 @@
+import { ExcelGenerator } from './../../services/excel-generator';
 import {BaseController} from "../../common/controller/base-controller";
 import {Path, POST, GET} from "typescript-rest";
 import {Authenticate, JSONResponse} from "../../common/annotations";
@@ -40,6 +41,14 @@ export class DriverController extends BaseController {
 	public async sendTestMail() {
 		let mailingService = new MailingService;
 		return await mailingService.sendTestMail();
+	}
+
+	@JSONResponse
+	@Path("create-test-excel")
+	@GET
+	public async createTestExcel() {
+		let excelGenerator = new ExcelGenerator;
+		await excelGenerator.generateTestExcelFile();
 	}
 
 }
