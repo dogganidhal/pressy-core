@@ -26,6 +26,14 @@ deploy:
   - provider: heroku
     api_key:
       secure: QFpLGVUgDU5WV9qqafdYBBB878QriCTMqJxoIb715YoOElJ/poOGc/4Z09LMWGBiKn35hNKL1I8zWY8BoBj4HXtVFI9QYRKHG9AP4xVb9m51ysSKQNijjUMuYXt8LgpT+F7oYvBiKQ8SxOoh+4IfVI6QlSPyq/Rqdh5rfDaK0ML+cE4Avczp780FnT21lmHmnNF6M8FRaL52yGP1ofvxPxCAF91xC3a6QWvvW/IVzDMmNXupGvK7sIOv2BQ4bmr5N36nn8sy7MV/HGSpi7T8T79HZg32PO+h8VGpdNEuOjN43kO8LPDKmrqHLSncQJfrrwIIoKTqOKNYAt1owxl0B0u/ZzXcLdgPRnQ4bUN/vgPHhagSbkX9te5504b9fIuIUOjX1fOxxacu/VYIVbh8g1fOBykVrN5fuq28iT1h09/qAOWlOmBs2eTdTbJOVMyYG7DZ7ypXm49kXAI6/KrtgLYItUnt4bUJTHZiMsEJfIrlZqUFqowhDb/f7EhZmqntiMRGjK1YH3wv2c3miXNXk6yz7ARw7sFo+Pu/99ZNyBbh1IpoI05sPE/YeqLJhnmQQBb1QbQkatDksyHqh4VOgR4LuTpFFEt46QIgV8J5loE3swXYlLPoneUh2xVFLOVeEeCpDnToj2A+Jpc0BCyrAYdUaAlR8DyO/dk+DN8NSU0=
+    app: pressy-admin-api-dev
+    on:
+      repo: dogganidhal/pressy-core
+      branch: develop
+
+  - provider: heroku
+    api_key:
+      secure: QFpLGVUgDU5WV9qqafdYBBB878QriCTMqJxoIb715YoOElJ/poOGc/4Z09LMWGBiKn35hNKL1I8zWY8BoBj4HXtVFI9QYRKHG9AP4xVb9m51ysSKQNijjUMuYXt8LgpT+F7oYvBiKQ8SxOoh+4IfVI6QlSPyq/Rqdh5rfDaK0ML+cE4Avczp780FnT21lmHmnNF6M8FRaL52yGP1ofvxPxCAF91xC3a6QWvvW/IVzDMmNXupGvK7sIOv2BQ4bmr5N36nn8sy7MV/HGSpi7T8T79HZg32PO+h8VGpdNEuOjN43kO8LPDKmrqHLSncQJfrrwIIoKTqOKNYAt1owxl0B0u/ZzXcLdgPRnQ4bUN/vgPHhagSbkX9te5504b9fIuIUOjX1fOxxacu/VYIVbh8g1fOBykVrN5fuq28iT1h09/qAOWlOmBs2eTdTbJOVMyYG7DZ7ypXm49kXAI6/KrtgLYItUnt4bUJTHZiMsEJfIrlZqUFqowhDb/f7EhZmqntiMRGjK1YH3wv2c3miXNXk6yz7ARw7sFo+Pu/99ZNyBbh1IpoI05sPE/YeqLJhnmQQBb1QbQkatDksyHqh4VOgR4LuTpFFEt46QIgV8J5loE3swXYlLPoneUh2xVFLOVeEeCpDnToj2A+Jpc0BCyrAYdUaAlR8DyO/dk+DN8NSU0=
     app: pressy-mobile-api
     on:
       repo: dogganidhal/pressy-core
