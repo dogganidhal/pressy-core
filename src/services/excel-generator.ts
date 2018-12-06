@@ -1,5 +1,4 @@
 import { Stats } from "fs";
-import {exec, execSync} from "child_process";
 
 let ExcelEngine = require("excel4node");
 

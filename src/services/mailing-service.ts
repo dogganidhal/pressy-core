@@ -1,8 +1,9 @@
-import { Config, getConfig } from './../config/index';
+import { Config, getConfig } from './../config';
 import Mailer from "nodemailer";
 import { readFileSync } from 'fs';
 
-type MailTemplateArgs = {
+export type MailTemplateArgs = {
+  subject?: any,
   text?: any;
   html?: any;
 };
@@ -21,7 +22,7 @@ export enum MailTemplateName {
 export class MailingService {
 
   private _config: Config = getConfig();
-  private static _argumentRegex = /{{[a-zA-Z]+}}/;
+  private static _argumentRegex = /{{[a-zA-Z]+}}/gi;
 
   public async sendMail(options: Mailer.SendMailOptions): Promise<Mailer.SentMessageInfo> {
 
@@ -62,10 +63,13 @@ export class MailingService {
       throw new Error(`Can't find template with name '${templateName}'`);
 
     if (template.text)
-      template.text = this._replaceArguments(template.text, args);
+      template.text = this._replaceArguments(template.text, args.text);
 
     if (template.html)
-      template.html = this._replaceArguments(template.html, args);
+      template.html = this._replaceArguments(template.html, args.html);
+
+    if (template.subject)
+      template.subject = this._replaceArguments(template.subject, args.subject);
 
     return template;
 
@@ -84,9 +88,9 @@ export class MailingService {
       for (let templateArg of templateArgs) {
 
         let argumentKey = templateArg.substring(2, templateArg.length - 2);
-        let argumentValue = args.text[argumentKey];
+        let argumentValue = args[argumentKey];
 
-        resultString = templateString.replace(templateArg, argumentValue);
+        resultString = resultString.replace(templateArg, argumentValue);
 
       }
     }

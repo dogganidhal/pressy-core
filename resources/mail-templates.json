@@ -5,6 +5,7 @@
     "html": "<b>This is a test {{message}}</b>"
   },
   "onOrderCreate": {
-    
+    "subject": "La commande {{orderId}} vient d'être passé",
+    "text": "Le membre {{memberName}} a passé la commande {{orderId}}. Détails dans le fichier excel attaché."
   }
 }

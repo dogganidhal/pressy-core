@@ -10,6 +10,7 @@ import {http} from "../../common/utils/http";
 import * as DTO from "../../common/model/dto";
 import {Order} from "../../common/model/entity/order";
 import {Authenticate, JSONResponse} from "../../common/annotations";
+import { OrderMailSender } from "../../common/mail-senders/order-mail-sender";
 
 
 @Path('/v1/order/')
@@ -27,7 +28,10 @@ export class OrderController extends BaseController {
 	  const dto = http.parseJSONBody(this.getPendingRequest().body, DTO.order.CreateOrderRequest);
 	  const member: Member = await this._memberRepository.getMemberFromPersonOrFail(this.pendingPerson);
 
-	  await this._orderRepository.createOrder(member, dto);
+		let order = await this._orderRepository.createOrder(member, dto);
+		let orderMailSender = new OrderMailSender;
+
+		orderMailSender.sendOrderInformationMailToAdmins(order);
 
 	  return new Return.RequestAccepted("/v1/order");
 

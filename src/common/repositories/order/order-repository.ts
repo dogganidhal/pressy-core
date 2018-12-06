@@ -96,7 +96,7 @@ export class OrderRepository extends BaseRepository {
 
 	  await this._orderRepository.insert(order);
 	  await this._elementRepository.insert(elements);
-	  await this._orderStatusManger.registerOrderCreation(order);
+	  this._orderStatusManger.registerOrderCreation(order);
 
 	  return order;
 

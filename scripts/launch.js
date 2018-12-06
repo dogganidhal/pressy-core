@@ -28,8 +28,5 @@ let executable = exec(command, error => {
 
 });
 
-executable.stdout.on("data", data => {
-
-    console.log(data);
-
-});
+executable.stdout.on("data", data => console.log(data));
+executable.stdout.on("Error", error => console.warn(error));
