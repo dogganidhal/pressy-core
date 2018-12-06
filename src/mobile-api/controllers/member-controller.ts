@@ -54,6 +54,8 @@ export class MemberController extends BaseController {
 
 		memberMailSender.sendActivationCode(member, personActivationCode.code);
 
+		return new Return.NewResource(`/v1/member`);
+
   }
 
   @Path("/activate/:code/")
