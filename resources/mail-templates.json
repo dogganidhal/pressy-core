@@ -1,0 +1,10 @@
+{
+  "test": {
+    "subject": "Test Mail",
+    "text": "This is a test {{message}}",
+    "html": "<b>This is a test {{message}}</b>"
+  },
+  "onOrderCreate": {
+    
+  }
+}

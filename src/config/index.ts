@@ -10,13 +10,19 @@ interface MailingConfig {
   }
 }
 
+interface MailingOptions {
+  defaultSender: string;
+  senders: string[];
+}
+
 export interface Config {
 
   logEntriesLoggerAPIKey: string;
   googleMapsAPIKey: string;
   authenticationPublicKey: string;
   authenticationPrivateKey: string;
-  mailingService: MailingConfig;
+  mailingServiceConfig: MailingConfig;
+  mailingServiceOptions: MailingOptions;
 
 }
 

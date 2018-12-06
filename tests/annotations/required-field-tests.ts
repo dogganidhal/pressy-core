@@ -31,7 +31,6 @@ describe("@Required annotation tests", () => {
 		});
 
 		let testObject = http.parseJSONBody(body, TestClass);
-		console.log(testObject);
 
 		expect(testObject.requiredTestProperty).toEqual("Hello World");
 		expect(testObject.optionalTestProperty).toEqual(0);
@@ -46,10 +45,8 @@ describe("@Required annotation tests", () => {
 
 		try {
 			let testObject = http.parseJSONBody(body, TestClass);
-			console.log(testObject);
 			fail();
 		} catch (error) {
-			console.log(error);
 			expect(error instanceof exception.MissingFieldsException).toBeTruthy();
 		}
 
@@ -66,10 +63,8 @@ describe("@Required annotation tests", () => {
 
     try {
       let testObject = http.parseJSONBody(body, TestNestedClass);
-      console.log(testObject);
       fail();
     } catch (error) {
-      console.log(error);
       expect(error instanceof exception.MissingFieldsException).toBeTruthy();
     }
 
