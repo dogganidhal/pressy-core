@@ -10,6 +10,7 @@ import * as DTO from "../../common/model/dto";
 import {Authenticate, JSONResponse} from "../../common/annotations";
 import {GeocodeService} from "../../services/geocode-service";
 import {Address} from "../../common/model/entity/common/address";
+import { MemberMailSender } from "../../common/mail-senders/member-mail-sender";
 
 
 @Path('/v1/member/')
@@ -46,11 +47,12 @@ export class MemberController extends BaseController {
   @POST
   public async createMember() {
 
-	  const newMember = http.parseJSONBody(this.getPendingRequest().body, DTO.person.CreatePersonRequest);
-	  const member = await this._memberRepository.createMember(newMember);
-	  const personActivationCode = await this._personRepository.createActivationCode(member.person);
-	  // TODO: Send the activation URL by email !!
-	  return new Return.NewResource("/v1/member/info");
+	  let newMember = http.parseJSONBody(this.getPendingRequest().body, DTO.person.CreatePersonRequest);
+	  let member = await this._memberRepository.createMember(newMember);
+	  let personActivationCode = await this._personRepository.createActivationCode(member.person);
+		let memberMailSender = new MemberMailSender;
+
+		memberMailSender.sendActivationCode(member, personActivationCode.code);
 
   }
 

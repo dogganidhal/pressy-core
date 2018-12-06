@@ -16,6 +16,7 @@ export interface MailTemplate {
 
 export enum MailTemplateName {
   ON_ORDER_CREATE = "onOrderCreate",
+  SEND_ACTIVATION_CODE = "sendActivationCode",
   TEST = "test"
 }
 
