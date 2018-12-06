@@ -22,15 +22,18 @@
   "services": {
     "local": {
       "mobile-api": "mobile-api-dev",
-      "driver-api": "driver-api-dev"
+      "driver-api": "driver-api-dev",
+      "admin-api": "driver-api-dev"
     },
     "staging": {
       "mobile-api": "mobile-api-staging",
-      "driver-api": "driver-api-staging"
+      "driver-api": "driver-api-staging",
+      "admin-api": "driver-api-staging"
     },
     "production": {
       "mobile-api": "mobile-api-prod",
-      "driver-api": "driver-api-prod"
+      "driver-api": "driver-api-prod",
+      "admin-api": "driver-api-prod"
     }
   }
 }
