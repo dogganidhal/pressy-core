@@ -1,10 +1,11 @@
-import express, { Application } from "express";
+import express, { Application, Request, Response, NextFunction } from "express";
 import { Server } from "typescript-rest";
 import * as bodyParser from "body-parser";
 import {Database} from "../common/db";
 import {DriverController} from "./controllers/driver-controller";
 import {exception} from "../common/errors";
 import {http} from "../common/utils/http";
+import { MethodNotAllowedError } from "typescript-rest/dist/server-errors";
 
 export class DriverAPI {
 
@@ -24,6 +25,13 @@ export class DriverAPI {
 		this._express.all("*", (request, response) => {
 			response.setHeader("Content-Type", "application/json");
 			response.status(http.HttpStatus.HTTP_STATUS_NOT_FOUND).send(JSON.stringify(new exception.RouteNotFoundException));
+		});
+		this._express.use((error: any, request: Request, response: Response, next: NextFunction) => {
+			if (error instanceof MethodNotAllowedError) {
+				response.setHeader("Content-Type", "application/json");
+				response.status(http.HttpStatus.HTTP_STATUS_METHOD_NOT_ALLOWED)
+					.send(JSON.stringify(new exception.MethodNotAllowedException(request.method)));
+			}
 		});
 	}
 

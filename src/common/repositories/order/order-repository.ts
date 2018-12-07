@@ -18,6 +18,7 @@ export class OrderRepository extends BaseRepository {
   private _slotRepository: Repository<Slot> = this.connection.getRepository(Slot);
 	private _addressRepository: Repository<Address> = this.connection.getRepository(Address);
 	private _elementRepository: Repository<Element> = this.connection.getRepository(Element);
+	private _driverRepository: Repository<Driver> = this.connection.getRepository(Driver);
 
   private _geocodeService: GeocodeService = new GeocodeService;
 	private _orderStatusManger: OrderStatusManager = new OrderStatusManager(this.connection);
@@ -102,14 +103,28 @@ export class OrderRepository extends BaseRepository {
 
   }
 
-  public async assignDriverToOrder(order: Order, driver: Driver): Promise<void> {
+	public async assignDriverToOrder(request: DTO.order.AssignOrderDriverRequest): Promise<void> {
 
-  	order.driver = driver;
-  	await this._orderRepository.save(order);
-  	// noinspection JSIgnoredPromiseFromCall
-	  this._orderStatusManger.assignDriverToOrder(order, driver);
+		let {driverId, orderId} = request;
 
-  }
-  
+		let driver: Driver | undefined;
+		let order: Order | undefined;
+		
+		await Promise.all([
+			driver = await this._driverRepository.findOne(driverId),
+			order = await this._orderRepository.findOne(orderId)
+		]);
+
+		if (!driver)
+			throw new exception.DriverNotFoundException(driverId);
+
+		if (!order)
+			throw new exception.OrderNotFoundException(orderId);
+
+		order.driver = driver;
+
+		await this._orderRepository.save(order);
+
+	}
 
 }

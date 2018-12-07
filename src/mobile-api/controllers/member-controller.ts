@@ -62,7 +62,9 @@ export class MemberController extends BaseController {
   @GET
   public async activateMember(@PathParam("code") code: string) {
 
-	  await this._personRepository.activatePerson(code);
+		await this._personRepository.activatePerson(code);
+		
+		return new Return.RequestAccepted("/v1/member");
 
   }
 
@@ -101,14 +103,16 @@ export class MemberController extends BaseController {
 
   }
 
+	@JSONResponse
   @Authenticate(crypto.SigningCategory.MEMBER)
   @PATCH
-  @Path("/info")
   public async updateMemberInfo() {
 
   	let person = this.pendingPerson;
   	let updateRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.person.UpdatePersonInfoRequest);
-  	await this._personRepository.updatePersonInfo(person, updateRequest);
+		await this._personRepository.updatePersonInfo(person, updateRequest);
+		
+		return new Return.RequestAccepted("/v1/member");
 
   }
 
@@ -143,7 +147,7 @@ export class MemberController extends BaseController {
 
 		await this._memberRepository.setMemberAddresses(member, addressEntities);
 
-		return new Return.NewResource("/v1/member/info");
+		return new Return.NewResource("/v1/member");
 
   }
 

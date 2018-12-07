@@ -57,8 +57,6 @@ export class SlotRepository extends BaseRepository {
       slots = await queryBuilder.getMany()
     ]);
 
-    console.log(driverSlots);
-
     return SlotRepository._computeAvailableSlots(driverSlots, slots);
 
   }

@@ -24,6 +24,7 @@ export class MailingService {
 
   private _config: Config = getConfig();
   private static _argumentRegex = /{{[a-zA-Z]+}}/gi;
+  private static _templatesFilePath = "./resources/mail-templates.json";
 
   public async sendMail(options: Mailer.SendMailOptions): Promise<Mailer.SentMessageInfo> {
 
@@ -56,7 +57,7 @@ export class MailingService {
 
   public getMailTemplate(templateName: MailTemplateName, args: MailTemplateArgs = {}): MailTemplate {
     
-    let templatesString = readFileSync("./resources/mail-templates.json").toString();
+    let templatesString = readFileSync(MailingService._templatesFilePath).toString();
     let templates = JSON.parse(templatesString);
     let template: MailTemplate = templates[templateName];
 

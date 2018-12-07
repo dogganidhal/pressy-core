@@ -6,6 +6,10 @@ import {exception} from "../common/errors";
 import { Server } from "typescript-rest";
 import { DriverController } from "./controllers/driver-controller";
 import { AuthController } from "./controllers/auth-controller";
+import { OrderController } from "./controllers/order-controller";
+import { Request, Response } from "express";
+import { NextFunction } from "connect";
+import { MethodNotAllowedError } from "typescript-rest/dist/server-errors";
 
 
 export class AdminAPI {
@@ -24,9 +28,17 @@ export class AdminAPI {
 		await Database.createConnection();
 		this.registerController(DriverController);
 		this.registerController(AuthController);
+		this.registerController(OrderController);
 		this._express.all("*", (request, response) => {
 			response.setHeader("Content-Type", "application/json");
 			response.status(http.HttpStatus.HTTP_STATUS_NOT_FOUND).send(JSON.stringify(new exception.RouteNotFoundException));
+		});
+		this._express.use((error: any, request: Request, response: Response, next: NextFunction) => {
+			if (error instanceof MethodNotAllowedError) {
+				response.setHeader("Content-Type", "application/json");
+				response.status(http.HttpStatus.HTTP_STATUS_METHOD_NOT_ALLOWED)
+					.send(JSON.stringify(new exception.MethodNotAllowedException(request.method)));
+			}
 		});
 	}
 

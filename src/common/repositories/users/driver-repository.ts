@@ -1,4 +1,3 @@
-import { Order } from './../../model/entity/order';
 import {MobileDevice} from '../../model/entity/users/device';
 import { Repository} from "typeorm";
 import {exception} from "../../errors";
@@ -17,7 +16,6 @@ export class DriverRepository extends BaseRepository {
 	private _personRepository: Repository<Person> = this.connection.getRepository(Person);
 	private _personActivationCodeRepository: Repository<ActivationCode> = this.connection.getRepository(ActivationCode);
 	private _driverSlotRepository: Repository<DriverSlot> = this.connection.getRepository(DriverSlot);
-	private _orderRepository: Repository<Order> = this.connection.getRepository(Order);
 
 	public async getAllDrivers(): Promise<Driver[]> {
 		return (await this._driverRepository).find();
@@ -155,30 +153,6 @@ export class DriverRepository extends BaseRepository {
 		await this._driverRepository.save(driver);
 
 		return driver;
-
-	}
-
-	public async assignDriverToOrder(request: DTO.driver.AssignOrderDriverRequest): Promise<void> {
-
-		let {driverId, orderId} = request;
-
-		let driver: Driver | undefined;
-		let order: Order | undefined;
-		
-		await Promise.all([
-			driver = await this._driverRepository.findOne(driverId),
-			order = await this._orderRepository.findOne(orderId)
-		]);
-
-		if (!driver)
-			throw new exception.DriverNotFoundException(driverId);
-
-		if (!order)
-			throw new exception.OrderNotFoundException(orderId);
-
-		order.driver = driver;
-
-		await this._orderRepository.save(order);
 
 	}
 

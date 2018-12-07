@@ -119,6 +119,12 @@ export namespace exception {
 		constructor() {
 			super('RouteNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Route not found`);
 		}
+  }
+  
+  export class MethodNotAllowedException extends APIException {
+		constructor(method: string) {
+			super('MethodNotAllowedException', http.HttpStatus.HTTP_STATUS_METHOD_NOT_ALLOWED, `Method '${method}' not allowed`);
+		}
 	}
 
   export class SlotNotFoundException extends APIException {

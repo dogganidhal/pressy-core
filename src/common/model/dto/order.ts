@@ -91,4 +91,28 @@ export module order {
 
 	}
 
+	export interface IAssignOrderDriverRequest {
+		driverId: number;
+		orderId: number;
+	}
+
+	export class AssignOrderDriverRequest {
+
+		@Required()
+		public driverId: number;
+
+		@Required()
+		public orderId: number;
+
+		public static create(request: IAssignOrderDriverRequest): AssignOrderDriverRequest {
+			let createDriverAvailabilityRequest = new AssignOrderDriverRequest;
+			
+			createDriverAvailabilityRequest.driverId = request.driverId;
+			createDriverAvailabilityRequest.orderId = request.orderId;
+			
+			return createDriverAvailabilityRequest;
+		}
+
+	}
+
 }

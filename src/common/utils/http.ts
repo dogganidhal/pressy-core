@@ -10,7 +10,8 @@ export namespace http {
 		HTTP_STATUS_BAD_REQUEST = constants.HTTP_STATUS_BAD_REQUEST,
 		HTTP_STATUS_UNAUTHORIZED = constants.HTTP_STATUS_UNAUTHORIZED,
 		HTTP_STATUS_FORBIDDEN = constants.HTTP_STATUS_FORBIDDEN,
-		HTTP_STATUS_NOT_FOUND = constants.HTTP_STATUS_NOT_FOUND
+		HTTP_STATUS_NOT_FOUND = constants.HTTP_STATUS_NOT_FOUND,
+		HTTP_STATUS_METHOD_NOT_ALLOWED = constants.HTTP_STATUS_METHOD_NOT_ALLOWED
 	}
 
 	function getMissingRequiredFields(obj: any, classRef: {new(): any}, fieldNamePrefix = "") {
