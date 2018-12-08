@@ -6,6 +6,8 @@ import {exception} from "../common/errors";
 import { Server } from "typescript-rest";
 import { Request, Response } from "express";
 import { MethodNotAllowedError } from "typescript-rest/dist/server-errors";
+import open = require("open");
+import { getConfig } from "../config";
 
 
 export class AdminAPI {
@@ -25,7 +27,7 @@ export class AdminAPI {
 		await Database.createConnection();
 
 		Server.loadServices(this._apiRouter, "./src/admin-api/controllers/*");
-		Server.swagger(this._express, "./dist/docs/admin-api/swagger.json", "/v1/docs", undefined, ['http']);
+		Server.swagger(this._express, "./dist/docs/admin-api/swagger.json", "/v1/docs", undefined, ['http', 'https']);
 
 		this._express.use('/v1', this._apiRouter);
 
@@ -42,6 +44,9 @@ export class AdminAPI {
 			}
 			next();
 		});
+
+		if (process.env.NODE_ENV === "local")
+      open(`http://localhost:${getConfig().runtime.port["mobile-api"]}/v1/docs`);
 
 	}
 

@@ -1,6 +1,6 @@
 import {Required} from "../../annotations";
 
-export module driver {
+export namespace driver {
 
 	export interface IAssignDriverSlotsRequest {
 		driverSlotId: number;

@@ -2,7 +2,7 @@ import {person} from "./person";
 import {address} from "./address";
 
 
-export module member {
+export namespace member {
 
 	export interface IMemberInfo extends person.IPersonInfo {
 		addresses: address.IAddress[]
@@ -12,9 +12,11 @@ export module member {
 
 		public addresses: address.Address[];
 
-		constructor(memberInfo: IMemberInfo) {
+		constructor(memberInfo?: IMemberInfo) {
 			super(memberInfo);
-			this.addresses = memberInfo.addresses.map(a => new address.Address(a));
+			if (memberInfo) {
+				this.addresses = memberInfo.addresses.map(a => new address.Address(a));
+			}
 		}
 
 	}

@@ -1,7 +1,7 @@
 import { SlotType } from '../entity/slot';
 import {Required} from "../../annotations";
 
-export module slot {
+export namespace slot {
 
 	export interface ISlot {
 		id: number;

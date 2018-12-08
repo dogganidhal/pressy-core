@@ -1,6 +1,6 @@
 import {Required} from "../../annotations";
 
-export module person {
+export namespace person {
 
 	export interface IPersonInfo {
 		id: number,
@@ -20,13 +20,15 @@ export module person {
 		public phone: string;
 		public created: Date;
 
-		constructor(memberInfo: IPersonInfo) {
-			this.id = memberInfo.id;
-			this.firstName = memberInfo.firstName;
-			this.lastName = memberInfo.lastName;
-			this.email = memberInfo.email;
-			this.phone = memberInfo.phone;
-			this.created = memberInfo.created;
+		constructor(personInfo?: IPersonInfo) {
+			if (personInfo) {
+				this.id = personInfo.id;
+				this.firstName = personInfo.firstName;
+				this.lastName = personInfo.lastName;
+				this.email = personInfo.email;
+				this.phone = personInfo.phone;
+				this.created = personInfo.created;
+			}
 		}
 
 	}

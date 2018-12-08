@@ -4,7 +4,7 @@ import {address} from "./address";
 import {person} from "./person";
 import {ElementType} from "../entity/order/element";
 
-export module order {
+export namespace order {
 
 	export interface IOrderElement {
 		orderId: number;

@@ -179,6 +179,6 @@ export namespace exception {
 		constructor(orderId: number) {
 			super('OrderNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No order with id ${orderId} was found`);
 		}
-	}
+  }
 
 }

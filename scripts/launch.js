@@ -14,7 +14,7 @@ let command = `ts-node src/index.${app}.ts`;
 
 // Local
 if (nodeEnv === "local")
-    command = `nodemon --exec 'ts-node' src/index.${app}.ts`;
+    command = `nodemon --exec 'ts-node' src/index.${app}.ts --watch src/${app} --watch src/index.${app}.ts`;
 
 console.warn(`Running program : ${command}`);
 
@@ -29,4 +29,6 @@ let executable = exec(command, error => {
 });
 
 executable.stdout.on("data", data => console.log(data));
-executable.stdout.on("Error", error => console.warn(error));
+
+executable.stderr.on("error", error => console.error(error));
+executable.stderr.on("data", data => console.error(data));

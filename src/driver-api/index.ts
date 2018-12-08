@@ -5,6 +5,8 @@ import {Database} from "../common/db";
 import {exception} from "../common/errors";
 import {http} from "../common/utils/http";
 import { MethodNotAllowedError } from "typescript-rest/dist/server-errors";
+import open = require("open");
+import { getConfig } from "../config";
 
 export class DriverAPI {
 
@@ -23,7 +25,7 @@ export class DriverAPI {
 		await Database.createConnection();
 		
 		Server.loadServices(this._apiRouter, "src/driver-api/controllers/*");
-    Server.swagger(this._express, "./dist/docs/driver-api/swagger.json", "/v1/docs", undefined, ['http']);
+    Server.swagger(this._express, "./dist/docs/driver-api/swagger.json", "/v1/docs", undefined, ['http', 'https']);
 
 		this._express.use('/v1', this._apiRouter);
 
@@ -39,6 +41,8 @@ export class DriverAPI {
 					.send(JSON.stringify(new exception.MethodNotAllowedException(request.method)));
 			}
 		});
+		if (process.env.NODE_ENV === "local")
+      open(`http://localhost:${getConfig().runtime.port["mobile-api"]}/v1/docs`);
 	}
 
 	private _middleware() {

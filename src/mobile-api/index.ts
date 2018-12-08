@@ -5,14 +5,15 @@ import {Database} from "../common/db";
 import {http} from "../common/utils/http";
 import {exception} from "../common/errors";
 import { MethodNotAllowedError } from "typescript-rest/dist/server-errors";
+import open = require("open");
+import { getConfig } from "../config";
 
 export class MobileAPI {
 
-  private readonly _express: Application;
+  private readonly _express: Application = express();
   private _apiRouter: Router = Router();
 
 	constructor() {
-    this._express = express();
     this._middleware();
     this._config()
 	    .then(_ => console.info("Finished loading configuration"))
@@ -23,7 +24,7 @@ export class MobileAPI {
 		await Database.createConnection();
     
     Server.loadServices(this._apiRouter, "src/mobile-api/controllers/*");
-    Server.swagger(this._express, "./dist/docs/mobile-api/swagger.json", "/v1/docs", undefined, ['http']);
+    Server.swagger(this._express, "./dist/docs/mobile-api/swagger.json", "/v1/docs", undefined, ['http', 'https']);
 
 		this._express.use('/v1', this._apiRouter);
 
@@ -37,7 +38,10 @@ export class MobileAPI {
 				response.status(http.HttpStatus.HTTP_STATUS_METHOD_NOT_ALLOWED)
 					.send(JSON.stringify(new exception.MethodNotAllowedException(request.method)));
 			}
-		});
+    });
+
+    if (process.env.NODE_ENV === "local")
+      open(`http://localhost:${getConfig().runtime.port["mobile-api"]}/v1/docs`);
   }
 
 	private _middleware() {

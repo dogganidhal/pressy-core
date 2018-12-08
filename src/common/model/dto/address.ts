@@ -1,6 +1,6 @@
 import {Required} from "../../annotations";
 
-export module address {
+export namespace address {
 
 	export class DeleteAddressRequest {
 

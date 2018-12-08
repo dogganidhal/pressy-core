@@ -16,7 +16,8 @@ export function Authenticate<TController extends BaseController>(category: crypt
 			if (!authorization)
 				throw new exception.UnauthenticatedRequestException;
 
-			const token = authorization!.split(" ")[1];
+			let authCredentials = authorization.split(" ");
+			let token = authCredentials.length == 2 ? authCredentials[1] : authCredentials[0];
 
 			if (!token)
 				throw new exception.InvalidAccessTokenException;

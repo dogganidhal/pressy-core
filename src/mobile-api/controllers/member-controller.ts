@@ -1,4 +1,4 @@
-import {GET, PATCH, Path, PathParam, POST, Return} from "typescript-rest";
+import {GET, PATCH, Path, PathParam, POST, Return, Accept} from "typescript-rest";
 import {PersonRepository} from '../../common/repositories/users/person-repository';
 import {MemberRepository} from '../../common/repositories/users/member-repository';
 import {BaseController} from "../../common/controller/base-controller";
@@ -11,8 +11,11 @@ import {Authenticate, JSONResponse} from "../../common/annotations";
 import {GeocodeService} from "../../services/geocode-service";
 import {Address} from "../../common/model/entity/common/address";
 import { MemberMailSender } from "../../common/mail-senders/member-mail-sender";
+import { InternalServerError } from "typescript-rest/dist/server-errors";
+import { Security, Produces, Tags } from "typescript-rest-swagger";
 
-
+@Tags("Member")
+@Accept("application/json")
 @Path('/member/')
 export class MemberController extends BaseController {
 
@@ -20,26 +23,30 @@ export class MemberController extends BaseController {
   private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
   private _geocodeService: GeocodeService = new GeocodeService();
 
+	@Security("Bearer")
+	@Produces("application/json")
 	@JSONResponse
   @Authenticate(crypto.SigningCategory.MEMBER)
   @GET
-  public async getMemberInfo() {
+	public async getMemberInfo() {
 
-  	let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
+		let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
+		
+		if (!member)
+			throw new InternalServerError;
 
-    if (member)
-      return new DTO.member.MemberInfo({
-	      id: member.id,
-	      firstName: member.person.firstName,
-	      lastName: member.person.lastName,
-	      created: member.person.created,
-	      email: member.person.email,
-	      phone: member.person.phone,
-	      addresses: member.addresses.map(a => new DTO.address.Address({
-		      streetName: a.streetName, streetNumber: a.streetNumber,
-		      zipCode: a.zipCode, city: a.city, country: a.country, formattedAddress: a.formattedAddress
-	      }))
-      });
+		return new DTO.member.MemberInfo({
+			id: member.id,
+			firstName: member.person.firstName,
+			lastName: member.person.lastName,
+			created: member.person.created,
+			email: member.person.email,
+			phone: member.person.phone,
+			addresses: member.addresses.map(a => new DTO.address.Address({
+				streetName: a.streetName, streetNumber: a.streetNumber,
+				zipCode: a.zipCode, city: a.city, country: a.country, formattedAddress: a.formattedAddress
+			}))
+		});
 
   }
 
