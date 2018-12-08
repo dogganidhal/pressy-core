@@ -23,7 +23,7 @@ export class DriverAPI {
 		await Database.createConnection();
 		
 		Server.loadServices(this._apiRouter, "src/driver-api/controllers/*");
-    Server.swagger(this._express, "./dist/docs/driver-api/swagger.yaml", "/v1/docs", undefined, ['http']);
+    Server.swagger(this._express, "./dist/docs/driver-api/swagger.json", "/v1/docs", undefined, ['http']);
 
 		this._express.use('/v1', this._apiRouter);
 
