@@ -10,7 +10,7 @@ import * as DTO from "../../common/model/dto";
 import {JSONResponse} from "../../common/annotations";
 
 
-@Path('/v1/auth/')
+@Path('/auth/')
 export class AuthController extends BaseController {
 
   private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());

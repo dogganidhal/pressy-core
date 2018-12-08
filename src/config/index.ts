@@ -15,6 +15,26 @@ interface MailingOptions {
   senders: string[];
 }
 
+interface ServiceHost {
+  [key: string]: string;
+  local: string;
+  production: string;
+  staging: string;
+}
+
+interface RuntimeConfig {
+  port: {
+    "mobile-api": number;
+    "driver-api": number;
+    "admin-api": number;
+  },
+  hosts: {
+    "mobile-api": ServiceHost;
+    "driver-api": ServiceHost;
+    "admin-api": ServiceHost;
+  }
+}
+
 export interface Config {
 
   logEntriesLoggerAPIKey: string;
@@ -23,6 +43,7 @@ export interface Config {
   authenticationPrivateKey: string;
   mailingServiceConfig: MailingConfig;
   mailingServiceOptions: MailingOptions;
+  runtime: RuntimeConfig
 
 }
 

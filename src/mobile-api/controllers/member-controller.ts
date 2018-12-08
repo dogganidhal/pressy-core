@@ -13,7 +13,7 @@ import {Address} from "../../common/model/entity/common/address";
 import { MemberMailSender } from "../../common/mail-senders/member-mail-sender";
 
 
-@Path('/v1/member/')
+@Path('/member/')
 export class MemberController extends BaseController {
 
   private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());

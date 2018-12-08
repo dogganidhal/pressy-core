@@ -1,9 +1,6 @@
-import express, { Application, Request, Response, NextFunction } from "express";
+import express, { Application, Request, Response, NextFunction, Router } from "express";
 import { Server } from "typescript-rest";
 import * as bodyParser from "body-parser";
-import { OrderController } from "./controllers/order-controller";
-import { MemberController } from "./controllers/member-controller";
-import { AuthController } from "./controllers/auth-controller";
 import {Database} from "../common/db";
 import {http} from "../common/utils/http";
 import {exception} from "../common/errors";
@@ -11,7 +8,8 @@ import { MethodNotAllowedError } from "typescript-rest/dist/server-errors";
 
 export class MobileAPI {
 
-	private readonly _express: Application;
+  private readonly _express: Application;
+  private _apiRouter: Router = Router();
 
 	constructor() {
     this._express = express();
@@ -23,9 +21,12 @@ export class MobileAPI {
 
 	private async _config() {
 		await Database.createConnection();
-    this.registerController(MemberController);
-    this.registerController(AuthController);
-    this.registerController(OrderController);
+    
+    Server.loadServices(this._apiRouter, "src/mobile-api/controllers/*");
+    Server.swagger(this._express, "./dist/docs/mobile-api/swagger.yaml", "/v1/docs", undefined, ['http']);
+
+		this._express.use('/v1', this._apiRouter);
+
 		this._express.all("*", (request, response) => {
 			response.setHeader("Content-Type", "application/json");
 			response.status(http.HttpStatus.HTTP_STATUS_NOT_FOUND).send(JSON.stringify(new exception.RouteNotFoundException));
@@ -42,10 +43,6 @@ export class MobileAPI {
 	private _middleware() {
     this._express.use(bodyParser.text({type: 'application/json'}));
     this._express.use(bodyParser.text());
-  }
-
-	public registerController(controller: any) {
-    Server.buildServices(this._express, controller);
   }
 
 	public run(port: number | string) {

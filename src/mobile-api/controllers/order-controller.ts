@@ -13,7 +13,7 @@ import {Authenticate, JSONResponse} from "../../common/annotations";
 import { OrderMailSender } from "../../common/mail-senders/order-mail-sender";
 
 
-@Path('/v1/order/')
+@Path('/order/')
 export class OrderController extends BaseController {
 
 	private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());

@@ -1,0 +1,19 @@
+{
+  "swagger": {
+    "outputDirectory": "./dist/docs/{{serviceName}}",
+    "entryFile": "./src/{{serviceName}}/controllers/index.ts",
+    "host": "{{host}}",
+    "version": "0.0.1",
+    "name": "{{appName}}",
+    "description": "",
+    "license": "MIT",
+    "basePath": "/v1",
+    "securityDefinitions": {
+      "Bearer": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}

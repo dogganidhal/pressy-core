@@ -1,8 +1,7 @@
-import express, { Application, Request, Response, NextFunction } from "express";
+import express, { Application, Request, Response, NextFunction, Router } from "express";
 import { Server } from "typescript-rest";
 import * as bodyParser from "body-parser";
 import {Database} from "../common/db";
-import {DriverController} from "./controllers/driver-controller";
 import {exception} from "../common/errors";
 import {http} from "../common/utils/http";
 import { MethodNotAllowedError } from "typescript-rest/dist/server-errors";
@@ -10,6 +9,7 @@ import { MethodNotAllowedError } from "typescript-rest/dist/server-errors";
 export class DriverAPI {
 
 	private readonly _express: Application;
+	private _apiRouter: Router = Router();
 
 	constructor() {
 		this._express = express();
@@ -21,11 +21,17 @@ export class DriverAPI {
 
 	private async _config() {
 		await Database.createConnection();
-		this.registerController(DriverController);
+		
+		Server.loadServices(this._apiRouter, "src/driver-api/controllers/*");
+    Server.swagger(this._express, "./dist/docs/driver-api/swagger.yaml", "/v1/docs", undefined, ['http']);
+
+		this._express.use('/v1', this._apiRouter);
+
 		this._express.all("*", (request, response) => {
 			response.setHeader("Content-Type", "application/json");
 			response.status(http.HttpStatus.HTTP_STATUS_NOT_FOUND).send(JSON.stringify(new exception.RouteNotFoundException));
 		});
+
 		this._express.use((error: any, request: Request, response: Response, next: NextFunction) => {
 			if (error instanceof MethodNotAllowedError) {
 				response.setHeader("Content-Type", "application/json");
@@ -38,10 +44,6 @@ export class DriverAPI {
 	private _middleware() {
 		this._express.use(bodyParser.text({type: 'application/json'}));
 		this._express.use(bodyParser.text());
-	}
-
-	public registerController(controller: any) {
-		Server.buildServices(this._express, controller);
 	}
 
 	public run(port: number | string) {

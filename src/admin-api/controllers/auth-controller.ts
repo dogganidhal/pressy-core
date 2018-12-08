@@ -10,7 +10,7 @@ import bcrypt from "bcrypt";
 import { crypto } from "../../services/crypto";
 
 
-@Path("/v1/auth")
+@Path("/auth")
 export class AuthController extends BaseController {
 
   private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());

@@ -19,6 +19,30 @@
     "defaultSender": "Nidhal DOGGA <dogga.nidhal@icloud.com>",
     "senders": []
   },
+  "runtime": {
+    "port": {
+      "mobile-api": 3000,
+      "driver-api": 3001,
+      "admin-api": 3002
+    },
+    "hosts": {
+      "mobile-api": {
+        "local": "localhost:3000",
+        "staging": "pressy-mobile-api-dev.herokuapp.com",
+        "production": "pressy-mobile-api.herokuapp.com"
+      },
+      "driver-api": {
+        "local": "localhost:3001",
+        "staging": "pressy-driver-api-dev.herokuapp.com",
+        "production": "pressy-driver-api.herokuapp.com"
+      },
+      "admin-api": {
+        "local": "localhost:3002",
+        "staging": "pressy-admin-api-dev.herokuapp.com",
+        "production": "pressy-admin-api.herokuapp.com"
+      }
+    }
+  },
   "services": {
     "local": {
       "mobile-api": "mobile-api-dev",

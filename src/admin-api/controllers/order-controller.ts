@@ -1,5 +1,4 @@
 import { OrderRepository } from './../../common/repositories/order/order-repository';
-import { DriverRepository } from './../../common/repositories/users/driver-repository';
 import {BaseController} from "../../common/controller/base-controller";
 import {Path, POST} from "typescript-rest";
 import { JSONResponse, Authenticate } from "../../common/annotations";
@@ -9,7 +8,7 @@ import { order } from "../../common/model/dto";
 import { Database } from '../../common/db';
 
 
-@Path("/v1/order")
+@Path("/order")
 export class OrderController extends BaseController {
 
   private _orderRepository: OrderRepository = new OrderRepository(Database.getConnection());

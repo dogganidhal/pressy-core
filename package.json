@@ -10,6 +10,7 @@
   },
   "scripts": {
     "start": "node scripts/start",
+    "postinstall": "ts-node scripts/generate-docs",
     "mobile-api-dev": "NODE_ENV=local node scripts/launch mobile-api",
     "mobile-api-staging": "NODE_ENV=staging node scripts/launch mobile-api",
     "mobile-api-prod": "NODE_ENV=production node scripts/launch mobile-api",
@@ -71,6 +72,7 @@
     "typeorm": "^0.2.8",
     "typescript": "^3.0.3",
     "typescript-rest": "^1.7.0",
+    "typescript-rest-swagger": "0.0.22",
     "uuid": "^3.3.2",
     "uuid-token-generator": "^1.0.0"
   },
