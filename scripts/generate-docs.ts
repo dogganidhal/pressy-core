@@ -1,5 +1,5 @@
 import {getConfig} from "../src/config";
-import { writeFileSync, readFileSync, mkdirSync } from "fs";
+import { writeFileSync, readFileSync } from "fs";
 import { execSync } from "child_process";
 
 async function _generateDocsForService(service: any) {
@@ -7,7 +7,7 @@ async function _generateDocsForService(service: any) {
   return new Promise<void>(resolve => {
     
     let swaggerConfigPath = `./dist/docs/swagger-config.${service.serviceName}.json`;
-    mkdirSync("dist/docs", {recursive: true});
+    execSync("mkdir -p dist/docs");
     writeFileSync(swaggerConfigPath, _replaceArguments(swaggerConfigTemplate, service));
     execSync(`swaggerGen -c ${swaggerConfigPath}`);
     resolve();
