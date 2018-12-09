@@ -3,7 +3,7 @@ import {PersonRepository} from '../../common/repositories/users/person-repositor
 import {MemberRepository} from '../../common/repositories/users/member-repository';
 import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
-import {crypto} from "../../services/crypto";
+import {SigningCategory} from "../../services/crypto";
 import {exception} from "../../common/errors";
 import {http} from "../../common/utils/http";
 import {Authenticate, JSONResponse} from "../../common/annotations";
@@ -14,11 +14,10 @@ import { InternalServerError } from "typescript-rest/dist/server-errors";
 import { Security, Produces, Tags } from "typescript-rest-swagger";
 import { MemberInfo, CreatePersonRequest, Address as AddressDTO, MobileDevice, CreateAddressRequest, UpdatePersonInfoRequest } from "../../common/model/dto";
 
-class MemberInformation extends MemberInfo {}
-
+@Produces("application/json")
 @Tags("Member")
 @Accept("application/json")
-@Path('/member/')
+@Path('/member')
 export class MemberController extends BaseController {
 
   private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
@@ -26,11 +25,10 @@ export class MemberController extends BaseController {
   private _geocodeService: GeocodeService = new GeocodeService();
 
 	@Security("Bearer")
-	@Produces("application/json")
 	@JSONResponse
-  @Authenticate(crypto.SigningCategory.MEMBER)
+  @Authenticate(SigningCategory.MEMBER)
   @GET
-	public async getMemberInfo(): Promise<MemberInformation> {
+	public async getMemberInfo(): Promise<MemberInfo> {
 
 		let memberEntity = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
 		
@@ -67,7 +65,7 @@ export class MemberController extends BaseController {
 
   }
 
-  @Path("/activate/:code/")
+  @Path("/activate/:code")
   @GET
   public async activateMember(@PathParam("code") code: string) {
 
@@ -77,7 +75,8 @@ export class MemberController extends BaseController {
 
   }
 
-  @Authenticate(crypto.SigningCategory.MEMBER)
+	@Security("Bearer")
+  @Authenticate(SigningCategory.MEMBER)
   @Path("/devices")
   @POST
   public async registerMobileDevice() {
@@ -95,11 +94,12 @@ export class MemberController extends BaseController {
 
   }
 
+	@Security("Bearer")
   @JSONResponse
-  @Authenticate(crypto.SigningCategory.MEMBER)
+  @Authenticate(SigningCategory.MEMBER)
   @Path("/devices")
   @GET
-  public async getMobileDevices() {
+  public async getMobileDevices(): Promise<MobileDevice[]> {
 
 	  const member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
 
@@ -108,14 +108,17 @@ export class MemberController extends BaseController {
 
 	  let mobileDevices = await this._memberRepository.getMobileDevices(member);
 
-    return mobileDevices.map(device => ({deviceId: device.id}));
+    return mobileDevices.map(device => {
+			return {deviceId: device.id};
+		});
 
   }
 
+	@Security("Bearer")
 	@JSONResponse
-  @Authenticate(crypto.SigningCategory.MEMBER)
+  @Authenticate(SigningCategory.MEMBER)
   @PATCH
-  public async updateMemberInfo() {
+  public async updateMemberInfo(request: UpdatePersonInfoRequest) {
 
   	let updateRequest = http.parseJSONBody(this.getPendingRequest().body, UpdatePersonInfoRequest);
 		await this._personRepository.updatePersonInfo(this.pendingPerson, updateRequest);
@@ -124,10 +127,11 @@ export class MemberController extends BaseController {
 
   }
 
-  @Authenticate(crypto.SigningCategory.MEMBER)
+	@Security("Bearer")
+  @Authenticate(SigningCategory.MEMBER)
   @PATCH
   @Path("/addresses")
-	public async setMemberAddresses() {
+	public async setMemberAddresses(request: CreateAddressRequest) {
 
 		let addresses = http.parseJSONArrayBody(this.getPendingRequest().body, CreateAddressRequest);
 		let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);

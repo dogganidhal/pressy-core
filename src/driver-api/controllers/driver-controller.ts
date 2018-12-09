@@ -1,7 +1,7 @@
-import {Path, POST, Return} from "typescript-rest";
+import {Path, POST} from "typescript-rest";
 import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db/index";
-import {crypto} from "../../services/crypto";
+import {SigningCategory} from "../../services/crypto";
 import {http} from "../../common/utils/http";
 import {DriverRepository} from "../../common/repositories/users/driver-repository";
 import {Authenticate, JSONResponse} from "../../common/annotations/index";
@@ -13,7 +13,7 @@ export class DriverController extends BaseController {
 
   private _driverRepository = new DriverRepository(Database.getConnection());
 
-  @Authenticate(crypto.SigningCategory.ADMIN)
+  @Authenticate(SigningCategory.ADMIN)
   @JSONResponse
   @POST
   public async createDriver() {

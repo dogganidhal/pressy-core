@@ -1,9 +1,10 @@
+import { Tags, Security, Produces } from "typescript-rest-swagger";
 import {GET, Path, POST, Return} from "typescript-rest";
 import {OrderRepository} from '../../common/repositories/order/order-repository';
 import {SlotRepository} from '../../common/repositories/slot-repository';
 import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
-import {crypto} from "../../services/crypto";
+import {SigningCategory} from "../../services/crypto";
 import {MemberRepository} from "../../common/repositories/users/member-repository";
 import {http} from "../../common/utils/http";
 import {Authenticate, JSONResponse} from "../../common/annotations";
@@ -11,17 +12,20 @@ import { OrderMailSender } from "../../common/mail-senders/order-mail-sender";
 import { CreateOrderRequest, ISlot, IAddress, IPersonInfo, OrderElement, IOrderElement, Order, Slot } from "../../common/model/dto";
 
 
-@Path('/order/')
+@Produces("application/json")
+@Tags("Orders")
+@Path('/order')
 export class OrderController extends BaseController {
 
 	private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
   private _orderRepository: OrderRepository = new OrderRepository(Database.getConnection());
   private _slotsRepository: SlotRepository = new SlotRepository(Database.getConnection());
 
+	@Security("Bearer")
   @JSONResponse
-  @Authenticate(crypto.SigningCategory.MEMBER)
+  @Authenticate(SigningCategory.MEMBER)
   @POST
-  public async createOrder() {
+  public async createOrder(request: CreateOrderRequest) {
 
 	  const dto = http.parseJSONBody(this.getPendingRequest().body, CreateOrderRequest);
 	  const member = await this._memberRepository.getMemberFromPersonOrFail(this.pendingPerson);
@@ -35,8 +39,9 @@ export class OrderController extends BaseController {
 
   }
 
+	@Security("Bearer")
   @JSONResponse
-  @Authenticate(crypto.SigningCategory.MEMBER)
+  @Authenticate(SigningCategory.MEMBER)
   @GET
   public async getOrders() {
 
@@ -95,7 +100,7 @@ export class OrderController extends BaseController {
   @JSONResponse
   @Path("/slots")
   @GET
-  public async getSlots() {
+  public async getSlots(): Promise<Slot[]> {
 
     let slots = await this._slotsRepository.getNextAvailableSlots();
 

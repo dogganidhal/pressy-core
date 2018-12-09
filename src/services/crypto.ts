@@ -5,6 +5,34 @@ import {Database} from "../common/db";
 import {Person} from "../common/model/entity/users/person";
 import {PersonRepository} from "../common/repositories/users/person-repository";
 
+export enum SigningCategory {
+	MEMBER = 0,
+	DRIVER = 1,
+	LAUNDRER = 2,
+	ADMIN = 3,
+	SUPERUSER = 4
+}
+
+export enum AuthTokenType {
+	BEARER = "Bearer"
+}
+
+interface IAuthPayload {
+	id: any;
+	category: SigningCategory
+}
+
+enum SigningSubject {
+	ACCESS = "access",
+	REFRESH = "refresh"
+}
+
+export class AuthCredentials {
+	accessToken: string;
+	refreshToken: string;
+	type: AuthTokenType;
+	expiresIn: number
+}
 
 export namespace crypto {
 
@@ -21,36 +49,9 @@ export namespace crypto {
 	let _publicKey: string = getConfig().authenticationPublicKey;
 	let _privateKey: string = getConfig().authenticationPrivateKey;
 
-	export enum SigningCategory {
-		MEMBER = 0,
-		DRIVER = 1,
-		LAUNDRER = 2,
-		ADMIN = 3,
-		SUPERUSER = 4
-	}
+	
 
-	export enum AuthTokenType {
-		BEARER = "Bearer"
-	}
-
-	interface IAuthPayload {
-		id: any;
-		category: SigningCategory
-	}
-
-	enum SigningSubject {
-		ACCESS = "access",
-		REFRESH = "refresh"
-	}
-
-	export interface IAuthCredentials {
-		accessToken: string;
-		refreshToken: string;
-		type: AuthTokenType;
-		expiresIn: number
-	}
-
-	export function signAuthToken(person: Person, category: SigningCategory, options: SignOptions = {}): IAuthCredentials {
+	export function signAuthToken(person: Person, category: SigningCategory, options: SignOptions = {}): AuthCredentials {
 
 		let payload: IAuthPayload = {
 			id: person.id,
@@ -120,9 +121,9 @@ export namespace crypto {
 
 	}
 
-	export async function refreshCredentials(refreshToken: string): Promise<IAuthCredentials> {
+	export async function refreshCredentials(refreshToken: string): Promise<AuthCredentials> {
 
-		return new Promise<IAuthCredentials>((resolve, reject) => {
+		return new Promise<AuthCredentials>((resolve, reject) => {
 
 			let verifyOptions = {
 				...__verifyOptions,

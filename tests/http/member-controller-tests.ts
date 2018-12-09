@@ -7,8 +7,7 @@ import {APIError} from "../../src/common/errors/api-error";
 import {Database} from "../../src/common/db";
 import uuid = require("uuid");
 import {MobileDevice} from "../../src/common/model/entity/users/device";
-import {crypto} from "../../src/services/crypto";
-import SigningCategory = crypto.SigningCategory;
+import {SigningCategory, crypto} from "../../src/services/crypto";
 import {http} from "../../src/common/utils/http";
 import { CreatePersonRequest, MobileDevice as MobileDeviceDTO} from '../../src/common/model/dto';
 

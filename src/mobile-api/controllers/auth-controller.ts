@@ -1,23 +1,26 @@
+import { Tags, Produces } from "typescript-rest-swagger";
 import {Path, PathParam, POST, Return} from "typescript-rest";
 import {exception} from "../../common/errors";
 import bcrypt from "bcrypt";
 import {PersonRepository} from "../../common/repositories/users/person-repository";
 import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
-import {crypto} from "../../services/crypto";
+import {crypto, SigningCategory, AuthCredentials} from "../../services/crypto";
 import {http} from "../../common/utils/http";
 import {JSONResponse} from "../../common/annotations";
 import { LoginRequest, RefreshCredentialsRequest, ResetCodeRequest, ResetCode, ResetPasswordRequest } from "../../common/model/dto";
 
 
-@Path('/auth/')
+@Produces("application/json")
+@Tags("Authentication")
+@Path('/auth')
 export class AuthController extends BaseController {
 
   private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
 
   @JSONResponse
   @POST
-  public async login() {
+  public async login(request: LoginRequest): Promise<AuthCredentials> {
 
 	  let loginRequest = http.parseJSONBody(this.getPendingRequest().body, LoginRequest);
 	  let person = await this._personRepository.getPersonByEmail(loginRequest.email);
@@ -28,14 +31,14 @@ export class AuthController extends BaseController {
 	  if (!bcrypt.compareSync(loginRequest.password, person.passwordHash))
 		  throw new exception.WrongPasswordException;
 
-	  return crypto.signAuthToken(person, crypto.SigningCategory.MEMBER);
+	  return crypto.signAuthToken(person, SigningCategory.MEMBER);
 
   }
 
   @JSONResponse
-  @Path("/refresh/")
+  @Path("/refresh")
   @POST
-  public async refreshCredentials() {
+  public async refreshCredentials(request: RefreshCredentialsRequest): Promise<AuthCredentials> {
 
 	  const {refreshToken} = http.parseJSONBody(this.getPendingRequest().body, RefreshCredentialsRequest);
 	  return await crypto.refreshCredentials(refreshToken);
@@ -43,9 +46,9 @@ export class AuthController extends BaseController {
   }
 
   @JSONResponse
-  @Path("/reset/")
+  @Path("/reset")
   @POST
-  public async getResetPasswordCode() {
+  public async getResetPasswordCode(request: ResetCodeRequest): Promise<ResetCode> {
 
 	  const resetCodeRequest = http.parseJSONBody(this.getPendingRequest().body, ResetCodeRequest);
 
@@ -66,7 +69,7 @@ export class AuthController extends BaseController {
   @JSONResponse
   @Path("/reset/:code")
   @POST
-  public async resetPassword(@PathParam("code") code: string) {
+  public async resetPassword(@PathParam("code") code: string, request: ResetPasswordRequest) {
 
 	  const resetPasswordRequest = http.parseJSONBody(this.getPendingRequest().body, ResetPasswordRequest);
 	  const person = await this._personRepository.resetPassword(code, resetPasswordRequest);

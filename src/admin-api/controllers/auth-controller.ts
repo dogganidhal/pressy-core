@@ -6,10 +6,12 @@ import { PersonRepository } from "../../common/repositories/users/person-reposit
 import { Database } from "../../common/db";
 import { exception } from "../../common/errors";
 import bcrypt from "bcrypt";
-import { crypto } from "../../services/crypto";
+import { crypto, SigningCategory, AuthCredentials } from "../../services/crypto";
 import { LoginRequest } from "../../common/model/dto";
+import { Tags } from "typescript-rest-swagger";
 
 
+@Tags("Authentication")
 @Path("/auth")
 export class AuthController extends BaseController {
 
@@ -18,7 +20,7 @@ export class AuthController extends BaseController {
   @Path("/login")
   @JSONResponse
   @POST
-  public async login() {
+  public async login(request: LoginRequest): Promise<AuthCredentials> {
 
     let loginRequest = http.parseJSONBody(this.getPendingRequest().body, LoginRequest);
 	  let person = await this._personRepository.getPersonByEmail(loginRequest.email);
@@ -29,7 +31,7 @@ export class AuthController extends BaseController {
 	  if (!bcrypt.compareSync(loginRequest.password, person.passwordHash))
 		  throw new exception.WrongPasswordException;
 
-	  return crypto.signAuthToken(person, crypto.SigningCategory.ADMIN);
+	  return crypto.signAuthToken(person, SigningCategory.ADMIN);
 
   }
 
