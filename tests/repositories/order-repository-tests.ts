@@ -11,7 +11,7 @@ import {DateUtils} from "../../src/common/utils";
 import {OrderStatus} from "../../src/common/model/entity/order";
 import {exception} from "../../src/common/errors";
 import {Element} from "../../src/common/model/entity/order/element";
-import * as DTO from "../../src/common/model/dto";
+import { CreateOrderElementRequest } from "../../src/common/model/dto";
 
 
 describe("OrderRepository Operations", () => {
@@ -84,11 +84,11 @@ describe("OrderRepository Operations", () => {
 					googlePlaceId: "ChIJPZVtpz1u5kcRQyeKkuEZ2LQ"
 				},
 				elements: [
-					<DTO.order.CreateOrderElementRequest>{
+					<CreateOrderElementRequest>{
 						type: 1,
 						color: "green"
 					},
-					<DTO.order.CreateOrderElementRequest> {
+					<CreateOrderElementRequest> {
 						type: 2,
 						color: "gray",
 						comment: "Hello World Comment"

@@ -4,10 +4,10 @@ import { JSONResponse } from "../../common/annotations";
 import { http } from "../../common/utils/http";
 import { PersonRepository } from "../../common/repositories/users/person-repository";
 import { Database } from "../../common/db";
-import * as DTO from "../../common/model/dto";
 import { exception } from "../../common/errors";
 import bcrypt from "bcrypt";
 import { crypto } from "../../services/crypto";
+import { LoginRequest } from "../../common/model/dto";
 
 
 @Path("/auth")
@@ -20,7 +20,7 @@ export class AuthController extends BaseController {
   @POST
   public async login() {
 
-    let loginRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.person.LoginRequest);
+    let loginRequest = http.parseJSONBody(this.getPendingRequest().body, LoginRequest);
 	  let person = await this._personRepository.getPersonByEmail(loginRequest.email);
 
 	  if (!person)

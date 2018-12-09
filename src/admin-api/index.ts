@@ -45,8 +45,8 @@ export class AdminAPI {
 			next();
 		});
 
-		if (process.env.NODE_ENV === "local")
-      open(`http://localhost:${getConfig().runtime.port["mobile-api"]}/v1/docs`);
+		if (process.env.NODE_ENV === "local" && !process.env.TEST_ENV)
+      open(`http://localhost:${getConfig().runtime.port["admin-api"]}/v1/docs`);
 
 	}
 

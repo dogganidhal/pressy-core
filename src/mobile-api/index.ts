@@ -40,7 +40,7 @@ export class MobileAPI {
 			}
     });
 
-    if (process.env.NODE_ENV === "local")
+    if (process.env.NODE_ENV === "local" && !process.env.TEST_ENV)
       open(`http://localhost:${getConfig().runtime.port["mobile-api"]}/v1/docs`);
   }
 

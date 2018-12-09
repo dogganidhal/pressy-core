@@ -4,8 +4,8 @@ import {Path, POST} from "typescript-rest";
 import { JSONResponse, Authenticate } from "../../common/annotations";
 import { crypto } from "../../services/crypto";
 import { http } from "../../common/utils/http";
-import { order } from "../../common/model/dto";
 import { Database } from '../../common/db';
+import { AssignOrderDriverRequest } from '../../common/model/dto';
 
 
 @Path("/order")
@@ -19,7 +19,7 @@ export class OrderController extends BaseController {
 	@POST
 	public async assignDriverToOrder() {
 
-		let request = http.parseJSONBody(this.getPendingRequest().body, order.AssignOrderDriverRequest);
+		let request = http.parseJSONBody(this.getPendingRequest().body, AssignOrderDriverRequest);
 		await this._orderRepository.assignDriverToOrder(request);
 
 	}

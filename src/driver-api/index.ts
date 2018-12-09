@@ -41,8 +41,8 @@ export class DriverAPI {
 					.send(JSON.stringify(new exception.MethodNotAllowedException(request.method)));
 			}
 		});
-		if (process.env.NODE_ENV === "local")
-      open(`http://localhost:${getConfig().runtime.port["mobile-api"]}/v1/docs`);
+		if (process.env.NODE_ENV === "local" && !process.env.TEST_ENV)
+      open(`http://localhost:${getConfig().runtime.port["driver-api"]}/v1/docs`);
 	}
 
 	private _middleware() {

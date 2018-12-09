@@ -5,19 +5,19 @@ import { MobileAPI } from "../../src/mobile-api";
 import { MemberRepository } from '../../src/common/repositories/users/member-repository';
 import {APIError} from "../../src/common/errors/api-error";
 import {Database} from "../../src/common/db";
-import {person} from "../../src/common/model/dto";
 import uuid = require("uuid");
 import {MobileDevice} from "../../src/common/model/entity/users/device";
 import {crypto} from "../../src/services/crypto";
 import SigningCategory = crypto.SigningCategory;
 import {http} from "../../src/common/utils/http";
+import { CreatePersonRequest, MobileDevice as MobileDeviceDTO} from '../../src/common/model/dto';
 
 describe("Testing MemberController Endpoints =>", () => {
 
   let connection: Connection;
   let memberRepository: MemberRepository;
   const api: MobileAPI = new MobileAPI;
-  const memberDTO: person.CreatePersonRequest = {
+  const memberDTO: CreatePersonRequest = {
     firstName: Randomstring.generate(10),
     lastName: Randomstring.generate(10),
     email: `${Randomstring.generate(10)}@test.com`,
@@ -30,7 +30,7 @@ describe("Testing MemberController Endpoints =>", () => {
 		email: `${Randomstring.generate(10)}@test.com`,
 		phone: Randomstring.generate({length: 10, charset: "numeric"}),
 		password: 'qwerty2018'
-	} as person.CreatePersonRequest;
+	} as CreatePersonRequest;
 
   beforeAll(async done => {
     connection = await Database.createConnection();
@@ -87,7 +87,7 @@ describe("Testing MemberController Endpoints =>", () => {
 		expect.assertions(2);
 
 		let mobileDeviceId = uuid.v1().toString();
-		let mobileDevice: person.MobileDevice = {
+		let mobileDevice: MobileDeviceDTO = {
 			deviceId: mobileDeviceId
 		};
 		let member = await memberRepository.createMember({
