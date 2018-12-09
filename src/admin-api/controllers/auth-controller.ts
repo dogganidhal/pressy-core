@@ -8,9 +8,10 @@ import { exception } from "../../common/errors";
 import bcrypt from "bcrypt";
 import { crypto, SigningCategory, AuthCredentials } from "../../services/crypto";
 import { LoginRequest } from "../../common/model/dto";
-import { Tags } from "typescript-rest-swagger";
+import { Tags, Produces } from "typescript-rest-swagger";
 
 
+@Produces("application/json")
 @Tags("Authentication")
 @Path("/auth")
 export class AuthController extends BaseController {

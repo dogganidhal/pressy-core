@@ -5,10 +5,11 @@ import {SigningCategory} from "../../services/crypto";
 import {http} from "../../common/utils/http";
 import {DriverRepository} from "../../common/repositories/users/driver-repository";
 import {Database} from "../../common/db";
-import { Tags } from "typescript-rest-swagger";
+import { Tags, Produces } from "typescript-rest-swagger";
 import { CreatePersonRequest } from "../../common/model/dto";
 
 
+@Produces("application/json")
 @Tags("Drivers")
 @Path("/driver")
 export class DriverController extends BaseController {

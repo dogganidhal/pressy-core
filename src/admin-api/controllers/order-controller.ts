@@ -1,5 +1,5 @@
 import { AssignDriverSlotsRequest } from "./../../common/model/dto/driver";
-import { Tags, Security } from "typescript-rest-swagger";
+import { Tags, Security, Produces } from "typescript-rest-swagger";
 import { OrderRepository } from './../../common/repositories/order/order-repository';
 import {BaseController} from "../../common/controller/base-controller";
 import {Path, POST} from "typescript-rest";
@@ -10,6 +10,7 @@ import { Database } from '../../common/db';
 import { AssignOrderDriverRequest } from '../../common/model/dto';
 
 
+@Produces("application/json")
 @Tags("Orders")
 @Path("/order")
 export class OrderController extends BaseController {
