@@ -4,9 +4,9 @@ import {exception} from "../../errors";
 import {Member} from '../../model/entity/users/member/member';
 import {ActivationCode, Person} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
-import * as DTO from "../../model/dto/index";
 import {validation} from "../../utils";
 import {Address} from "../../model/entity/common/address";
+import { CreatePersonRequest, MobileDevice as MobileDeviceDTO } from '../../model/dto';
 
 
 export class MemberRepository extends BaseRepository {
@@ -55,7 +55,7 @@ export class MemberRepository extends BaseRepository {
 
   }
 
-  public async createMember(createMemberRequest: DTO.person.CreatePersonRequest): Promise<Member> {
+  public async createMember(createMemberRequest: CreatePersonRequest): Promise<Member> {
 
     const { email, phone, password } = createMemberRequest;
 
@@ -123,7 +123,7 @@ export class MemberRepository extends BaseRepository {
 
   }
 
-  public async registerMobileDevice(member: Member, mobileDeviceDTO: DTO.person.MobileDevice): Promise<MobileDevice> {
+  public async registerMobileDevice(member: Member, mobileDeviceDTO: MobileDeviceDTO): Promise<MobileDevice> {
 
     const device = MobileDevice.create(member.person, mobileDeviceDTO.deviceId);
     await this._mobileDeviceRepository.insert(device);

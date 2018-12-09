@@ -3,13 +3,13 @@ import {Repository} from "typeorm";
 import {Member} from '../../model/entity/users/member/member';
 import {BaseRepository} from '../base-repository';
 import {OrderStatusManager} from "./order-status-manager";
-import * as DTO from "../../model/dto";
 import {Slot} from "../../model/entity/slot";
 import {exception} from "../../errors";
 import {GeocodeService} from "../../../services/geocode-service";
 import {Address} from "../../model/entity/common/address";
 import {Driver} from "../../model/entity/users/driver/driver";
 import {Element} from "../../model/entity/order/element";
+import { CreateOrderRequest, AssignOrderDriverRequest, Address as AddressDTO } from '../../model/dto';
 
 
 export class OrderRepository extends BaseRepository {
@@ -37,7 +37,7 @@ export class OrderRepository extends BaseRepository {
     
   }
 
-  public async createOrder(member: Member, createOrderRequest: DTO.order.CreateOrderRequest): Promise<Order> {
+  public async createOrder(member: Member, createOrderRequest: CreateOrderRequest): Promise<Order> {
 
   	if (!member.isActive())
   		throw new exception.InactiveMemberException(member);
@@ -55,8 +55,8 @@ export class OrderRepository extends BaseRepository {
 	  if (!deliverySlot)
 		  throw new exception.SlotNotFoundException(createOrderRequest.deliverySlotId);
 
-	  let pickupAddress: DTO.address.Address;
-	  let deliveryAddress: DTO.address.Address;
+	  let pickupAddress: AddressDTO;
+	  let deliveryAddress: AddressDTO;
 
 	  if (createOrderRequest.pickupAddress.googlePlaceId)
 	  	pickupAddress = await this._geocodeService.getAddressWithPlaceId(createOrderRequest.pickupAddress.googlePlaceId);
@@ -103,7 +103,7 @@ export class OrderRepository extends BaseRepository {
 
   }
 
-	public async assignDriverToOrder(request: DTO.order.AssignOrderDriverRequest): Promise<void> {
+	public async assignDriverToOrder(request: AssignOrderDriverRequest): Promise<void> {
 
 		let {driverId, orderId} = request;
 

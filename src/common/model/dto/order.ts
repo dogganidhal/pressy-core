@@ -1,118 +1,114 @@
 import {Required} from "../../annotations";
-import {slot} from "./slot";
-import {address} from "./address";
-import {person} from "./person";
 import {ElementType} from "../entity/order/element";
+import { PersonInfo, IPersonInfo } from "./person";
+import { Address, IAddress, CreateAddressRequest } from "./address";
+import { Slot, ISlot } from "./slot";
 
-export namespace order {
+export interface IOrderElement {
+	orderId: number;
+	type: ElementType;
+	color: string;
+	comment?: string;
+}
 
-	export interface IOrderElement {
-		orderId: number;
-		type: ElementType;
-		color: string;
-		comment?: string;
+export class OrderElement {
+
+	public orderId: number;
+	public type: ElementType;
+	public color: string;
+	public comment?: string;
+
+	constructor(element: IOrderElement) {
+		this.orderId = element.orderId;
+		this.type = element.type;
+		this.color = element.color;
+		this.comment = element.comment;
 	}
 
-	export class OrderElement {
+}
 
-		public orderId: number;
-		public type: ElementType;
-		public color: string;
-		public comment?: string;
+export class CreateOrderElementRequest {
 
-		constructor(element: order.IOrderElement) {
-			this.orderId = element.orderId;
-			this.type = element.type;
-			this.color = element.color;
-			this.comment = element.comment;
-		}
+	@Required()
+	public type: ElementType;
 
+	@Required()
+	public color: string;
+
+	public comment?: string;
+
+}
+
+export class CreateOrderRequest {
+
+	@Required()
+	public pickupSlotId: number;
+
+	@Required()
+	public deliverySlotId: number;
+
+	@Required(CreateAddressRequest)
+	public pickupAddress: CreateAddressRequest;
+
+	public deliveryAddress?: CreateAddressRequest;
+
+	@Required(Array)
+	public elements: Array<CreateOrderElementRequest>;
+
+}
+
+export interface IOrder {
+	id: number;
+	pickupSlot: ISlot;
+	deliverySlot: ISlot;
+	pickupAddress: IAddress;
+	deliveryAddress: IAddress;
+	elements: Array<IOrderElement>;
+	member: IPersonInfo;
+}
+
+export class Order {
+
+	public id: number;
+	public pickupSlot: Slot;
+	public deliverySlot: Slot;
+	public pickupAddress: Address;
+	public deliveryAddress: Address;
+	public elements: Array<IOrderElement>;
+	public member: IPersonInfo;
+
+	constructor(order: IOrder) {
+		this.id = order.id;
+		this.pickupSlot = new Slot(order.pickupSlot);
+		this.deliverySlot = new Slot(order.pickupSlot);
+		this.pickupAddress = new Address(order.pickupAddress);
+		this.deliveryAddress = new Address(order.deliveryAddress);
+		this.elements = order.elements.map(element => new OrderElement(element));
+		this.member = new PersonInfo(order.member);
 	}
 
-	export class CreateOrderElementRequest {
+}
 
-		@Required()
-		public type: ElementType;
+export interface IAssignOrderDriverRequest {
+	driverId: number;
+	orderId: number;
+}
 
-		@Required()
-		public color: string;
+export class AssignOrderDriverRequest {
 
-		public comment?: string;
+	@Required()
+	public driverId: number;
 
-	}
+	@Required()
+	public orderId: number;
 
-	export class CreateOrderRequest {
-
-		@Required()
-		public pickupSlotId: number;
-
-		@Required()
-		public deliverySlotId: number;
-
-		@Required(address.CreateAddressRequest)
-		public pickupAddress: address.CreateAddressRequest;
-
-		public deliveryAddress?: address.CreateAddressRequest;
-
-		@Required(Array)
-		public elements: Array<CreateOrderElementRequest>;
-
-	}
-
-	export interface IOrder {
-		id: number;
-		pickupSlot: slot.ISlot;
-		deliverySlot: slot.ISlot;
-		pickupAddress: address.IAddress;
-		deliveryAddress: address.IAddress;
-		elements: Array<order.IOrderElement>;
-		member: person.IPersonInfo;
-	}
-
-	export class Order {
-
-		public id: number;
-		public pickupSlot: slot.Slot;
-		public deliverySlot: slot.Slot;
-		public pickupAddress: address.Address;
-		public deliveryAddress: address.Address;
-		public elements: Array<order.IOrderElement>;
-		public member: person.IPersonInfo;
-
-		constructor(order: IOrder) {
-			this.id = order.id;
-			this.pickupSlot = new slot.Slot(order.pickupSlot);
-			this.deliverySlot = new slot.Slot(order.pickupSlot);
-			this.pickupAddress = new address.Address(order.pickupAddress);
-			this.deliveryAddress = new address.Address(order.deliveryAddress);
-			this.elements = order.elements.map(element => new OrderElement(element));
-			this.member = new person.PersonInfo(order.member);
-		}
-
-	}
-
-	export interface IAssignOrderDriverRequest {
-		driverId: number;
-		orderId: number;
-	}
-
-	export class AssignOrderDriverRequest {
-
-		@Required()
-		public driverId: number;
-
-		@Required()
-		public orderId: number;
-
-		public static create(request: IAssignOrderDriverRequest): AssignOrderDriverRequest {
-			let createDriverAvailabilityRequest = new AssignOrderDriverRequest;
-			
-			createDriverAvailabilityRequest.driverId = request.driverId;
-			createDriverAvailabilityRequest.orderId = request.orderId;
-			
-			return createDriverAvailabilityRequest;
-		}
-
+	public static create(request: IAssignOrderDriverRequest): AssignOrderDriverRequest {
+		let createDriverAvailabilityRequest = new AssignOrderDriverRequest;
+		
+		createDriverAvailabilityRequest.driverId = request.driverId;
+		createDriverAvailabilityRequest.orderId = request.orderId;
+		
+		return createDriverAvailabilityRequest;
 	}
 
 }

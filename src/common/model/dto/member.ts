@@ -1,24 +1,22 @@
-import {person} from "./person";
-import {address} from "./address";
+import { Address, IAddress } from "./address";
+import { IPersonInfo, PersonInfo } from "./person";
 
 
-export namespace member {
+export interface IMemberInfo extends IPersonInfo {
+	addresses: IAddress[]
+}
 
-	export interface IMemberInfo extends person.IPersonInfo {
-		addresses: address.IAddress[]
-	}
+export class MemberInfo extends PersonInfo {
 
-	export class MemberInfo extends person.PersonInfo {
+	public addresses: Address[];
 
-		public addresses: address.Address[];
-
-		constructor(memberInfo?: IMemberInfo) {
-			super(memberInfo);
-			if (memberInfo) {
-				this.addresses = memberInfo.addresses.map(a => new address.Address(a));
-			}
+	constructor()
+	constructor(memberInfo: MemberInfo);
+	constructor(memberInfo?: IMemberInfo) {
+		super(memberInfo as IPersonInfo);
+		if (memberInfo) {
+			this.addresses = memberInfo.addresses.map(a => new Address(a));
 		}
-
 	}
 
 }

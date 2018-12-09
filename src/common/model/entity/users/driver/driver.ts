@@ -1,8 +1,8 @@
 import {Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToMany, OneToMany} from "typeorm";
 import {Person, PersonStatus} from "../person";
-import * as DTO from "../../../dto/index";
 import {IUser} from "..";
 import {DriverSlot} from "./driver-slot";
+import { CreatePersonRequest } from "../../../dto";
 
 
 @Entity()
@@ -22,7 +22,7 @@ export class Driver implements IUser {
 		return this.person.status === PersonStatus.ACTIVE;
 	}
 
-	public static create(createDriverRequest: DTO.person.CreatePersonRequest): Driver {
+	public static create(createDriverRequest: CreatePersonRequest): Driver {
 
 		const driver: Driver = new Driver();
 		driver.person = Person.create(createDriverRequest);

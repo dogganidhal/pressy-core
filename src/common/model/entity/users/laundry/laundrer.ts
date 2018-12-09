@@ -1,10 +1,10 @@
 import {Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne} from "typeorm";
 import {Person, PersonStatus} from "../person";
-import * as DTO from "../../../dto";
 import {IUser} from "..";
 import {LaundryPartner} from ".";
+import { CreatePersonRequest } from "../../../dto";
 
-export interface ILaundrer extends DTO.person.CreatePersonRequest {
+export interface ILaundrer extends CreatePersonRequest {
 	laundryPartner: LaundryPartner;
 }
 

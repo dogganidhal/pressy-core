@@ -6,8 +6,8 @@ import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
 import {crypto} from "../../services/crypto";
 import {http} from "../../common/utils/http";
-import * as DTO from "../../common/model/dto";
 import {JSONResponse} from "../../common/annotations";
+import { LoginRequest, RefreshCredentialsRequest, ResetCodeRequest, ResetCode, ResetPasswordRequest } from "../../common/model/dto";
 
 
 @Path('/auth/')
@@ -19,7 +19,7 @@ export class AuthController extends BaseController {
   @POST
   public async login() {
 
-	  let loginRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.person.LoginRequest);
+	  let loginRequest = http.parseJSONBody(this.getPendingRequest().body, LoginRequest);
 	  let person = await this._personRepository.getPersonByEmail(loginRequest.email);
 
 	  if (!person)
@@ -37,7 +37,7 @@ export class AuthController extends BaseController {
   @POST
   public async refreshCredentials() {
 
-	  const {refreshToken} = http.parseJSONBody(this.getPendingRequest().body, DTO.person.RefreshCredentialsRequest);
+	  const {refreshToken} = http.parseJSONBody(this.getPendingRequest().body, RefreshCredentialsRequest);
 	  return await crypto.refreshCredentials(refreshToken);
 
   }
@@ -47,7 +47,7 @@ export class AuthController extends BaseController {
   @POST
   public async getResetPasswordCode() {
 
-	  const resetCodeRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.person.ResetCodeRequest);
+	  const resetCodeRequest = http.parseJSONBody(this.getPendingRequest().body, ResetCodeRequest);
 
 	  const person = await this._personRepository.getPersonByEmail(resetCodeRequest.email);
 
@@ -59,7 +59,7 @@ export class AuthController extends BaseController {
 	  // TODO: Return an empty "accepted" response, and call the email service
 	  return {
 	  	code: resetCode.id
-	  } as DTO.person.ResetCode;
+	  } as ResetCode;
 
   }
 
@@ -68,7 +68,7 @@ export class AuthController extends BaseController {
   @POST
   public async resetPassword(@PathParam("code") code: string) {
 
-	  const resetPasswordRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.person.ResetPasswordRequest);
+	  const resetPasswordRequest = http.parseJSONBody(this.getPendingRequest().body, ResetPasswordRequest);
 	  const person = await this._personRepository.resetPassword(code, resetPasswordRequest);
 
 	  return new Return.RequestAccepted(`/v1/member/${person.id}`);

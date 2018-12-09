@@ -3,7 +3,6 @@ import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne, Create
 import { Slot } from "../slot";
 import { Member } from '../users/member/member';
 import { Element } from './element';
-import * as DTO from "../../dto/";
 import {Driver} from "../users/driver/driver";
 import {LaundryPartner} from "../users/laundry";
 

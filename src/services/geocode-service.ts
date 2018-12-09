@@ -1,8 +1,8 @@
 import {Address} from '../common/model/entity/common/address';
 import {RestClient} from "typed-rest-client";
 import {getConfig} from '../config';
-import * as DTO from "../common/model/dto";
 import {exception} from "../common/errors";
+import {Address as AddressDTO} from "../common/model/dto";
 
 export interface ICoordinates {
   latitude: number;
@@ -26,7 +26,7 @@ export class GeocodeService {
   private _restClient: RestClient = new RestClient("PRESSY-REST-AGENT");
   private GOOGLE_SERVICES_URL = "https://maps.googleapis.com/maps/api";
 
-  public async getAddressWithPlaceId(placeId: string): Promise<DTO.address.Address> {
+  public async getAddressWithPlaceId(placeId: string): Promise<AddressDTO> {
 
     const url = `${this.GOOGLE_SERVICES_URL}/place/details/json?placeid=${placeId}&key=${getConfig().googleMapsAPIKey}`;
     const response = await this._restClient.get(url);
@@ -43,7 +43,7 @@ export class GeocodeService {
       component.types.map((category: string) => components[category] = component.long_name);
     });
 
-	  return new DTO.address.Address({
+	  return new AddressDTO({
 		  city: components.locality,
 		  country: components.political,
 		  zipCode: components.postal_code,
@@ -54,7 +54,7 @@ export class GeocodeService {
 
   }
 
-  public async getAddressWithCoordinates(coordinates: ICoordinates): Promise<DTO.address.Address> {
+  public async getAddressWithCoordinates(coordinates: ICoordinates): Promise<AddressDTO> {
     const url = `${this.GOOGLE_SERVICES_URL}/geocode/json?latlng=\
 ${coordinates.latitude},${coordinates.longitude}&key=${getConfig().googleMapsAPIKey}`;
 
@@ -74,7 +74,7 @@ ${coordinates.latitude},${coordinates.longitude}&key=${getConfig().googleMapsAPI
       component.types.map((category: string) => components[category] = component.long_name);
     });
 
-    return new DTO.address.Address({
+    return new AddressDTO({
 	    city: components.locality,
 	    country: components.political,
 	    zipCode: components.postal_code,

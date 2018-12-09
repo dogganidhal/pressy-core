@@ -1,8 +1,8 @@
 import {Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Person, PersonStatus} from "../person";
-import * as DTO from "../../../dto/index";
 import {IUser} from "..";
 import {Address} from "../../common/address";
+import { CreatePersonRequest } from "../../../dto";
 
 @Entity()
 export class Member implements IUser {
@@ -22,7 +22,7 @@ export class Member implements IUser {
 		return this.person.status === PersonStatus.ACTIVE;
 	}
 
-  public static create(createPersonRequest: DTO.person.CreatePersonRequest): Member {
+  public static create(createPersonRequest: CreatePersonRequest): Member {
     
     const member: Member = new Member();
     member.person = Person.create(createPersonRequest);

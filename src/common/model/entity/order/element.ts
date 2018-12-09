@@ -1,6 +1,6 @@
 import { Order } from './index';
 import {Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column,} from "typeorm";
-import * as DTO from "../../dto";
+import { CreateOrderElementRequest } from '../../dto';
 
 export enum ElementType {
   SHIRT = 1,
@@ -30,7 +30,7 @@ export class Element {
   @Column({nullable: true})
   public comment?: string;
 
-  public static create(order: Order, element: DTO.order.CreateOrderElementRequest): Element {
+  public static create(order: Order, element: CreateOrderElementRequest): Element {
 
     let elementEntity = new Element;
 

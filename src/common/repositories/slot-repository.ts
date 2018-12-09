@@ -2,9 +2,9 @@ import {Slot, SlotType} from '../model/entity/slot';
 import {Brackets, Repository} from "typeorm";
 import {DateUtils} from '../utils';
 import {BaseRepository} from './base-repository';
-import {slot} from "../model/dto";
 import {DriverRepository} from "./users/driver-repository";
 import {DriverSlot} from "../model/entity/users/driver/driver-slot";
+import { CreateSlotRequest } from '../model/dto';
 
 
 export class SlotRepository extends BaseRepository {
@@ -16,7 +16,7 @@ export class SlotRepository extends BaseRepository {
     return this._slotRepository.findOne(id);
   }
 
-  public async createSlot(createSlotRequest: slot.CreateSlotRequest): Promise<Slot> {
+  public async createSlot(createSlotRequest: CreateSlotRequest): Promise<Slot> {
 
     let slot = Slot.create(createSlotRequest);
 

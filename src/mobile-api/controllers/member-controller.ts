@@ -6,13 +6,15 @@ import {Database} from "../../common/db";
 import {crypto} from "../../services/crypto";
 import {exception} from "../../common/errors";
 import {http} from "../../common/utils/http";
-import * as DTO from "../../common/model/dto";
 import {Authenticate, JSONResponse} from "../../common/annotations";
 import {GeocodeService} from "../../services/geocode-service";
 import {Address} from "../../common/model/entity/common/address";
 import { MemberMailSender } from "../../common/mail-senders/member-mail-sender";
 import { InternalServerError } from "typescript-rest/dist/server-errors";
 import { Security, Produces, Tags } from "typescript-rest-swagger";
+import { MemberInfo, CreatePersonRequest, Address as AddressDTO, MobileDevice, CreateAddressRequest, UpdatePersonInfoRequest } from "../../common/model/dto";
+
+class MemberInformation extends MemberInfo {}
 
 @Tags("Member")
 @Accept("application/json")
@@ -28,21 +30,21 @@ export class MemberController extends BaseController {
 	@JSONResponse
   @Authenticate(crypto.SigningCategory.MEMBER)
   @GET
-	public async getMemberInfo() {
+	public async getMemberInfo(): Promise<MemberInformation> {
 
-		let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
+		let memberEntity = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
 		
-		if (!member)
+		if (!memberEntity)
 			throw new InternalServerError;
 
-		return new DTO.member.MemberInfo({
-			id: member.id,
-			firstName: member.person.firstName,
-			lastName: member.person.lastName,
-			created: member.person.created,
-			email: member.person.email,
-			phone: member.person.phone,
-			addresses: member.addresses.map(a => new DTO.address.Address({
+		return new MemberInfo({
+			id: memberEntity.id,
+			firstName: memberEntity.person.firstName,
+			lastName: memberEntity.person.lastName,
+			created: memberEntity.person.created,
+			email: memberEntity.person.email,
+			phone: memberEntity.person.phone,
+			addresses: memberEntity.addresses.map(a => new AddressDTO({
 				streetName: a.streetName, streetNumber: a.streetNumber,
 				zipCode: a.zipCode, city: a.city, country: a.country, formattedAddress: a.formattedAddress
 			}))
@@ -52,9 +54,9 @@ export class MemberController extends BaseController {
 
 	@JSONResponse
   @POST
-  public async createMember() {
+  public async createMember(test: CreatePersonRequest) {
 
-	  let newMember = http.parseJSONBody(this.getPendingRequest().body, DTO.person.CreatePersonRequest);
+	  let newMember = http.parseJSONBody(this.getPendingRequest().body, CreatePersonRequest);
 	  let member = await this._memberRepository.createMember(newMember);
 	  let personActivationCode = await this._personRepository.createActivationCode(member.person);
 		let memberMailSender = new MemberMailSender;
@@ -85,7 +87,7 @@ export class MemberController extends BaseController {
     if (!member)
     	throw new exception.AccountNotFoundException(this.pendingPerson.email);
 
-    const mobileDevice = http.parseJSONBody(this.getPendingRequest().body, DTO.person.MobileDevice);
+    const mobileDevice = http.parseJSONBody(this.getPendingRequest().body, MobileDevice);
     
     await this._memberRepository.registerMobileDevice(member, mobileDevice);
 
@@ -115,9 +117,8 @@ export class MemberController extends BaseController {
   @PATCH
   public async updateMemberInfo() {
 
-  	let person = this.pendingPerson;
-  	let updateRequest = http.parseJSONBody(this.getPendingRequest().body, DTO.person.UpdatePersonInfoRequest);
-		await this._personRepository.updatePersonInfo(person, updateRequest);
+  	let updateRequest = http.parseJSONBody(this.getPendingRequest().body, UpdatePersonInfoRequest);
+		await this._personRepository.updatePersonInfo(this.pendingPerson, updateRequest);
 		
 		return new Return.RequestAccepted("/v1/member");
 
@@ -128,7 +129,7 @@ export class MemberController extends BaseController {
   @Path("/addresses")
 	public async setMemberAddresses() {
 
-		let addresses = http.parseJSONArrayBody(this.getPendingRequest().body, DTO.address.CreateAddressRequest);
+		let addresses = http.parseJSONArrayBody(this.getPendingRequest().body, CreateAddressRequest);
 		let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
 
 		if (!member)

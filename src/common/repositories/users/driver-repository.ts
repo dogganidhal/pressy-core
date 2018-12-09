@@ -3,9 +3,9 @@ import { Repository} from "typeorm";
 import {exception} from "../../errors";
 import {ActivationCode, Person} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
-import * as DTO from "../../model/dto";
 import {Driver} from "../../model/entity/users/driver/driver";
 import {DriverSlot} from "../../model/entity/users/driver/driver-slot";
+import { CreatePersonRequest, MobileDevice as MobileDeviceDTO, AssignDriverSlotsRequest } from '../../model/dto';
 
 
 
@@ -55,7 +55,7 @@ export class DriverRepository extends BaseRepository {
 
 	}
 
-	public async createDriver(createDriverRequest: DTO.person.CreatePersonRequest): Promise<Driver> {
+	public async createDriver(createDriverRequest: CreatePersonRequest): Promise<Driver> {
 
 		const { email, phone } = createDriverRequest;
 
@@ -108,7 +108,7 @@ export class DriverRepository extends BaseRepository {
 
 	}
 
-	public async registerMobileDevice(driver: Driver, mobileDeviceDTO: DTO.person.MobileDevice): Promise<MobileDevice> {
+	public async registerMobileDevice(driver: Driver, mobileDeviceDTO: MobileDeviceDTO): Promise<MobileDevice> {
 
 		const device = MobileDevice.create(driver.person, mobileDeviceDTO.deviceId);
 		await this._mobileDeviceRepository.insert(device);
@@ -133,7 +133,7 @@ export class DriverRepository extends BaseRepository {
 
 	}
 
-	public async assignDriverSlots(driver: Driver, slots: DTO.driver.AssignDriverSlotsRequest[]): Promise<Driver> {
+	public async assignDriverSlots(driver: Driver, slots: AssignDriverSlotsRequest[]): Promise<Driver> {
 
 		let driverSlots: DriverSlot[] = [];
 
