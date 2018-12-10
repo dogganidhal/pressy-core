@@ -1,9 +1,9 @@
 import {exception} from "../errors";
 import {BaseController} from "../controller/base-controller";
-import {crypto} from "../../services/crypto";
+import {crypto, SigningCategory} from "../../services/crypto";
 
 
-export function Authenticate<TController extends BaseController>(category: crypto.SigningCategory | crypto.SigningCategory[]): (target: TController, property: string, propertyDescriptor: PropertyDescriptor) => void {
+export function Authenticate<TController extends BaseController>(category: SigningCategory | SigningCategory[]): (target: TController, property: string, propertyDescriptor: PropertyDescriptor) => void {
 
 	return function<TController extends BaseController>(_: TController, __: string, propertyDescriptor: PropertyDescriptor) {
 
