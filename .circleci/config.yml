@@ -1,7 +1,7 @@
 version: 2 # use CircleCI 2.0
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
-    working_directory: ~/mern-starter # directory where steps will run
+    # working_directory: ~/dogganidhal # directory where steps will run
     docker: # run the steps with Docker
       - image: circleci/node:4.8.2 # ...with this image as the primary container; this is where all `steps` will run
     steps: # a collection of executable commands
@@ -21,14 +21,14 @@ jobs: # a collection of steps
       - run: # run tests
           name: test
           command: npm test
-      - store_artifacts: # special step to save test results as as artifact
-          path: test-results.xml
-          prefix: tests
-      - store_artifacts:
-          path: coverage
-          prefix: coverage
-      - store_test_results: # special step to upload test results for display in Test Summary
-          path: test-results.xml
+      # - store_artifacts: # special step to save test results as as artifact
+      #     path: test-results.xml
+      #     prefix: tests
+      # - store_artifacts:
+      #     path: coverage
+      #     prefix: coverage
+      # - store_test_results: # special step to upload test results for display in Test Summary
+      #     path: test-results.xml
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
   deploy:
     docker:
