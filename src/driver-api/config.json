@@ -1,0 +1,5 @@
+{
+  "serviceName": "driver-api",
+  "contollers": "src/driver-api/controllers/*",
+  "swaggerResourceFile": "./dist/docs/driver-api/swagger.json"
+}

@@ -1,20 +1,25 @@
 import express, { Application, Request, Response, NextFunction, Router } from "express";
 import { Server } from "typescript-rest";
 import * as bodyParser from "body-parser";
-import {Database} from "../common/db";
-import {exception} from "../common/errors";
-import {http} from "../common/utils/http";
 import { MethodNotAllowedError } from "typescript-rest/dist/server-errors";
 import open = require("open");
-import { getConfig } from "../config";
+import { Database } from "../db";
+import { http } from "../utils/http";
+import { exception } from "../errors";
+import { getConfig } from "../../config";
 
-export class DriverAPI {
+interface APIConfig {
+  serviceName: string;
+  contollers: string | string[];
+  swaggerResourceFile?: string;
+}
 
-	private readonly _express: Application;
-	private _apiRouter: Router = Router();
+export class APIV1 {
 
-	constructor() {
-		this._express = express();
+  protected readonly _express: Application = express();
+	protected _apiRouter: Router = Router();
+
+	constructor(protected config: APIConfig) {
 		this._middleware();
 		this._config()
 			.then(_ => console.info("Finished loading configuration"))
@@ -24,8 +29,11 @@ export class DriverAPI {
 	private async _config() {
 		await Database.createConnection();
 		
-		Server.loadServices(this._apiRouter, "src/driver-api/controllers/*");
-    Server.swagger(this._express, "./dist/docs/driver-api/swagger.json", "/v1/docs", undefined, ['http', 'https']);
+		Server.loadServices(this._apiRouter, this.config.contollers);
+    if (this.config.swaggerResourceFile) {
+			let scheme = process.env.NODE_ENV == "local" ? "http" : "https";
+			Server.swagger(this._express, this.config.swaggerResourceFile, "/v1/docs", undefined, [scheme]);
+		}
 
 		this._express.use('/v1', this._apiRouter);
 
@@ -42,7 +50,7 @@ export class DriverAPI {
 			}
 		});
 		if (process.env.NODE_ENV === "local" && !process.env.TEST_ENV)
-      open(`http://localhost:${getConfig().runtime.port["driver-api"]}/v1/docs`);
+      open(`http://localhost:${getConfig().runtime.port[this.config.serviceName]}/v1/docs`);
 	}
 
 	private _middleware() {

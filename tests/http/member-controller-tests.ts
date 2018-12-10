@@ -1,7 +1,7 @@
 import Randomstring from 'randomstring';
 import request from "supertest";
 import { Connection } from 'typeorm';
-import { MobileAPI } from "../../src/mobile-api";
+import { APIV1 } from "../../src/common/http/api";
 import { MemberRepository } from '../../src/common/repositories/users/member-repository';
 import {APIError} from "../../src/common/errors/api-error";
 import {Database} from "../../src/common/db";
@@ -15,7 +15,7 @@ describe("Testing MemberController Endpoints =>", () => {
 
   let connection: Connection;
   let memberRepository: MemberRepository;
-  const api: MobileAPI = new MobileAPI;
+  const api = new APIV1(require("../../src/mobile-api/config"));
   const memberDTO: CreatePersonRequest = {
     firstName: Randomstring.generate(10),
     lastName: Randomstring.generate(10),

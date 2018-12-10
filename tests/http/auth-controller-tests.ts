@@ -1,11 +1,11 @@
 import { MemberRepository } from '../../src/common/repositories/users/member-repository';
 import { Connection } from 'typeorm';
-import { MobileAPI } from "../../src/mobile-api";
 import request from "supertest";
 import {APIError} from "../../src/common/errors/api-error";
 import RandomString from "randomstring";
 import {Database} from "../../src/common/db";
-import {crypto, AuthTokenType} from "../../src/services/crypto";
+import {AuthTokenType} from "../../src/services/crypto";
+import { APIV1 } from "../../src/common/http/api";
 import {http} from "../../src/common/utils/http";
 import { CreatePersonRequest, LoginResponse } from '../../src/common/model/dto';
 
@@ -13,7 +13,7 @@ describe("Testing Authentication Endpoints", () => {
 
 	let connection: Connection;
 	let memberRepository: MemberRepository;
-	const api: MobileAPI = new MobileAPI;
+	const api = new APIV1(require("../../src/mobile-api/config"));
 	const testMember: CreatePersonRequest = {
 		firstName: RandomString.generate(10),
 		lastName: RandomString.generate(10),

@@ -1,0 +1,5 @@
+{
+  "serviceName": "admin-api",
+  "contollers": "src/admin-api/controllers/*",
+  "swaggerResourceFile": "./dist/docs/admin-api/swagger.json"
+}

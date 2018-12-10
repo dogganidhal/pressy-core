@@ -24,6 +24,7 @@ interface ServiceHost {
 
 interface RuntimeConfig {
   port: {
+    [key: string]: number;
     "mobile-api": number;
     "driver-api": number;
     "admin-api": number;

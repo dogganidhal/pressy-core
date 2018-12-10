@@ -1,0 +1,5 @@
+{
+  "serviceName": "mobile-api",
+  "contollers": "src/mobile-api/controllers/*",
+  "swaggerResourceFile": "./dist/docs/mobile-api/swagger.json"
+}
