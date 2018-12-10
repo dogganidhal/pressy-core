@@ -1,7 +1,6 @@
 version: 2 # use CircleCI 2.0
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
-    # working_directory: ~/dogganidhal # directory where steps will run
     docker: # run the steps with Docker
       - image: circleci/node:10.0.0 # ...with this image as the primary container; this is where all `steps` will run
       - image: node:10.0.0 # for the Docker Library image
@@ -22,15 +21,6 @@ jobs: # a collection of steps
       - run: # run tests
           name: test
           command: npm test
-      # - store_artifacts: # special step to save test results as as artifact
-      #     path: test-results.xml
-      #     prefix: tests
-      # - store_artifacts:
-      #     path: coverage
-      #     prefix: coverage
-      # - store_test_results: # special step to upload test results for display in Test Summary
-      #     path: test-results.xml
-      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
   deploy:
     docker:
       - image: buildpack-deps:trusty
@@ -39,15 +29,15 @@ jobs: # a collection of steps
       - run:
           name: Deploy Mobile API to Heroku
           command: |
-            git push https://heroku:04843c0f-09ac-4737-a369-d015e5fe617b@git.heroku.com/pressy-mobile-api-dev.git develop
+            git push https://heroku:04843c0f-09ac-4737-a369-d015e5fe617b@git.heroku.com/pressy-mobile-api-dev.git master
       - run:
           name: Deploy Admin API to Heroku
           command: |
-            git push https://heroku:04843c0f-09ac-4737-a369-d015e5fe617b@git.heroku.com/pressy-admin-api-dev.git develop
+            git push https://heroku:04843c0f-09ac-4737-a369-d015e5fe617b@git.heroku.com/pressy-admin-api-dev.git master
       - run:
           name: Deploy Driver API to Heroku
           command: |
-            git push https://heroku:04843c0f-09ac-4737-a369-d015e5fe617b@git.heroku.com/pressy-driver-api-dev.git develop
+            git push https://heroku:04843c0f-09ac-4737-a369-d015e5fe617b@git.heroku.com/pressy-driver-api-dev.git master
 workflows:
   version: 2
   build-deploy:
@@ -58,4 +48,4 @@ workflows:
             - build
           filters:
             branches:
-              only: develop
+              only: master
