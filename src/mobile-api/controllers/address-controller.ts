@@ -4,11 +4,12 @@ import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
 import {SigningCategory} from "../../services/crypto";
 import {http} from "../../common/utils/http";
-import {Authenticate, JSONResponse} from "../../common/annotations";
+import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import { InternalServerError } from "typescript-rest/dist/server-errors";
 import { Security, Produces, Tags, Response } from "typescript-rest-swagger";
 import { AddressRepository } from "../../common/repositories/address-repository";
 import {Address, UpdateAddressRequest, CreateAddressRequest, DeleteAddressRequest} from "../../common/model/dto";
+import {JSONBody} from "../../common/annotations/json-body";
 
 @Produces("application/json")
 @Tags("Addresses")
@@ -20,7 +21,7 @@ export class AddressController extends BaseController {
   private _addressRepository: AddressRepository = new AddressRepository(Database.getConnection());
 
   @Security("Bearer")
-  @JSONResponse
+  @JSONEndpoint
   @Authenticate(SigningCategory.MEMBER)
   @GET
   public async getMemberAddresses(): Promise<Address[]> {
@@ -36,46 +37,41 @@ export class AddressController extends BaseController {
 
   @Response<void>(http.HttpStatus.HTTP_STATUS_ACCEPTED)
   @Security("Bearer")
-  @JSONResponse
+  @JSONEndpoint
   @Authenticate(SigningCategory.MEMBER)
   @PATCH
-  public async updateMemberAddress(request: UpdateAddressRequest) {
-
-    let updateRequest = http.parseJSONBody(this.getPendingRequest().body, UpdateAddressRequest);
-    await this._addressRepository.updateAddress(updateRequest);
-
+  public async updateMemberAddress(@JSONBody(UpdateAddressRequest) request: UpdateAddressRequest) {
+    await this._addressRepository.updateAddress(request);
   }
 
-  @JSONResponse
+  @JSONEndpoint
   @Security("Bearer")
   @Authenticate(SigningCategory.MEMBER)
   @POST
-  public async createAddress(request: CreateAddressRequest): Promise<Address> {
+  public async createAddress(@JSONBody(CreateAddressRequest) request: CreateAddressRequest): Promise<Address> {
 
-    let createAddressRequest = http.parseJSONBody(this.getPendingRequest().body, CreateAddressRequest);
     let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
 
     if (!member)
       throw new InternalServerError;
 
-    return await this._addressRepository.createAddress(createAddressRequest, member);
+    return await this._addressRepository.createAddress(request, member);
 
   }
 
   @Response<void>(http.HttpStatus.HTTP_STATUS_ACCEPTED)
-  @JSONResponse
+  @JSONEndpoint
   @Security("Bearer")
   @Authenticate(SigningCategory.MEMBER)
   @DELETE
-  public async deleteAddress(request: DeleteAddressRequest) {
+  public async deleteAddress(@JSONBody(DeleteAddressRequest) request: DeleteAddressRequest) {
 
-    let deleteAddressRequest = http.parseJSONBody(this.getPendingRequest().body, DeleteAddressRequest);
     let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
 
     if (!member)
       throw new InternalServerError;
 
-    await this._addressRepository.deleteAddress(deleteAddressRequest, member);
+    await this._addressRepository.deleteAddress(request, member);
 
   }
 

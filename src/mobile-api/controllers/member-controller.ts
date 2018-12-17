@@ -6,12 +6,13 @@ import {Database} from "../../common/db";
 import {SigningCategory, AuthCredentials, crypto} from "../../services/crypto";
 import {exception} from "../../common/errors";
 import {http} from "../../common/utils/http";
-import {Authenticate, JSONResponse} from "../../common/annotations";
+import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import {GeocodeService} from "../../services/geocode-service";
 import { MemberMailSender } from "../../common/mail-senders/member-mail-sender";
 import { InternalServerError } from "typescript-rest/dist/server-errors";
 import { Security, Produces, Tags } from "typescript-rest-swagger";
 import { MemberInfo, CreatePersonRequest, Address as AddressDTO, MobileDevice, CreateAddressRequest, UpdatePersonInfoRequest } from "../../common/model/dto";
+import {JSONBody} from "../../common/annotations/json-body";
 
 @Produces("application/json")
 @Tags("Members")
@@ -23,7 +24,7 @@ export class MemberController extends BaseController {
   private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
 
 	@Security("Bearer")
-	@JSONResponse
+	@JSONEndpoint
   @Authenticate(SigningCategory.MEMBER)
   @GET
 	public async getMemberInfo(): Promise<MemberInfo> {
@@ -45,12 +46,11 @@ export class MemberController extends BaseController {
 
   }
 
-	@JSONResponse
+	@JSONEndpoint
   @POST
-  public async createMember(test: CreatePersonRequest): Promise<AuthCredentials> {
+  public async createMember(@JSONBody(CreatePersonRequest) request: CreatePersonRequest): Promise<AuthCredentials> {
 
-	  let newMember = http.parseJSONBody(this.getPendingRequest().body, CreatePersonRequest);
-	  let member = await this._memberRepository.createMember(newMember);
+	  let member = await this._memberRepository.createMember(request);
 	  let personActivationCode = await this._personRepository.createActivationCode(member.person);
 		let memberMailSender = new MemberMailSender;
 
@@ -60,25 +60,23 @@ export class MemberController extends BaseController {
 
   }
 
+  @JSONEndpoint
   @Path("/activate/:code")
   @GET
   public async activateMember(@PathParam("code") code: string) {
 
 		await this._personRepository.activatePerson(code);
-		
 		return new Return.RequestAccepted("/v1/member");
 
   }
 
 	@Security("Bearer")
-	@JSONResponse
+	@JSONEndpoint
   @Authenticate(SigningCategory.MEMBER)
   @PATCH
-  public async updateMemberInfo(request: UpdatePersonInfoRequest) {
+  public async updateMemberInfo(@JSONBody(UpdatePersonInfoRequest) request: UpdatePersonInfoRequest) {
 
-  	let updateRequest = http.parseJSONBody(this.getPendingRequest().body, UpdatePersonInfoRequest);
-		await this._personRepository.updatePersonInfo(this.pendingPerson, updateRequest);
-		
+		await this._personRepository.updatePersonInfo(this.pendingPerson, request);
 		return new Return.RequestAccepted("/v1/member");
 
   }

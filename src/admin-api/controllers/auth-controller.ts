@@ -1,6 +1,6 @@
 import { BaseController } from "../../common/controller/base-controller";
 import { Path, POST } from "typescript-rest";
-import { JSONResponse } from "../../common/annotations";
+import { JSONEndpoint } from "../../common/annotations";
 import { http } from "../../common/utils/http";
 import { PersonRepository } from "../../common/repositories/users/person-repository";
 import { Database } from "../../common/db";
@@ -19,7 +19,7 @@ export class AuthController extends BaseController {
   private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
 
   @Path("/login")
-  @JSONResponse
+  @JSONEndpoint
   @POST
   public async login(request: LoginRequest): Promise<AuthCredentials> {
 

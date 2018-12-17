@@ -3,7 +3,7 @@ import { Tags, Security, Produces } from "typescript-rest-swagger";
 import { OrderRepository } from './../../common/repositories/order/order-repository';
 import {BaseController} from "../../common/controller/base-controller";
 import {Path, POST} from "typescript-rest";
-import { JSONResponse, Authenticate } from "../../common/annotations";
+import { JSONEndpoint, Authenticate } from "../../common/annotations";
 import { SigningCategory } from "../../services/crypto";
 import { http } from "../../common/utils/http";
 import { Database } from '../../common/db';
@@ -19,7 +19,7 @@ export class OrderController extends BaseController {
 
 	@Security("Bearer")
   @Path("/assign-driver")
-	@JSONResponse
+	@JSONEndpoint
 	@Authenticate(SigningCategory.ADMIN)
 	@POST
 	public async assignDriverToOrder(request: AssignDriverSlotsRequest) {

@@ -7,9 +7,10 @@ import {Database} from "../../common/db";
 import {SigningCategory} from "../../services/crypto";
 import {MemberRepository} from "../../common/repositories/users/member-repository";
 import {http} from "../../common/utils/http";
-import {Authenticate, JSONResponse} from "../../common/annotations";
+import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import { OrderMailSender } from "../../common/mail-senders/order-mail-sender";
 import { CreateOrderRequest, ISlot, IAddress, IPersonInfo, OrderElement, IOrderElement, Order, Slot } from "../../common/model/dto";
+import {JSONBody} from "../../common/annotations/json-body";
 
 
 @Produces("application/json")
@@ -22,15 +23,14 @@ export class OrderController extends BaseController {
   private _slotsRepository: SlotRepository = new SlotRepository(Database.getConnection());
 
 	@Security("Bearer")
-  @JSONResponse
+  @JSONEndpoint
   @Authenticate(SigningCategory.MEMBER)
   @POST
-  public async createOrder(request: CreateOrderRequest) {
+  public async createOrder(@JSONBody(CreateOrderRequest) request: CreateOrderRequest) {
 
-	  const dto = http.parseJSONBody(this.getPendingRequest().body, CreateOrderRequest);
 	  const member = await this._memberRepository.getMemberFromPersonOrFail(this.pendingPerson);
 
-		let order = await this._orderRepository.createOrder(member, dto);
+		let order = await this._orderRepository.createOrder(member, request);
 		let orderMailSender = new OrderMailSender;
 
 		orderMailSender.sendOrderInformationMailToAdmins(order);
@@ -40,7 +40,7 @@ export class OrderController extends BaseController {
   }
 
 	@Security("Bearer")
-  @JSONResponse
+  @JSONEndpoint
   @Authenticate(SigningCategory.MEMBER)
   @GET
   public async getOrders() {
@@ -97,13 +97,12 @@ export class OrderController extends BaseController {
 
   }
 
-  @JSONResponse
+  @JSONEndpoint
   @Path("/slots")
   @GET
   public async getSlots(): Promise<Slot[]> {
 
     let slots = await this._slotsRepository.getNextAvailableSlots();
-
 	  return slots.map(slot => new Slot(slot));
 
   }

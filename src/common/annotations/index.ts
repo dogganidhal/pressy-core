@@ -1,3 +1,3 @@
 export * from "./required-field";
-export * from "./json-response";
+export * from "./json-endpoint";
 export * from "./authenticate";

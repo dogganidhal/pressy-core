@@ -107,7 +107,7 @@ describe("Testing MemberController Endpoints =>", () => {
 		let {accessToken} = crypto.signAuthToken(member.person, SigningCategory.MEMBER);
 
 		return request(api.getApp())
-			.post("/v1/member/devices")
+			.post("/v1/devices")
 			.set("Content-Type", "application/json")
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send(mobileDevice)

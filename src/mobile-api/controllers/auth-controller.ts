@@ -7,8 +7,9 @@ import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
 import {crypto, SigningCategory, AuthCredentials} from "../../services/crypto";
 import {http} from "../../common/utils/http";
-import {JSONResponse} from "../../common/annotations";
+import {JSONEndpoint} from "../../common/annotations";
 import { LoginRequest, RefreshCredentialsRequest, ResetCodeRequest, ResetCode, ResetPasswordRequest } from "../../common/model/dto";
+import {JSONBody} from "../../common/annotations/json-body";
 
 
 @Produces("application/json")
@@ -18,44 +19,41 @@ export class AuthController extends BaseController {
 
   private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
 
-  @JSONResponse
+  @JSONEndpoint
   @POST
-  public async login(request: LoginRequest): Promise<AuthCredentials> {
+  public async login(@JSONBody(LoginRequest) request: LoginRequest): Promise<AuthCredentials> {
 
-	  let loginRequest = http.parseJSONBody(this.getPendingRequest().body, LoginRequest);
-	  let person = await this._personRepository.getPersonByEmail(loginRequest.email);
+	  let person = await this._personRepository.getPersonByEmail(request.email);
 
 	  if (!person)
-		  throw new exception.AccountNotFoundException(loginRequest.email);
+		  throw new exception.AccountNotFoundException(request.email);
 
-	  if (!bcrypt.compareSync(loginRequest.password, person.passwordHash))
+	  if (!bcrypt.compareSync(request.password, person.passwordHash))
 		  throw new exception.WrongPasswordException;
 
 	  return crypto.signAuthToken(person, SigningCategory.MEMBER);
 
   }
 
-  @JSONResponse
+  @JSONEndpoint
   @Path("/refresh")
   @POST
-  public async refreshCredentials(request: RefreshCredentialsRequest): Promise<AuthCredentials> {
+  public async refreshCredentials(@JSONBody(RefreshCredentialsRequest) request: RefreshCredentialsRequest): Promise<AuthCredentials> {
 
-	  const {refreshToken} = http.parseJSONBody(this.getPendingRequest().body, RefreshCredentialsRequest);
+	  const {refreshToken} = request;
 	  return await crypto.refreshCredentials(refreshToken);
 
   }
 
-  @JSONResponse
+  @JSONEndpoint
   @Path("/reset")
   @POST
-  public async getResetPasswordCode(request: ResetCodeRequest): Promise<ResetCode> {
+  public async getResetPasswordCode(@JSONBody(ResetCodeRequest) request: ResetCodeRequest): Promise<ResetCode> {
 
-	  const resetCodeRequest = http.parseJSONBody(this.getPendingRequest().body, ResetCodeRequest);
-
-	  const person = await this._personRepository.getPersonByEmail(resetCodeRequest.email);
+	  let person = await this._personRepository.getPersonByEmail(request.email);
 
 	  if (person == undefined)
-	    throw new exception.AccountNotFoundException(resetCodeRequest.email);
+	    throw new exception.AccountNotFoundException(request.email);
 
 	  const resetCode = await this._personRepository.createPasswordResetCode(person);
 
@@ -66,14 +64,12 @@ export class AuthController extends BaseController {
 
   }
 
-  @JSONResponse
+  @JSONEndpoint
   @Path("/reset/:code")
   @POST
-  public async resetPassword(@PathParam("code") code: string, request: ResetPasswordRequest) {
+  public async resetPassword(@PathParam("code") code: string, @JSONBody(ResetCodeRequest) request: ResetPasswordRequest) {
 
-	  const resetPasswordRequest = http.parseJSONBody(this.getPendingRequest().body, ResetPasswordRequest);
-	  const person = await this._personRepository.resetPassword(code, resetPasswordRequest);
-
+	  const person = await this._personRepository.resetPassword(code, request);
 	  return new Return.RequestAccepted(`/v1/member/${person.id}`);
 
   }
