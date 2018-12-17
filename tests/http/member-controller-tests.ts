@@ -7,7 +7,7 @@ import {APIError} from "../../src/common/errors/api-error";
 import {Database} from "../../src/common/db";
 import uuid = require("uuid");
 import {MobileDevice} from "../../src/common/model/entity/users/device";
-import {SigningCategory, crypto} from "../../src/services/crypto";
+import {SigningCategory, crypto, AuthCredentials} from "../../src/services/crypto";
 import {http} from "../../src/common/utils/http";
 import { CreatePersonRequest, MobileDevice as MobileDeviceDTO} from '../../src/common/model/dto';
 
@@ -44,8 +44,15 @@ describe("Testing MemberController Endpoints =>", () => {
       .post("/v1/member")
       .set("Content-Type", "application/json")
       .send(memberDTO)
-	    .expect(http.HttpStatus.HTTP_STATUS_CREATED)
-	    .then(() => {
+	    .expect(http.HttpStatus.HTTP_STATUS_OK)
+	    .then((response) => {
+
+	     	let authCredentials = response.body as AuthCredentials;
+	     	expect(authCredentials.accessToken).not.toBeNull();
+				expect(authCredentials.refreshToken).not.toBeNull();
+				expect(authCredentials.type).toEqual("Bearer");
+				expect(authCredentials.expiresIn).toEqual(3600);
+
 		    done();
 	    })
 	    .catch(error => {

@@ -40,10 +40,7 @@ export class MemberController extends BaseController {
 			created: memberEntity.person.created,
 			email: memberEntity.person.email,
 			phone: memberEntity.person.phone,
-			addresses: memberEntity.addresses.map(a => new AddressDTO({
-				id: a.id, streetName: a.streetName, streetNumber: a.streetNumber,
-				zipCode: a.zipCode, city: a.city, country: a.country, formattedAddress: a.formattedAddress
-			}))
+			addresses: memberEntity.addresses.map(a => new AddressDTO(a))
 		});
 
   }
