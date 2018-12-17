@@ -161,6 +161,12 @@ export namespace exception {
 	  constructor() {
 		  super('CannotCreateAddressException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Can't create address, must provide either Google Place id or Coordinates`);
 	  }
+  }
+  
+  export class AddressNotFoundException extends APIException {
+	  constructor(id: number) {
+		  super('AddressNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Can't find address with id '${id}'`);
+	  }
 	}
 
 	export class CannotFindMemberException extends APIException {

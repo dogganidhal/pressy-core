@@ -1,0 +1,75 @@
+import { BaseRepository } from "./base-repository";
+import { Repository } from "typeorm";
+import { UpdateAddressRequest, CreateAddressRequest, Address } from "../model/dto";
+import { GeocodeService } from "../../services/geocode-service";
+import { exception } from "../errors";
+import { Member } from "../model/entity/users/member/member";
+import { Address as AddressEntity } from "../model/entity/common/address";
+
+
+export class AddressRepository extends BaseRepository {
+
+  private _addressRepository: Repository<AddressEntity> = this.connection.getRepository(AddressEntity);
+  private _geocodeService: GeocodeService = new GeocodeService();
+
+  public async getMemberAddresses(member: Member): Promise<Address[]> {
+    return await this._addressRepository.find({member: member});
+  }
+ 
+  public async createAddress(createAddressRequest: CreateAddressRequest, member: Member) {
+    
+    let addressDTO: Address;
+
+    if (createAddressRequest.googlePlaceId)
+      addressDTO = await this._geocodeService.getAddressWithPlaceId(createAddressRequest.googlePlaceId);
+    else if (createAddressRequest.coordinates)
+      addressDTO = await this._geocodeService.getAddressWithCoordinates(createAddressRequest.coordinates);
+    else 
+      throw new exception.CannotCreateAddressException;
+
+    let address = AddressEntity.create({
+      ...addressDTO,
+      name: createAddressRequest.name,
+      extraLine: createAddressRequest.extraLine
+    });
+
+    address.member = member;
+    address = await this._addressRepository.save(address);
+    addressDTO.id = address.id;
+    addressDTO.name = createAddressRequest.name;
+    addressDTO.extraLine = createAddressRequest.extraLine;
+
+    return addressDTO;
+    
+  }
+
+  public async updateAddress(request: UpdateAddressRequest) {
+
+    let address = await this._addressRepository.findOne(request.addressId);
+    
+    if (!address)
+      throw new exception.AddressNotFoundException(request.addressId);
+
+    let newAddressDTO = null;
+
+    if (request.addressDetails.googlePlaceId)
+      newAddressDTO = await this._geocodeService.getAddressWithPlaceId(request.addressDetails.googlePlaceId);
+    else if (request.addressDetails.coordinates)
+      newAddressDTO = await this._geocodeService.getAddressWithCoordinates(request.addressDetails.coordinates);
+
+    if (newAddressDTO != null)
+      address = AddressEntity.create({
+        ...newAddressDTO,
+        id: address.id
+      });
+
+    console.log(address);
+
+    address.name = request.addressDetails.name;
+    address.extraLine = request.addressDetails.extraLine;
+
+    await this._addressRepository.save(address);
+    
+  }
+
+}

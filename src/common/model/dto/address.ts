@@ -9,6 +9,8 @@ export class DeleteAddressRequest {
 
 export class CreateAddressRequest {
 
+	public name?: string;
+	public extraLine?: string;
 	public googlePlaceId?: string;
 	public coordinates?: {
 		latitude: number;
@@ -17,31 +19,50 @@ export class CreateAddressRequest {
 
 }
 
+export class UpdateAddressRequest {
+
+	@Required()
+	public addressId: number;
+
+	@Required(CreateAddressRequest)
+	public addressDetails: CreateAddressRequest;
+
+}
+
 export interface IAddress {
+	id?: number;
 	streetName: string;
 	streetNumber: string;
 	city: string;
 	country: string;
 	zipCode: string;
 	formattedAddress: string;
+	name?: string;
+	extraLine?: string;
 }
 
 export class Address {
 
+	public id?: number;
 	public streetName: string;
 	public streetNumber: string;
 	public city: string;
 	public country: string;
 	public zipCode: string;
 	public formattedAddress: string;
+	public name?: string;
+	public extraLine?: string;
 
 	constructor(address: IAddress) {
+		this.id = address.id;
 		this.streetName = address.streetName;
 		this.streetNumber = address.streetNumber;
 		this.city = address.city;
 		this.zipCode = address.zipCode;
 		this.country = address.country;
 		this.formattedAddress = address.formattedAddress;
+		this.name = address.name;
+		this.extraLine = address.extraLine;
 	}
 
 }

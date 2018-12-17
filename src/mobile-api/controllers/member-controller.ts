@@ -3,12 +3,11 @@ import {PersonRepository} from '../../common/repositories/users/person-repositor
 import {MemberRepository} from '../../common/repositories/users/member-repository';
 import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
-import {SigningCategory} from "../../services/crypto";
+import {SigningCategory, AuthCredentials, crypto} from "../../services/crypto";
 import {exception} from "../../common/errors";
 import {http} from "../../common/utils/http";
 import {Authenticate, JSONResponse} from "../../common/annotations";
 import {GeocodeService} from "../../services/geocode-service";
-import {Address} from "../../common/model/entity/common/address";
 import { MemberMailSender } from "../../common/mail-senders/member-mail-sender";
 import { InternalServerError } from "typescript-rest/dist/server-errors";
 import { Security, Produces, Tags } from "typescript-rest-swagger";
@@ -22,7 +21,6 @@ export class MemberController extends BaseController {
 
   private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
   private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
-  private _geocodeService: GeocodeService = new GeocodeService();
 
 	@Security("Bearer")
 	@JSONResponse
@@ -43,7 +41,7 @@ export class MemberController extends BaseController {
 			email: memberEntity.person.email,
 			phone: memberEntity.person.phone,
 			addresses: memberEntity.addresses.map(a => new AddressDTO({
-				streetName: a.streetName, streetNumber: a.streetNumber,
+				id: a.id, streetName: a.streetName, streetNumber: a.streetNumber,
 				zipCode: a.zipCode, city: a.city, country: a.country, formattedAddress: a.formattedAddress
 			}))
 		});
@@ -52,7 +50,7 @@ export class MemberController extends BaseController {
 
 	@JSONResponse
   @POST
-  public async createMember(test: CreatePersonRequest) {
+  public async createMember(test: CreatePersonRequest): Promise<AuthCredentials> {
 
 	  let newMember = http.parseJSONBody(this.getPendingRequest().body, CreatePersonRequest);
 	  let member = await this._memberRepository.createMember(newMember);
@@ -61,7 +59,7 @@ export class MemberController extends BaseController {
 
 		memberMailSender.sendActivationCode(member, personActivationCode.code);
 
-		return new Return.NewResource(`/v1/member`);
+		return crypto.signAuthToken(member.person, SigningCategory.MEMBER);
 
   }
 
@@ -124,42 +122,6 @@ export class MemberController extends BaseController {
 		await this._personRepository.updatePersonInfo(this.pendingPerson, updateRequest);
 		
 		return new Return.RequestAccepted("/v1/member");
-
-  }
-
-	@Security("Bearer")
-  @Authenticate(SigningCategory.MEMBER)
-  @PATCH
-  @Path("/addresses")
-	public async setMemberAddresses(request: CreateAddressRequest) {
-
-		let addresses = http.parseJSONArrayBody(this.getPendingRequest().body, CreateAddressRequest);
-		let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
-
-		if (!member)
-			throw new exception.CannotFindMemberException(this.pendingPerson.email);
-
-		let addressEntities: Address[] = [];
-
-		for (let createAddressRequest of addresses) {
-
-			if (createAddressRequest.googlePlaceId) {
-				let addressDTO = await this._geocodeService.getAddressWithPlaceId(createAddressRequest.googlePlaceId);
-				addressEntities.push(Address.create(addressDTO));
-				continue;
-			}
-
-			if (!createAddressRequest.coordinates)
-				throw new exception.CannotCreateAddressException;
-
-			let addressDTO = await this._geocodeService.getAddressWithCoordinates(createAddressRequest.coordinates);
-			addressEntities.push(Address.create(addressDTO));
-
-		}
-
-		await this._memberRepository.setMemberAddresses(member, addressEntities);
-
-		return new Return.NewResource("/v1/member");
 
   }
 
