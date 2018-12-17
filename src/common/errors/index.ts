@@ -169,6 +169,12 @@ export namespace exception {
 	  }
 	}
 
+ export class CannotDeleteAddressException extends APIException {
+	constructor(id: number) {
+	 super('CannotDeleteAddressException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Address with id '${id}' can't be deleted`);
+	}
+ }
+
 	export class CannotFindMemberException extends APIException {
 		constructor(email: string) {
 			super('CannotFindMemberException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Can't find member with email '${email}'`);

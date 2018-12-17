@@ -69,13 +69,13 @@ export class AddressController extends BaseController {
   @DELETE
   public async deleteAddress(request: DeleteAddressRequest) {
 
-    let createAddressRequest = http.parseJSONBody(this.getPendingRequest().body, CreateAddressRequest);
+    let deleteAddressRequest = http.parseJSONBody(this.getPendingRequest().body, DeleteAddressRequest);
     let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
 
     if (!member)
       throw new InternalServerError;
 
-    return await this._addressRepository.createAddress(createAddressRequest, member);
+    await this._addressRepository.deleteAddress(deleteAddressRequest, member);
 
   }
 

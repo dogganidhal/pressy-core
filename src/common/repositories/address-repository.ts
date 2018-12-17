@@ -1,6 +1,6 @@
 import { BaseRepository } from "./base-repository";
 import { Repository } from "typeorm";
-import { UpdateAddressRequest, CreateAddressRequest, Address } from "../model/dto";
+import {UpdateAddressRequest, CreateAddressRequest, Address, DeleteAddressRequest} from "../model/dto";
 import { GeocodeService } from "../../services/geocode-service";
 import { exception } from "../errors";
 import { Member } from "../model/entity/users/member/member";
@@ -63,13 +63,24 @@ export class AddressRepository extends BaseRepository {
         id: address.id
       });
 
-    console.log(address);
-
     address.name = request.addressDetails.name;
     address.extraLine = request.addressDetails.extraLine;
 
     await this._addressRepository.save(address);
     
+  }
+
+  public async deleteAddress(request: DeleteAddressRequest, member: Member) {
+
+    let address = await this._addressRepository.findOne(request.addressId, {relations: ["member"]});
+
+    if (!address)
+      throw new exception.AddressNotFoundException(request.addressId);
+
+    if (!address.member || address.member.id != member.id)
+      throw new exception.CannotDeleteAddressException(request.addressId);
+
+    await this._addressRepository.delete({id: request.addressId});
   }
 
 }
