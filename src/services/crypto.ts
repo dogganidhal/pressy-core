@@ -108,7 +108,7 @@ export namespace crypto {
 					reject(new exception.AccessTokenNotFoundException);
 				}
 
-				if ((Array.isArray(category) && category.includes(payload.category)) || category === payload.category || payload.category == SigningCategory.SUPERUSER) {
+				if ((Array.isArray(category) && category.includes(payload.category)) || category === payload.category) {
 					resolve(person);
 					return;
 				}

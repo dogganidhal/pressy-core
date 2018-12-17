@@ -14,7 +14,7 @@ import { Security, Produces, Tags } from "typescript-rest-swagger";
 import { MemberInfo, CreatePersonRequest, Address as AddressDTO, MobileDevice, CreateAddressRequest, UpdatePersonInfoRequest } from "../../common/model/dto";
 
 @Produces("application/json")
-@Tags("Member")
+@Tags("Members")
 @Accept("application/json")
 @Path('/member')
 export class MemberController extends BaseController {
@@ -67,45 +67,6 @@ export class MemberController extends BaseController {
 		await this._personRepository.activatePerson(code);
 		
 		return new Return.RequestAccepted("/v1/member");
-
-  }
-
-	@Security("Bearer")
-  @Authenticate(SigningCategory.MEMBER)
-  @Path("/devices")
-  @POST
-  public async registerMobileDevice() {
-
-    const member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
-
-    if (!member)
-    	throw new exception.AccountNotFoundException(this.pendingPerson.email);
-
-    const mobileDevice = http.parseJSONBody(this.getPendingRequest().body, MobileDevice);
-    
-    await this._memberRepository.registerMobileDevice(member, mobileDevice);
-
-    return new Return.NewResource(`/v1/member/devices`);
-
-  }
-
-	@Security("Bearer")
-  @JSONResponse
-  @Authenticate(SigningCategory.MEMBER)
-  @Path("/devices")
-  @GET
-  public async getMobileDevices(): Promise<MobileDevice[]> {
-
-	  const member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
-
-	  if (!member)
-		  throw new exception.AccountNotFoundException(this.pendingPerson.email);
-
-	  let mobileDevices = await this._memberRepository.getMobileDevices(member);
-
-    return mobileDevices.map(device => {
-			return {deviceId: device.id};
-		});
 
   }
 

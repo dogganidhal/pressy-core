@@ -5,7 +5,6 @@ import {Member} from '../../model/entity/users/member/member';
 import {ActivationCode, Person} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
 import {validation} from "../../utils";
-import {Address} from "../../model/entity/common/address";
 import { CreatePersonRequest, MobileDevice as MobileDeviceDTO } from '../../model/dto';
 
 
@@ -15,11 +14,6 @@ export class MemberRepository extends BaseRepository {
   private _mobileDeviceRepository: Repository<MobileDevice> = this.connection.getRepository(MobileDevice);
   private _personRepository: Repository<Person> = this.connection.getRepository(Person);
   private _activationCodeRepository: Repository<ActivationCode> = this.connection.getRepository(ActivationCode);
-  private _addressRepository: Repository<Address> = this.connection.getRepository(Address);
-
-  public async getAllMembers(): Promise<Member[]> {
-    return (await this._memberRepository).find();
-  }
 
   public async getMemberFromPerson(person:Person): Promise<Member | undefined> {
     return await this._memberRepository.findOne({person: person}, {relations: ["person", "addresses"]});
@@ -28,10 +22,6 @@ export class MemberRepository extends BaseRepository {
 	public async getMemberFromPersonOrFail(person:Person): Promise<Member> {
 		return await this._memberRepository.findOneOrFail({person: person}, {relations: ["person", "addresses"]});
 	}
-
-  public async getMemberById(id: number): Promise<Member | undefined> {
-    return this._memberRepository.findOne(id, {relations: ["person", "addresses"]});
-  }
 
   public async getMemberByEmail(email: string): Promise<Member | undefined> {
 
@@ -131,13 +121,17 @@ export class MemberRepository extends BaseRepository {
 
   }
 
-  public async setMemberAddresses(member: Member, addresses: Address[]): Promise<void> {
+  public async deleteMobileDevice(person: Person, mobileDeviceDTO: MobileDeviceDTO): Promise<void> {
 
-    for (let address of addresses) {
-    	await this.connection.manager.save(address);
-    }
-	  member.addresses = addresses;
-    await this.connection.manager.save(member);
+    let mobileDevice = await this._mobileDeviceRepository.findOne(mobileDeviceDTO.deviceId, {relations: ["person"]});
+
+    if (!mobileDevice)
+      throw new exception.MobileDeviceNotFoundException(mobileDeviceDTO.deviceId);
+
+    if (mobileDevice.person.id != person.id)
+      throw new exception.CannotDeleteMobileDeviceException(mobileDeviceDTO.deviceId);
+
+    await this._mobileDeviceRepository.delete({id: mobileDeviceDTO.deviceId});
 
   }
 

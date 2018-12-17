@@ -11,7 +11,7 @@ import { AddressRepository } from "../../common/repositories/address-repository"
 import {Address, UpdateAddressRequest, CreateAddressRequest, DeleteAddressRequest} from "../../common/model/dto";
 
 @Produces("application/json")
-@Tags("Address")
+@Tags("Addresses")
 @Accept("application/json")
 @Path('/address')
 export class AddressController extends BaseController {

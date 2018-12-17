@@ -37,12 +37,6 @@ export namespace exception {
     }
   }
 
-  export class UnauthorizedRequestException extends APIException {
-    constructor() {
-      super('UnauthorizedRequestException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Access denied to requested resource`);
-    }
-  }
-
   export class UnauthenticatedRequestException extends APIException {
     constructor() {
       super('UnauthenticatedRequestException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Must provide auth token to access requested resource`);
@@ -133,12 +127,6 @@ export namespace exception {
     }
   }
 
-  export class InvalidSlotTypeException extends APIException {
-    constructor(slotType: number) {
-      super('InvalidSlotTypeException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Invalid slot type '${slotType}'`);
-    }
-  }
-
 	export class DriverSlotNotFoundException extends APIException {
 		constructor(slotId: number) {
 			super('DriverSlotNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No driver slot with id ${slotId} was found`);
@@ -149,12 +137,6 @@ export namespace exception {
 		constructor(driverId: number) {
 			super('DriverNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No driver with id ${driverId} was found`);
 		}
-  }
-
-  export class InvalidDateException extends APIException {
-    constructor(dateString: string) {
-      super('InvalidDateException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Invalid date string '${dateString}'`);
-    }
   }
 
   export class CannotCreateAddressException extends APIException {
@@ -171,15 +153,9 @@ export namespace exception {
 
  export class CannotDeleteAddressException extends APIException {
 	constructor(id: number) {
-	 super('CannotDeleteAddressException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Address with id '${id}' can't be deleted`);
+	 super('CannotDeleteAddressException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Address with id '${id}' can't be deleted`);
 	}
  }
-
-	export class CannotFindMemberException extends APIException {
-		constructor(email: string) {
-			super('CannotFindMemberException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Can't find member with email '${email}'`);
-		}
-	}
 
 	export class EmptyOrderException extends APIException {
 		constructor() {
@@ -192,5 +168,17 @@ export namespace exception {
 			super('OrderNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No order with id ${orderId} was found`);
 		}
   }
+
+	export class MobileDeviceNotFoundException extends APIException {
+	 constructor(deviceId: string) {
+		super('MobileDeviceNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No device with id ${deviceId} was found`);
+	 }
+	}
+
+	export class CannotDeleteMobileDeviceException extends APIException {
+	 constructor(deviceId: string) {
+		super('CannotDeleteMobileDeviceException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Device with id ${deviceId} cannot be deleted`);
+	 }
+	}
 
 }
