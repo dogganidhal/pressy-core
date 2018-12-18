@@ -1,5 +1,5 @@
 import {Entity, JoinColumn, ManyToOne} from "typeorm";
-import {Person, PersonStatus} from "../person";
+import {Person, PersonActivationStatus} from "../person";
 import {User} from "..";
 import {LaundryPartner} from ".";
 import { CreatePersonRequest } from "../../../dto";
@@ -16,7 +16,7 @@ export class Laundrer extends User {
 	public laundryPartner: LaundryPartner;
 
 	public isActive(): boolean {
-		return this.person.status === PersonStatus.ACTIVE;
+		return this.person.status === PersonActivationStatus.ACTIVE;
 	}
 
 	public static create(laundrer: ILaundrer): Laundrer {

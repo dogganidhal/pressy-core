@@ -2,7 +2,7 @@ import {MobileDevice} from '../../model/entity/users/device';
 import {Repository} from "typeorm";
 import {exception} from "../../errors";
 import {Member} from '../../model/entity/users/member/member';
-import {ActivationCode, Person} from '../../model/entity/users/person';
+import {EmailValidationCode, Person} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
 import {validation} from "../../utils";
 import { CreatePersonRequest, MobileDevice as MobileDeviceDTO } from '../../model/dto';
@@ -13,7 +13,7 @@ export class MemberRepository extends BaseRepository {
   private _memberRepository: Repository<Member> = this.connection.getRepository(Member);
   private _mobileDeviceRepository: Repository<MobileDevice> = this.connection.getRepository(MobileDevice);
   private _personRepository: Repository<Person> = this.connection.getRepository(Person);
-  private _activationCodeRepository: Repository<ActivationCode> = this.connection.getRepository(ActivationCode);
+  private _activationCodeRepository: Repository<EmailValidationCode> = this.connection.getRepository(EmailValidationCode);
 
   public async getMemberById(id: number): Promise<Member | undefined> {
     return await this._memberRepository.findOne(id, {relations: ["person", "addresses"]});

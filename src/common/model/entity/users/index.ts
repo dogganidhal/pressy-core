@@ -1,4 +1,4 @@
-import {Person, PersonStatus} from "./person";
+import {Person, PersonActivationStatus} from "./person";
 import {JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 
 export abstract class User {
@@ -11,7 +11,7 @@ export abstract class User {
 	public person: Person;
 
 	public isActive(): boolean {
-		return this.person.status === PersonStatus.ACTIVE;
+		return this.person.isPhoneValidated() && this.person.isEmailValidated();
 	}
 
 }

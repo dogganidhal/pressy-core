@@ -1,6 +1,6 @@
-import { Order } from "../../common/model/entity/order";
+import { Order } from "../model/entity/order";
 import { readFileSync } from "fs";
-import { DateUtils } from "../../common/utils";
+import { DateUtils } from "../utils";
 let ExcelEngine = require("excel4node");
 
 export interface ExcelFile {

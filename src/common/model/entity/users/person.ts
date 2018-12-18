@@ -4,8 +4,10 @@ import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, PrimaryColumn,
 import uuid from "uuid";
 import { CreatePersonRequest } from '../../dto';
 
-export enum PersonStatus {
+
+export enum PersonActivationStatus {
   INACTIVE = 1,
+	PENDING_EMAIL_ACTIVATION = 3,
   SUSPENDED = 2,
   ACTIVE = 4
 }
@@ -13,6 +15,9 @@ export enum PersonStatus {
 
 @Entity()
 export class Person {
+
+	private static IS_EMAIL_VALIDATED_MASK = 1 << 0;
+	private static IS_PHONE_VALIDATED_MASK = 1 << 1;
 
   @PrimaryGeneratedColumn()
   public id: number;
@@ -32,11 +37,27 @@ export class Person {
   @CreateDateColumn()
   public created: Date = DateUtils.now();
 
-  @Column({nullable: false, default: PersonStatus.INACTIVE})
-  public status: PersonStatus = PersonStatus.INACTIVE;
+  @Column({nullable: false, default: PersonActivationStatus.INACTIVE})
+  public status: PersonActivationStatus = PersonActivationStatus.INACTIVE;
 
   @Column()
   public passwordHash: string;
+
+  public setEmailValidated() {
+  	this.status |= Person.IS_EMAIL_VALIDATED_MASK;
+	}
+
+	public setPhoneValidated() {
+		this.status |= Person.IS_PHONE_VALIDATED_MASK;
+	}
+
+	public isEmailValidated(): boolean {
+		return (this.status & Person.IS_EMAIL_VALIDATED_MASK) != 0;
+	}
+
+	public isPhoneValidated(): boolean {
+  	return (this.status & Person.IS_PHONE_VALIDATED_MASK) != 0;
+	}
 
   public static create(createPersonRequest: CreatePersonRequest): Person {
 
@@ -54,8 +75,7 @@ export class Person {
 
 }
 
-@Entity()
-export class ActivationCode {
+abstract class ValidationCode {
 
 	@PrimaryColumn()
 	public code: string;
@@ -64,8 +84,25 @@ export class ActivationCode {
 	@JoinColumn()
 	public person: Person;
 
-	public static create(person: Person): ActivationCode {
-		const activationCode = new ActivationCode();
+}
+
+@Entity()
+export class EmailValidationCode extends ValidationCode {
+
+	public static create(person: Person): EmailValidationCode {
+		const activationCode = new EmailValidationCode();
+		activationCode.code = uuid.v4().toString();
+		activationCode.person = person;
+		return activationCode;
+	}
+
+}
+
+@Entity()
+export class PhoneValidationCode extends ValidationCode {
+
+	public static create(person: Person): PhoneValidationCode {
+		const activationCode = new PhoneValidationCode();
 		activationCode.code = uuid.v4().toString();
 		activationCode.person = person;
 		return activationCode;

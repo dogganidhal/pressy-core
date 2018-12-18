@@ -1,5 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToMany, OneToMany} from "typeorm";
-import {Person, PersonStatus} from "../person";
+import {Entity, OneToMany} from "typeorm";
+import {Person, PersonActivationStatus} from "../person";
 import {User} from "..";
 import {DriverSlot} from "./driver-slot";
 import { CreatePersonRequest } from "../../../dto";
@@ -12,7 +12,7 @@ export class Driver extends User {
 	public slots: Array<DriverSlot>;
 
 	public isActive(): boolean {
-		return this.person.status === PersonStatus.ACTIVE;
+		return this.person.status === PersonActivationStatus.ACTIVE;
 	}
 
 	public static create(createDriverRequest: CreatePersonRequest): Driver {

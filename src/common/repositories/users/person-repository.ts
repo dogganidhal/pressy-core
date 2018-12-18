@@ -4,7 +4,12 @@ import {Repository} from "typeorm";
 import bcrypt from "bcrypt";
 import {exception} from "../../errors";
 import {DateUtils} from "../../utils";
-import {ActivationCode, Person, PersonStatus} from '../../model/entity/users/person';
+import {
+  EmailValidationCode,
+  Person,
+  PersonActivationStatus,
+  PhoneValidationCode
+} from '../../model/entity/users/person';
 import {Member} from "../../model/entity/users/member/member";
 import {Driver} from "../../model/entity/users/driver/driver";
 import {User} from "../../model/entity/users";
@@ -14,16 +19,9 @@ import { ResetPasswordRequest, UpdatePersonInfoRequest } from '../../model/dto';
 export class PersonRepository extends BaseRepository {
 
   private _resetCodeRepository: Repository<PasswordResetCode> = this.connection.getRepository(PasswordResetCode);
-  private _activationCodeRepository: Repository<ActivationCode> = this.connection.getRepository(ActivationCode);
+  private _validateEmailRepository: Repository<EmailValidationCode> = this.connection.getRepository(EmailValidationCode);
+  private _validatePhoneRepository: Repository<PhoneValidationCode> = this.connection.getRepository(PhoneValidationCode);
   private _personRepository: Repository<Person>  = this.connection.getRepository(Person);
-
-  public async savePerson(person: Person): Promise<Person> {
-    return this._personRepository.save(person);
-  }
-
-  public async getPersonById(id: number): Promise<Person | undefined> {
-    return this._personRepository.findOne(id);
-  }
 
   public async getPersonByEmail(email: string): Promise<Person | undefined> {
     return this._personRepository.findOne({email: email});
@@ -33,17 +31,28 @@ export class PersonRepository extends BaseRepository {
     return this._personRepository.findOneOrFail({phone: phone});
   }
   
-  public async activatePerson(code: string): Promise<Person> {
+  public async validateEmail(code: string): Promise<Person> {
     
-    const activationCode = await this._activationCodeRepository.findOne(code, {relations: ["person"]});
+    const activationCode = await this._validateEmailRepository.findOne(code, {relations: ["person"]});
 
     if (!activationCode)
-      throw new exception.ActivationCodeNotFoundException(code);
+      throw new exception.EmailValidationCodeNotFoundException(code);
 
     let person = activationCode.person;
+    person.setEmailValidated();
+    return await this._personRepository.save(person);
 
-    person.status = PersonStatus.ACTIVE;
+  }
 
+  public async validatePhone(code: string): Promise<Person> {
+
+    const activationCode = await this._validatePhoneRepository.findOne(code, {relations: ["person"]});
+
+    if (!activationCode)
+      throw new exception.PhoneValidationCodeNotFoundException(code);
+
+    let person = activationCode.person;
+    person.setPhoneValidated();
     return await this._personRepository.save(person);
 
   }
@@ -76,14 +85,18 @@ export class PersonRepository extends BaseRepository {
     return code;
   }
 
-  public async deletePasswordResetCode(passwordResetCode: PasswordResetCode): Promise<void> {
-    await this._resetCodeRepository.delete(passwordResetCode);
+  public async createEmailValidationCode(person: Person): Promise<EmailValidationCode> {
+
+    const activationCode = EmailValidationCode.create(person);
+    await this._validateEmailRepository.insert(activationCode);
+    return activationCode;
+
   }
 
-  public async createActivationCode(person: Person): Promise<ActivationCode> {
+  public async createPhoneValidationCode(person: Person): Promise<PhoneValidationCode> {
 
-    const activationCode = ActivationCode.create(person);
-    await this._activationCodeRepository.insert(activationCode);
+    const activationCode = PhoneValidationCode.create(person);
+    await this._validatePhoneRepository.insert(activationCode);
     return activationCode;
 
   }
@@ -110,40 +123,5 @@ export class PersonRepository extends BaseRepository {
 		await this._personRepository.save(person);
 
 	}
-
-  public async deleteActivationCode(code: string): Promise<void> {
-
-    const activationCode = await this._activationCodeRepository.findOne(code);
-
-    if (!activationCode)
-      throw new exception.ActivationCodeNotFoundException(code);
-
-      await this._resetCodeRepository.createQueryBuilder()
-      .delete()
-      .from(ActivationCode)
-      .where("code = :code", {code: code})
-      .execute();
-
-  }
-
-  /**
-   * Gets Member / Driver / Admin from a Person
-   */
-  public async getUserWithPerson(person: Person): Promise<User | undefined> {
-
-    let memberRepository = this.connection.getRepository(Member);
-	  let driverRepository = this.connection.getRepository(Driver);
-
-    let member = await memberRepository.findOne({person: person});
-    let driver = await driverRepository.findOne({person: person});
-    // TODO: Add other segments of users
-
-    if (member)
-      return member;
-
-    if (driver)
-      return driver;
-
-  }
 
 }

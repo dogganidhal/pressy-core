@@ -50,8 +50,10 @@ describe("OrderRepository Operations", () => {
 			password: "qwerty2018"
 		});
 
-		let activationCode = await personRepository.createActivationCode(activeMember.person);
-		activeMember.person = await personRepository.activatePerson(activationCode.code);
+		let emailValidationCode = await personRepository.createEmailValidationCode(activeMember.person);
+		let phoneValidationCode = await personRepository.createPhoneValidationCode(activeMember.person);
+		activeMember.person = await personRepository.validateEmail(emailValidationCode.code);
+		activeMember.person = await personRepository.validatePhone(phoneValidationCode.code);
 
 		// Create Slots
 		pickupSlot = await slotRepository.createSlot({

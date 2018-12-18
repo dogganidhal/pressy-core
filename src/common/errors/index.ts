@@ -103,11 +103,17 @@ export namespace exception {
 		}
 	}
 
-  export class ActivationCodeNotFoundException extends APIException {
+  export class EmailValidationCodeNotFoundException extends APIException {
     constructor(code: string) {
-      super('ActivationCodeNotFoundException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Activation code '${code}' was not found`);
+      super('EmailValidationCodeNotFoundException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Email validation code '${code}' was not found`);
     }
   }
+
+	export class PhoneValidationCodeNotFoundException extends APIException {
+		constructor(code: string) {
+			super('PhoneValidationCodeNotFoundException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Phone validation code '${code}' was not found`);
+		}
+	}
 
 	export class RouteNotFoundException extends APIException {
 		constructor() {

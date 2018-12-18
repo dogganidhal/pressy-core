@@ -1,7 +1,7 @@
 import {MobileDevice} from '../../model/entity/users/device';
 import { Repository} from "typeorm";
 import {exception} from "../../errors";
-import {ActivationCode, Person} from '../../model/entity/users/person';
+import {EmailValidationCode, Person} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
 import {Driver} from "../../model/entity/users/driver/driver";
 import {DriverSlot} from "../../model/entity/users/driver/driver-slot";
@@ -14,7 +14,7 @@ export class DriverRepository extends BaseRepository {
 	private _driverRepository: Repository<Driver> = this.connection.getRepository(Driver);
 	private _mobileDeviceRepository: Repository<MobileDevice> = this.connection.getRepository(MobileDevice);
 	private _personRepository: Repository<Person> = this.connection.getRepository(Person);
-	private _personActivationCodeRepository: Repository<ActivationCode> = this.connection.getRepository(ActivationCode);
+	private _personActivationCodeRepository: Repository<EmailValidationCode> = this.connection.getRepository(EmailValidationCode);
 	private _driverSlotRepository: Repository<DriverSlot> = this.connection.getRepository(DriverSlot);
 
 	public async getAllDrivers(): Promise<Driver[]> {
