@@ -3,7 +3,13 @@ import {getConfig} from "../config";
 import {exception} from "../common/errors";
 import {Database} from "../common/db";
 import {Person} from "../common/model/entity/users/person";
-import {PersonRepository} from "../common/repositories/users/person-repository";
+import {User} from "../common/model/entity/users";
+import {Member} from "../common/model/entity/users/member/member";
+import {Admin} from "../common/model/entity/users/admin/admin";
+import {Driver} from "../common/model/entity/users/driver/driver";
+import {MemberRepository} from "../common/repositories/users/member-repository";
+import {AdminRepository} from "../common/repositories/users/admin-repository";
+import {DriverRepository} from "../common/repositories/users/driver-repository";
 
 export enum SigningCategory {
 	MEMBER = 0,
@@ -51,10 +57,10 @@ export namespace crypto {
 
 	
 
-	export function signAuthToken(person: Person, category: SigningCategory, options: SignOptions = {}): AuthCredentials {
+	export function signAuthToken(user: User, category: SigningCategory, options: SignOptions = {}): AuthCredentials {
 
 		let payload: IAuthPayload = {
-			id: person.id,
+			id: user.id,
 			category: category
 		};
 
@@ -77,9 +83,9 @@ export namespace crypto {
 
 	}
 
-	export async function decodeJWT(encoded: string, category: SigningCategory | SigningCategory[]): Promise<Person> {
+	export async function decodeJWT(encoded: string, category: SigningCategory | SigningCategory[]): Promise<User> {
 
-		return new Promise<Person>((resolve, reject) => {
+		return new Promise<User>((resolve, reject) => {
 
 			let verifyOptions = {
 				...__verifyOptions,
@@ -87,8 +93,6 @@ export namespace crypto {
 			};
 
 			verify(encoded, _publicKey, verifyOptions, async (error: JsonWebTokenError, decoded) => {
-
-				let personRepository = new PersonRepository(Database.getConnection());
 
 				if (error) {
 
@@ -102,14 +106,25 @@ export namespace crypto {
 				}
 
 				let payload: IAuthPayload = typeof decoded == "string" ? JSON.parse(decoded) : decoded;
-				let person = await personRepository.getPersonById(payload.id);
+				let user: User | undefined;
+				switch (payload.category) {
+					case SigningCategory.MEMBER:
+						user = await new MemberRepository(Database.getConnection()).getMemberById(payload.id);
+						break;
+					case SigningCategory.ADMIN:
+						user = await new AdminRepository(Database.getConnection()).getAdminById(payload.id);
+						break;
+					case SigningCategory.DRIVER:
+						user = await new DriverRepository(Database.getConnection()).getDriverById(payload.id);
+						break;
+				}
 
-				if (!person) {
+				if (!user) {
 					reject(new exception.AccessTokenNotFoundException);
 				}
 
 				if ((Array.isArray(category) && category.includes(payload.category)) || category === payload.category) {
-					resolve(person);
+					resolve(user);
 					return;
 				}
 
@@ -138,12 +153,22 @@ export namespace crypto {
 				}
 
 				let decodedPayload: IAuthPayload = typeof decoded == "string" ? JSON.parse(decoded) : decoded;
-				let personRepository = new PersonRepository(Database.getConnection());
+				let user: User | undefined;
+				switch (decodedPayload.category) {
+					case SigningCategory.MEMBER:
+						user = await Database.getConnection().manager.findOne(Member, decodedPayload.id, {relations: ["person"]});
+						break;
+					case SigningCategory.ADMIN:
+						user = await Database.getConnection().manager.findOne(Admin, decodedPayload.id, {relations: ["person"]});
+						break;
+					case SigningCategory.DRIVER:
+						user = await Database.getConnection().manager.findOne(Driver, decodedPayload.id, {relations: ["person"]});
+						break;
+				}
 
-				let person = await personRepository.getPersonById(decodedPayload.id);
-
-				if (!person)
-					reject(new exception.InvalidRefreshTokenException);
+				if (!user) {
+					reject(new exception.AccessTokenNotFoundException);
+				}
 
 				let payload: IAuthPayload = {
 					id: decodedPayload.id,

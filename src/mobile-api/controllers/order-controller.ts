@@ -11,6 +11,7 @@ import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import { OrderMailSender } from "../../common/mail-senders/order-mail-sender";
 import { CreateOrderRequest, ISlot, IAddress, IPersonInfo, OrderElement, IOrderElement, Order, Slot } from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
+import {Member} from "../../common/model/entity/users/member/member";
 
 
 @Produces("application/json")
@@ -18,7 +19,6 @@ import {JSONBody} from "../../common/annotations/json-body";
 @Path('/order')
 export class OrderController extends BaseController {
 
-	private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
   private _orderRepository: OrderRepository = new OrderRepository(Database.getConnection());
   private _slotsRepository: SlotRepository = new SlotRepository(Database.getConnection());
 
@@ -28,9 +28,7 @@ export class OrderController extends BaseController {
   @POST
   public async createOrder(@JSONBody(CreateOrderRequest) request: CreateOrderRequest) {
 
-	  const member = await this._memberRepository.getMemberFromPersonOrFail(this.pendingPerson);
-
-		let order = await this._orderRepository.createOrder(member, request);
+		let order = await this._orderRepository.createOrder(<Member>this.pendingUser, request);
 		let orderMailSender = new OrderMailSender;
 
 		orderMailSender.sendOrderInformationMailToAdmins(order);
@@ -45,8 +43,7 @@ export class OrderController extends BaseController {
   @GET
   public async getOrders() {
 
-  	let member = await this._memberRepository.getMemberFromPersonOrFail(this.pendingPerson);
-	  let orders = await this._orderRepository.getOrdersForMember(member);
+	  let orders = await this._orderRepository.getOrdersForMember(this.pendingUser as Member);
 	  return orders.map((order) => {
 
 	  	let pickupSlot: ISlot = {

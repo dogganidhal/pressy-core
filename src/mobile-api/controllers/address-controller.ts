@@ -10,6 +10,7 @@ import { Security, Produces, Tags, Response } from "typescript-rest-swagger";
 import { AddressRepository } from "../../common/repositories/address-repository";
 import {Address, UpdateAddressRequest, CreateAddressRequest, DeleteAddressRequest} from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
+import {Member} from "../../common/model/entity/users/member/member";
 
 @Produces("application/json")
 @Tags("Addresses")
@@ -17,7 +18,6 @@ import {JSONBody} from "../../common/annotations/json-body";
 @Path('/address')
 export class AddressController extends BaseController {
 
-  private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
   private _addressRepository: AddressRepository = new AddressRepository(Database.getConnection());
 
   @Security("Bearer")
@@ -25,14 +25,7 @@ export class AddressController extends BaseController {
   @Authenticate(SigningCategory.MEMBER)
   @GET
   public async getMemberAddresses(): Promise<Address[]> {
-
-    let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
-
-    if (!member)
-      throw new InternalServerError;
-
-    return this._addressRepository.getMemberAddresses(member);
-
+    return this._addressRepository.getMemberAddresses(<Member>this.pendingUser);
   }
 
   @Response<void>(http.HttpStatus.HTTP_STATUS_ACCEPTED)
@@ -41,7 +34,7 @@ export class AddressController extends BaseController {
   @Authenticate(SigningCategory.MEMBER)
   @PATCH
   public async updateMemberAddress(@JSONBody(UpdateAddressRequest) request: UpdateAddressRequest) {
-    await this._addressRepository.updateAddress(request);
+    await this._addressRepository.updateAddress(request, <Member>this.pendingUser);
   }
 
   @JSONEndpoint
@@ -49,14 +42,7 @@ export class AddressController extends BaseController {
   @Authenticate(SigningCategory.MEMBER)
   @POST
   public async createAddress(@JSONBody(CreateAddressRequest) request: CreateAddressRequest): Promise<Address> {
-
-    let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
-
-    if (!member)
-      throw new InternalServerError;
-
-    return await this._addressRepository.createAddress(request, member);
-
+    return await this._addressRepository.createAddress(request, <Member>this.pendingUser);
   }
 
   @Response<void>(http.HttpStatus.HTTP_STATUS_ACCEPTED)
@@ -65,14 +51,7 @@ export class AddressController extends BaseController {
   @Authenticate(SigningCategory.MEMBER)
   @DELETE
   public async deleteAddress(@JSONBody(DeleteAddressRequest) request: DeleteAddressRequest) {
-
-    let member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
-
-    if (!member)
-      throw new InternalServerError;
-
-    await this._addressRepository.deleteAddress(request, member);
-
+    await this._addressRepository.deleteAddress(request, <Member>this.pendingUser);
   }
 
 }

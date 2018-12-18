@@ -1,19 +1,12 @@
 import {Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToMany, OneToMany} from "typeorm";
 import {Person, PersonStatus} from "../person";
-import {IUser} from "..";
+import {User} from "..";
 import {DriverSlot} from "./driver-slot";
 import { CreatePersonRequest } from "../../../dto";
 
 
 @Entity()
-export class Driver implements IUser {
-
-	@PrimaryGeneratedColumn()
-	public id: number;
-
-	@OneToOne(type => Person)
-	@JoinColumn()
-	public person: Person;
+export class Driver extends User {
 
 	@OneToMany(type => DriverSlot, driverSlot => driverSlot.driver)
 	public slots: Array<DriverSlot>;

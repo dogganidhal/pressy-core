@@ -13,6 +13,7 @@ import { InternalServerError } from "typescript-rest/dist/server-errors";
 import { Security, Produces, Tags } from "typescript-rest-swagger";
 import { MemberInfo, CreatePersonRequest, Address as AddressDTO, MobileDevice, CreateAddressRequest, UpdatePersonInfoRequest } from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
+import {Member} from "../../common/model/entity/users/member/member";
 
 @Produces("application/json")
 @Tags("Members")
@@ -29,10 +30,7 @@ export class MemberController extends BaseController {
   @GET
 	public async getMemberInfo(): Promise<MemberInfo> {
 
-		let memberEntity = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
-		
-		if (!memberEntity)
-			throw new InternalServerError;
+		let memberEntity = <Member>this.pendingUser;
 
 		return new MemberInfo({
 			id: memberEntity.id,
@@ -56,7 +54,7 @@ export class MemberController extends BaseController {
 
 		memberMailSender.sendActivationCode(member, personActivationCode.code);
 
-		return crypto.signAuthToken(member.person, SigningCategory.MEMBER);
+		return crypto.signAuthToken(member, SigningCategory.MEMBER);
 
   }
 
@@ -76,7 +74,7 @@ export class MemberController extends BaseController {
   @PATCH
   public async updateMemberInfo(@JSONBody(UpdatePersonInfoRequest) request: UpdatePersonInfoRequest) {
 
-		await this._personRepository.updatePersonInfo(this.pendingPerson, request);
+		await this._personRepository.updatePersonInfo(this.pendingUser.person, request);
 		return new Return.RequestAccepted("/v1/member");
 
   }

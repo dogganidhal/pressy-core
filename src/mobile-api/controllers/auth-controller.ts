@@ -10,6 +10,7 @@ import {http} from "../../common/utils/http";
 import {JSONEndpoint} from "../../common/annotations";
 import { LoginRequest, RefreshCredentialsRequest, ResetCodeRequest, ResetCode, ResetPasswordRequest } from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
+import {MemberRepository} from "../../common/repositories/users/member-repository";
 
 
 @Produces("application/json")
@@ -17,21 +18,22 @@ import {JSONBody} from "../../common/annotations/json-body";
 @Path('/auth')
 export class AuthController extends BaseController {
 
-  private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
+  private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
+	private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
 
   @JSONEndpoint
   @POST
   public async login(@JSONBody(LoginRequest) request: LoginRequest): Promise<AuthCredentials> {
 
-	  let person = await this._personRepository.getPersonByEmail(request.email);
+	  let member = await this._memberRepository.getMemberByEmail(request.email);
 
-	  if (!person)
+	  if (!member)
 		  throw new exception.AccountNotFoundException(request.email);
 
-	  if (!bcrypt.compareSync(request.password, person.passwordHash))
+	  if (!bcrypt.compareSync(request.password, member.person.passwordHash))
 		  throw new exception.WrongPasswordException;
 
-	  return crypto.signAuthToken(person, SigningCategory.MEMBER);
+	  return crypto.signAuthToken(member, SigningCategory.MEMBER);
 
   }
 
@@ -50,12 +52,12 @@ export class AuthController extends BaseController {
   @POST
   public async getResetPasswordCode(@JSONBody(ResetCodeRequest) request: ResetCodeRequest): Promise<ResetCode> {
 
-	  let person = await this._personRepository.getPersonByEmail(request.email);
+	  let member = await this._memberRepository.getMemberByEmail(request.email);
 
-	  if (person == undefined)
+	  if (member == undefined)
 	    throw new exception.AccountNotFoundException(request.email);
 
-	  const resetCode = await this._personRepository.createPasswordResetCode(person);
+	  const resetCode = await this._personRepository.createPasswordResetCode(member.person);
 
 	  // TODO: Return an empty "accepted" response, and call the email service
 	  return {
@@ -68,10 +70,7 @@ export class AuthController extends BaseController {
   @Path("/reset/:code")
   @POST
   public async resetPassword(@PathParam("code") code: string, @JSONBody(ResetCodeRequest) request: ResetPasswordRequest) {
-
-	  const person = await this._personRepository.resetPassword(code, request);
-	  return new Return.RequestAccepted(`/v1/member/${person.id}`);
-
+	  await this._personRepository.resetPassword(code, request);
   }
 
 }

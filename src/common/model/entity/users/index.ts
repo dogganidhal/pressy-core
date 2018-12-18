@@ -1,7 +1,17 @@
-import {Person} from "./person";
+import {Person, PersonStatus} from "./person";
+import {JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 
-export interface IUser {
-	id: number;
-	person: Person;
-	isActive(): boolean;
+export abstract class User {
+
+	@PrimaryGeneratedColumn()
+	public id: number;
+
+	@OneToOne(type => Person)
+	@JoinColumn()
+	public person: Person;
+
+	public isActive(): boolean {
+		return this.person.status === PersonStatus.ACTIVE;
+	}
+
 }

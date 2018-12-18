@@ -7,7 +7,7 @@ import {DateUtils} from "../../utils";
 import {ActivationCode, Person, PersonStatus} from '../../model/entity/users/person';
 import {Member} from "../../model/entity/users/member/member";
 import {Driver} from "../../model/entity/users/driver/driver";
-import {IUser} from "../../model/entity/users";
+import {User} from "../../model/entity/users";
 import { ResetPasswordRequest, UpdatePersonInfoRequest } from '../../model/dto';
 
 
@@ -129,7 +129,7 @@ export class PersonRepository extends BaseRepository {
   /**
    * Gets Member / Driver / Admin from a Person
    */
-  public async getUserWithPerson(person: Person): Promise<IUser | undefined> {
+  public async getUserWithPerson(person: Person): Promise<User | undefined> {
 
     let memberRepository = this.connection.getRepository(Member);
 	  let driverRepository = this.connection.getRepository(Driver);

@@ -28,7 +28,7 @@ describe("crypto Operations Tests", () => {
 
 	test("Returns auth credentials for a registered person", () => {
 
-		let authCredentials = crypto.signAuthToken(member.person, SigningCategory.MEMBER);
+		let authCredentials = crypto.signAuthToken(member, SigningCategory.MEMBER);
 
 		expect(authCredentials.accessToken).not.toBeNull();
 		expect(authCredentials.refreshToken).not.toBeNull();
@@ -41,7 +41,7 @@ describe("crypto Operations Tests", () => {
 
 		expect.assertions(1);
 
-		let authCredentials = crypto.signAuthToken(member.person, SigningCategory.MEMBER);
+		let authCredentials = crypto.signAuthToken(member, SigningCategory.MEMBER);
 		let accessToken = authCredentials.accessToken.slice(0, authCredentials.accessToken.length - 10);
 
 		try {
@@ -58,7 +58,7 @@ describe("crypto Operations Tests", () => {
 
 		expect.assertions(1);
 
-		let authCredentials = crypto.signAuthToken(member.person, SigningCategory.MEMBER, {expiresIn: 0});
+		let authCredentials = crypto.signAuthToken(member, SigningCategory.MEMBER, {expiresIn: 0});
 		let accessToken = authCredentials.accessToken;
 
 		try {
@@ -75,7 +75,7 @@ describe("crypto Operations Tests", () => {
 
 		expect.assertions(1);
 
-		let authCredentials = crypto.signAuthToken(member.person, SigningCategory.MEMBER, {subject: "refresh"});
+		let authCredentials = crypto.signAuthToken(member, SigningCategory.MEMBER, {subject: "refresh"});
 
 		try {
 			let _ = await crypto.decodeJWT(authCredentials.accessToken, SigningCategory.MEMBER);
@@ -93,15 +93,15 @@ describe("crypto Operations Tests", () => {
 
 		try {
 
-			let { refreshToken } = crypto.signAuthToken(member.person, SigningCategory.MEMBER);
+			let { refreshToken } = crypto.signAuthToken(member, SigningCategory.MEMBER);
 			let { accessToken } = await crypto.refreshCredentials(refreshToken);
-			let person = await crypto.decodeJWT(accessToken, SigningCategory.MEMBER);
+			let user = await crypto.decodeJWT(accessToken, SigningCategory.MEMBER);
 
-			expect(person.id).toEqual(member.person.id);
-			expect(person.firstName).toEqual(member.person.firstName);
-			expect(person.lastName).toEqual(member.person.lastName);
-			expect(person.email).toEqual(member.person.email);
-			expect(person.phone).toEqual(member.person.phone);
+			expect(user.id).toEqual(member.id);
+			expect(user.person.firstName).toEqual(member.person.firstName);
+			expect(user.person.lastName).toEqual(member.person.lastName);
+			expect(user.person.email).toEqual(member.person.email);
+			expect(user.person.phone).toEqual(member.person.phone);
 
 		} catch (error) {
 			done.fail(error);
@@ -115,7 +115,7 @@ describe("crypto Operations Tests", () => {
 
 		expect.assertions(1);
 
-		let {refreshToken} = crypto.signAuthToken(member.person, SigningCategory.MEMBER);
+		let {refreshToken} = crypto.signAuthToken(member, SigningCategory.MEMBER);
 		refreshToken = refreshToken.slice(0, refreshToken.length - 10);
 
 		try {

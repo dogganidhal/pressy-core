@@ -22,7 +22,7 @@ export function Authenticate<TController extends BaseController>(category: Signi
 			if (!token)
 				throw new exception.InvalidAccessTokenException;
 
-			context.pendingPerson= await crypto.decodeJWT(token, category);
+			context.pendingUser= await crypto.decodeJWT(token, category);
 
 			return originalMethod.call(context, ...args);
 		};

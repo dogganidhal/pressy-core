@@ -9,6 +9,7 @@ import {MobileDevice} from "../../common/model/dto";
 import {exception} from "../../common/errors";
 import * as Return from "typescript-rest/dist/server-return";
 import {JSONBody} from "../../common/annotations/json-body";
+import {Member} from "../../common/model/entity/users/member/member";
 
 
 @Produces("application/json")
@@ -24,16 +25,7 @@ export class DeviceController extends BaseController {
 	@Authenticate(SigningCategory.MEMBER)
 	@POST
 	public async registerMobileDevice(@JSONBody(MobileDevice) request: MobileDevice) {
-
-		const member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
-
-		if (!member)
-			throw new exception.AccountNotFoundException(this.pendingPerson.email);
-
-		await this._memberRepository.registerMobileDevice(member, request);
-
-		return new Return.NewResource(`/v1/member/devices`);
-
+		await this._memberRepository.registerMobileDevice(<Member>this.pendingUser, request);
 	}
 
 	@Security("Bearer")
@@ -41,27 +33,18 @@ export class DeviceController extends BaseController {
 	@Authenticate(SigningCategory.MEMBER)
 	@GET
 	public async getMobileDevices(): Promise<MobileDevice[]> {
-
-		const member = await this._memberRepository.getMemberFromPerson(this.pendingPerson);
-
-		if (!member)
-			throw new exception.AccountNotFoundException(this.pendingPerson.email);
-
-		let mobileDevices = await this._memberRepository.getMobileDevices(member);
-
+		let mobileDevices = await this._memberRepository.getMobileDevices(<Member>this.pendingUser);
 		return mobileDevices.map(device => {
 			return {deviceId: device.id};
 		});
-
 	}
-
 
 	@Security("Bearer")
 	@JSONEndpoint
 	@Authenticate(SigningCategory.MEMBER)
 	@DELETE
 	public async deleteMobileDevice(@JSONBody(MobileDevice) request: MobileDevice) {
-		await this._memberRepository.deleteMobileDevice(this.pendingPerson, request);
+		await this._memberRepository.deleteMobileDevice(this.pendingUser.person, request);
 	}
 
 }

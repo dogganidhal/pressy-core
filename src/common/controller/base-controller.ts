@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import {ContextRequest, ContextResponse} from "typescript-rest";
 import {Request, Response} from "express";
-import {Person} from "../model/entity/users/person";
+import {User} from "../model/entity/users";
 
 export abstract class BaseController {
 
-	public pendingPerson: Person;
+	public pendingUser: User;
 
 	@ContextRequest
 	private pendingRequest?: Request;

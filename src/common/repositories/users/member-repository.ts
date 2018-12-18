@@ -15,13 +15,9 @@ export class MemberRepository extends BaseRepository {
   private _personRepository: Repository<Person> = this.connection.getRepository(Person);
   private _activationCodeRepository: Repository<ActivationCode> = this.connection.getRepository(ActivationCode);
 
-  public async getMemberFromPerson(person:Person): Promise<Member | undefined> {
-    return await this._memberRepository.findOne({person: person}, {relations: ["person", "addresses"]});
+  public async getMemberById(id: number): Promise<Member | undefined> {
+    return await this._memberRepository.findOne(id, {relations: ["person", "addresses"]});
   }
-
-	public async getMemberFromPersonOrFail(person:Person): Promise<Member> {
-		return await this._memberRepository.findOneOrFail({person: person}, {relations: ["person", "addresses"]});
-	}
 
   public async getMemberByEmail(email: string): Promise<Member | undefined> {
 

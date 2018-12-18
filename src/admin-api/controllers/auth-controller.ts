@@ -9,6 +9,8 @@ import bcrypt from "bcrypt";
 import { crypto, SigningCategory, AuthCredentials } from "../../services/crypto";
 import { LoginRequest } from "../../common/model/dto";
 import { Tags, Produces } from "typescript-rest-swagger";
+import {JSONBody} from "../../common/annotations/json-body";
+import {AdminRepository} from "../../common/repositories/users/admin-repository";
 
 
 @Produces("application/json")
@@ -16,23 +18,22 @@ import { Tags, Produces } from "typescript-rest-swagger";
 @Path("/auth")
 export class AuthController extends BaseController {
 
-  private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
+  private _adminRepository: AdminRepository = new AdminRepository(Database.getConnection());
 
   @Path("/login")
   @JSONEndpoint
   @POST
-  public async login(request: LoginRequest): Promise<AuthCredentials> {
+  public async login(@JSONBody(LoginRequest) request: LoginRequest): Promise<AuthCredentials> {
 
-    let loginRequest = http.parseJSONBody(this.getPendingRequest().body, LoginRequest);
-	  let person = await this._personRepository.getPersonByEmail(loginRequest.email);
+	  let admin = await this._adminRepository.getAdminByEmail(request.email);
 
-	  if (!person)
-		  throw new exception.AccountNotFoundException(loginRequest.email);
+	  if (!admin)
+		  throw new exception.AccountNotFoundException(request.email);
 
-	  if (!bcrypt.compareSync(loginRequest.password, person.passwordHash))
+	  if (!bcrypt.compareSync(request.password, admin.person.passwordHash))
 		  throw new exception.WrongPasswordException;
 
-	  return crypto.signAuthToken(person, SigningCategory.ADMIN);
+	  return crypto.signAuthToken(admin, SigningCategory.ADMIN);
 
   }
 

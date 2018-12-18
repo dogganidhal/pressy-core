@@ -157,6 +157,12 @@ export namespace exception {
 	}
  }
 
+	export class CannotUpdateAddressException extends APIException {
+		constructor(id: number) {
+			super('CannotUpdateAddressException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Address with id '${id}' can't be updated`);
+		}
+	}
+
 	export class EmptyOrderException extends APIException {
 		constructor() {
 			super('EmptyOrderException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `No elements in this order, please select some`);

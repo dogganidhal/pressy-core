@@ -43,12 +43,15 @@ export class AddressRepository extends BaseRepository {
     
   }
 
-  public async updateAddress(request: UpdateAddressRequest) {
+  public async updateAddress(request: UpdateAddressRequest, member: Member) {
 
     let address = await this._addressRepository.findOne(request.addressId);
     
     if (!address)
       throw new exception.AddressNotFoundException(request.addressId);
+
+    if (!address.member || address.member.id != member.id)
+      throw new exception.CannotUpdateAddressException(request.addressId);
 
     let newAddressDTO = null;
 

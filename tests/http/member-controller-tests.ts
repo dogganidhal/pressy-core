@@ -104,14 +104,14 @@ describe("Testing MemberController Endpoints =>", () => {
 			phone: Randomstring.generate({length: 10, charset: "numeric"})
 		});
 
-		let {accessToken} = crypto.signAuthToken(member.person, SigningCategory.MEMBER);
+		let {accessToken} = crypto.signAuthToken(member, SigningCategory.MEMBER);
 
 		return request(api.getApp())
 			.post("/v1/devices")
 			.set("Content-Type", "application/json")
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send(mobileDevice)
-			.expect(http.HttpStatus.HTTP_STATUS_CREATED)
+			.expect(http.HttpStatus.HTTP_STATUS_NO_CONTENT)
 			.then(async _ => {
 
 				let mobileDeviceRepository = connection.getRepository(MobileDevice);
