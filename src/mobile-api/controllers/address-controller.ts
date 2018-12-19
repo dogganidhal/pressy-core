@@ -15,7 +15,7 @@ import {Member} from "../../common/model/entity/users/member/member";
 @Produces("application/json")
 @Tags("Addresses")
 @Accept("application/json")
-@Path('/address')
+@Path('/addressId')
 export class AddressController extends BaseController {
 
   private _addressRepository: AddressRepository = new AddressRepository(Database.getConnection());
@@ -42,7 +42,8 @@ export class AddressController extends BaseController {
   @Authenticate(SigningCategory.MEMBER)
   @POST
   public async createAddress(@JSONBody(CreateAddressRequest) request: CreateAddressRequest): Promise<Address> {
-    return await this._addressRepository.createAddress(request, <Member>this.pendingUser);
+    let addressEntity = await this._addressRepository.createAddress(request, <Member>this.pendingUser);
+    return new Address(addressEntity);
   }
 
   @Response<void>(http.HttpStatus.HTTP_STATUS_ACCEPTED)

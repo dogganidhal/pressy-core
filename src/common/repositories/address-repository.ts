@@ -12,11 +12,15 @@ export class AddressRepository extends BaseRepository {
   private _addressRepository: Repository<AddressEntity> = this.connection.getRepository(AddressEntity);
   private _geocodeService: GeocodeService = new GeocodeService();
 
+  public async getAddressById(id: number): Promise<AddressEntity | undefined> {
+    return await this._addressRepository.findOne(id);
+  }
+
   public async getMemberAddresses(member: Member): Promise<Address[]> {
     return await this._addressRepository.find({member: member});
   }
  
-  public async createAddress(createAddressRequest: CreateAddressRequest, member: Member) {
+  public async createAddress(createAddressRequest: CreateAddressRequest, member: Member): Promise<AddressEntity> {
     
     let addressDTO: Address;
 
@@ -35,12 +39,13 @@ export class AddressRepository extends BaseRepository {
 
     address.member = member;
     address = await this._addressRepository.save(address);
-    addressDTO.id = address.id;
-    addressDTO.name = createAddressRequest.name;
-    addressDTO.extraLine = createAddressRequest.extraLine;
 
-    return addressDTO;
+    return address;
     
+  }
+
+  public async duplicateAddress(address: Address): Promise<AddressEntity> {
+    return await this._addressRepository.save(AddressEntity.create({...address, id: undefined}));
   }
 
   public async updateAddress(request: UpdateAddressRequest, member: Member) {

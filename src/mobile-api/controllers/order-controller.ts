@@ -43,7 +43,7 @@ export class OrderController extends BaseController {
   @GET
   public async getOrders() {
 
-	  let orders = await this._orderRepository.getOrdersForMember(this.pendingUser as Member);
+	  let orders = await this._orderRepository.getOrdersForMember(<Member>this.pendingUser);
 	  return orders.map((order) => {
 
 	  	let pickupSlot: ISlot = {
@@ -56,22 +56,14 @@ export class OrderController extends BaseController {
 			  startDate: order.deliverySlot.startDate,
 			  type: order.deliverySlot.type
 		  };
-	  	let pickupAddress: IAddress = {
-	  		streetNumber: order.pickupAddress.streetNumber,
-			  streetName: order.pickupAddress.streetName,
-			  city: order.pickupAddress.city,
-			  country: order.pickupAddress.country,
-			  formattedAddress: order.pickupAddress.formattedAddress,
-			  zipCode: order.pickupAddress.zipCode
+	  	let address: IAddress = {
+	  		streetNumber: order.address.streetNumber,
+			  streetName: order.address.streetName,
+			  city: order.address.city,
+			  country: order.address.country,
+			  formattedAddress: order.address.formattedAddress,
+			  zipCode: order.address.zipCode
 		  };
-	  	let deliveryAddress: IAddress = order.deliveryAddress ? {
-			  streetNumber: order.deliveryAddress.streetNumber,
-			  streetName: order.deliveryAddress.streetName,
-			  city: order.deliveryAddress.city,
-			  country: order.deliveryAddress.country,
-			  formattedAddress: order.deliveryAddress.formattedAddress,
-			  zipCode: order.deliveryAddress.zipCode
-		  } : pickupAddress;
 	  	let member: IPersonInfo = {
 			  id: order.member.id,
 			  firstName: order.member.person.firstName,
@@ -85,8 +77,8 @@ export class OrderController extends BaseController {
 		  }));
 
 	  	return new Order({
-			  pickupSlot: pickupSlot, pickupAddress: pickupAddress,
-			  deliverySlot: deliverySlot, deliveryAddress: deliveryAddress,
+			  pickupSlot: pickupSlot, address: address,
+			  deliverySlot: deliverySlot,
 			  member: member, id: order.id, elements: elements
 		  })
 

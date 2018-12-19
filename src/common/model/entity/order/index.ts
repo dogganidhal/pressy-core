@@ -18,8 +18,7 @@ export enum OrderStatus {
 export interface IOrder {
 	pickupSlot: Slot;
 	deliverySlot: Slot;
-	pickupAddress: Address;
-	deliveryAddress: Address;
+	address: Address;
 	member: Member;
 	driver?: Driver;
 	laundryPartner?: LaundryPartner;
@@ -46,11 +45,7 @@ export class Order {
 
   @OneToOne(type => Address, {nullable: false})
   @JoinColumn()
-  public pickupAddress: Address;
-
-  @OneToOne(type => Address, {nullable: false})
-  @JoinColumn()
-  public deliveryAddress: Address;
+  public address: Address;
 
   @ManyToOne(type => Member, {nullable: false})
   @JoinColumn()
@@ -79,8 +74,7 @@ export class Order {
 
     orderEntity.pickupSlot = order.pickupSlot;
 	  orderEntity.deliverySlot = order.deliverySlot;
-	  orderEntity.pickupAddress = order.pickupAddress;
-	  orderEntity.deliveryAddress = order.deliveryAddress;
+	  orderEntity.address = order.address;
 
 	  if (order.elements)
 		  orderEntity.elements = order.elements;

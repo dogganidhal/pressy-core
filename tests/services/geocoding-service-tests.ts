@@ -13,7 +13,7 @@ describe("Geocoding service test suit", async () => {
     done();
   });
 
-  it("Fetches Zenpark address components from it's placeId", async (done) => {
+  it("Fetches Zenpark addressId components from it's placeId", async (done) => {
 
     const zenparkPlaceId = "ChIJPZVtpz1u5kcRQyeKkuEZ2LQ";
 
@@ -30,7 +30,7 @@ describe("Geocoding service test suit", async () => {
     
   }, 60000);
 
-  it("Fetches Zenpark address components from coordinates", async (done) => {
+  it("Fetches Zenpark addressId components from coordinates", async (done) => {
 
     const homeCoordinates = {
       latitude: 48.8144503, longitude: 2.2314194

@@ -12,6 +12,8 @@ import {OrderStatus} from "../../src/common/model/entity/order";
 import {exception} from "../../src/common/errors";
 import {Element} from "../../src/common/model/entity/order/element";
 import { CreateOrderElementRequest } from "../../src/common/model/dto";
+import {Address} from "../../src/common/model/entity/common/address";
+import {AddressRepository} from "../../src/common/repositories/address-repository";
 
 
 describe("OrderRepository Operations", () => {
@@ -25,7 +27,8 @@ describe("OrderRepository Operations", () => {
 	let deliverySlot: Slot;
 	let activeMember: Member;
 	let inactiveMember: Member;
-	let elements: Element[];
+	let addressRepository: AddressRepository;
+	let address: Address;
 
 	async function createResources() {
 		// Create Database connection and repositories
@@ -34,6 +37,7 @@ describe("OrderRepository Operations", () => {
 		memberRepository = new MemberRepository(connection);
 		personRepository = new PersonRepository(connection);
 		slotRepository = new SlotRepository(connection);
+		addressRepository = new AddressRepository(connection);
 		// Create Members
 		activeMember = await memberRepository.createMember({
 			firstName: "John",
@@ -65,6 +69,12 @@ describe("OrderRepository Operations", () => {
 			type: SlotType.GOLD
 		});
 
+		address = await addressRepository.createAddress({
+			name: "TEST",
+			extraLine: "Somewhere in the world",
+			googlePlaceId: "ChIJPZVtpz1u5kcRQyeKkuEZ2LQ"
+		}, activeMember);
+
 	}
 
 	beforeAll(async done => {
@@ -76,29 +86,15 @@ describe("OrderRepository Operations", () => {
 
 	test("Creates Order for an active member", async done => {
 
-		expect.assertions(14);
+		expect.assertions(13);
 
 		try {
 			let order = await orderRepository.createOrder(activeMember, {
 				pickupSlotId: pickupSlot.id,
 				deliverySlotId: deliverySlot.id,
-				pickupAddress: {
-					googlePlaceId: "ChIJPZVtpz1u5kcRQyeKkuEZ2LQ"
-				},
-				elements: [
-					<CreateOrderElementRequest>{
-						type: 1,
-						color: "green"
-					},
-					<CreateOrderElementRequest> {
-						type: 2,
-						color: "gray",
-						comment: "Hello World Comment"
-					}
-				]
+				addressId: address.id
 			});
 
-			expect(order.elements.length).toEqual(2);
 			expect(order.status).toEqual(OrderStatus.UNVALIDATED);
 
 			expect(order.driver).toBeUndefined();
@@ -107,13 +103,13 @@ describe("OrderRepository Operations", () => {
 			expect(order.pickupSlot.type).toEqual(SlotType.GOLD);
 			expect(order.deliverySlot.type).toEqual(SlotType.GOLD);
 
-			expect(order.pickupAddress).toEqual(order.deliveryAddress);
-			expect(order.pickupAddress.city).toEqual("Paris");
-			expect(order.pickupAddress.country).toEqual("France");
-			expect(order.pickupAddress.formattedAddress).toEqual("142 Rue Montmartre, 75002 Paris, France");
-			expect(order.pickupAddress.streetName).toEqual("Rue Montmartre");
-			expect(order.pickupAddress.streetNumber).toEqual("142");
-			expect(order.pickupAddress.zipCode).toEqual("75002");
+			expect(order.address).toEqual(order.address);
+			expect(order.address.city).toEqual("Paris");
+			expect(order.address.country).toEqual("France");
+			expect(order.address.formattedAddress).toEqual("142 Rue Montmartre, 75002 Paris, France");
+			expect(order.address.streetName).toEqual("Rue Montmartre");
+			expect(order.address.streetNumber).toEqual("142");
+			expect(order.address.zipCode).toEqual("75002");
 
 			expect(order.laundryPartner).toBeUndefined();
 
@@ -133,10 +129,7 @@ describe("OrderRepository Operations", () => {
 			await orderRepository.createOrder(inactiveMember, {
 				pickupSlotId: pickupSlot.id,
 				deliverySlotId: deliverySlot.id,
-				pickupAddress: {
-					googlePlaceId: "ChIJPZVtpz1u5kcRQyeKkuEZ2LQ"
-				},
-				elements: []
+				addressId: address.id,
 			});
 			done.fail();
 

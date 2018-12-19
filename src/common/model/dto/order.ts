@@ -47,13 +47,8 @@ export class CreateOrderRequest {
 	@Required()
 	public deliverySlotId: number;
 
-	@Required(CreateAddressRequest)
-	public pickupAddress: CreateAddressRequest;
-
-	public deliveryAddress?: CreateAddressRequest;
-
-	@Required(Array)
-	public elements: Array<CreateOrderElementRequest>;
+	@Required()
+	public addressId: number;
 
 }
 
@@ -61,8 +56,7 @@ export interface IOrder {
 	id: number;
 	pickupSlot: ISlot;
 	deliverySlot: ISlot;
-	pickupAddress: IAddress;
-	deliveryAddress: IAddress;
+	address: IAddress;
 	elements: Array<IOrderElement>;
 	member: IPersonInfo;
 }
@@ -72,8 +66,7 @@ export class Order {
 	public id: number;
 	public pickupSlot: Slot;
 	public deliverySlot: Slot;
-	public pickupAddress: Address;
-	public deliveryAddress: Address;
+	public address: Address;
 	public elements: Array<IOrderElement>;
 	public member: IPersonInfo;
 
@@ -81,8 +74,7 @@ export class Order {
 		this.id = order.id;
 		this.pickupSlot = new Slot(order.pickupSlot);
 		this.deliverySlot = new Slot(order.pickupSlot);
-		this.pickupAddress = new Address(order.pickupAddress);
-		this.deliveryAddress = new Address(order.deliveryAddress);
+		this.address = new Address(order.address);
 		this.elements = order.elements.map(element => new OrderElement(element));
 		this.member = new PersonInfo(order.member);
 	}

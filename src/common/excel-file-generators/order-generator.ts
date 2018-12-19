@@ -22,10 +22,10 @@ export class OrderExcelFileGenerator {
       workSheet.cell(1, 2).number(order.id);
 
       workSheet.cell(2, 1).string("Adresse de collecte");
-      workSheet.cell(2, 2).string(order.pickupAddress.formattedAddress);
+      workSheet.cell(2, 2).string(order.address.formattedAddress);
 
       workSheet.cell(3, 1).string("Adresse de livraison");
-      workSheet.cell(3, 2).string(order.deliveryAddress.formattedAddress);
+      workSheet.cell(3, 2).string(order.address.formattedAddress);
 
       workSheet.cell(4, 1).string("Créneau de collecte");
       workSheet.cell(4, 2)
