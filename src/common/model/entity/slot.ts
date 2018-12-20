@@ -2,9 +2,40 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { CreateSlotRequest } from "../dto";
 
 export enum SlotType {
-  GOLD = "gold",
-  SILVER = "silver",
-  PLATINIUM = "platinium"
+  GOLD = 1,
+  SILVER = 2,
+  PLATINUM = 3
+}
+
+export namespace SlotType {
+
+  export function fromString(type: string): SlotType | undefined {
+    switch (type) {
+      case "gold":
+        return SlotType.GOLD;
+      case "platinum":
+        return SlotType.PLATINUM;
+      case "silver":
+        return SlotType.SILVER;
+      default:
+        return undefined;
+    }
+
+  }
+
+  export function toString(type: SlotType): string | undefined {
+    switch (type) {
+      case SlotType.GOLD:
+        return "gold";
+      case SlotType.PLATINUM:
+        return "platinum";
+      case SlotType.SILVER:
+        return "silver";
+      default:
+        return undefined;
+    }
+  }
+
 }
 
 @Entity()
@@ -19,53 +50,18 @@ export class Slot {
   @Column({nullable: false})
   public type: SlotType = SlotType.GOLD;
 
+  @Column({nullable: false})
+	public availableDrivers: number;
+
   public static create(slot: CreateSlotRequest): Slot {
 
     let slotEntity = new Slot;
 
     slotEntity.startDate = slot.startDate;
     slotEntity.type = slot.type;
+    slotEntity.availableDrivers = slot.availableDrivers;
 
     return slotEntity
-
-  }
-
-  public static getDurationInMinutes(type: SlotType): number {
-
-    switch(type) {
-      case SlotType.GOLD:
-        return 120;
-      case SlotType.SILVER:
-        return 30;
-      case SlotType.PLATINIUM:
-        return 30;
-    }
-
-  }
-
-	public getDurationInMinutes(): number {
-
-		switch(this.type) {
-			case SlotType.GOLD:
-				return 120;
-			case SlotType.SILVER:
-				return 30;
-			case SlotType.PLATINIUM:
-				return 30;
-		}
-
-	}
-
-  public static getDeliveryFees(type: SlotType): number {
-
-    switch (type) {
-      case SlotType.GOLD:
-        return 2.99;
-      case SlotType.SILVER:
-        return 0.00;
-      case SlotType.PLATINIUM:
-        return 6.99;
-    }
 
   }
   

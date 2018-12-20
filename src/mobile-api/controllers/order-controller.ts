@@ -1,5 +1,5 @@
 import { Tags, Security, Produces } from "typescript-rest-swagger";
-import {GET, Path, POST, Return} from "typescript-rest";
+import {GET, Path, PathParam, POST, QueryParam, Return} from "typescript-rest";
 import {OrderRepository} from '../../common/repositories/order/order-repository';
 import {SlotRepository} from '../../common/repositories/slot-repository';
 import {BaseController} from "../../common/controller/base-controller";
@@ -89,9 +89,9 @@ export class OrderController extends BaseController {
   @JSONEndpoint
   @Path("/slots")
   @GET
-  public async getSlots(): Promise<Slot[]> {
+  public async getNextAvailableSlots(@QueryParam("type") type?: string): Promise<Slot[]> {
 
-    let slots = await this._slotsRepository.getNextAvailableSlots();
+    let slots = await this._slotsRepository.getAvailableSlots(type);
 	  return slots.map(slot => new Slot(slot));
 
   }

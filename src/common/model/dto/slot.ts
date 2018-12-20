@@ -1,4 +1,4 @@
-import { SlotType } from '../entity/slot';
+import {SlotType} from '../entity/slot';
 import {Required} from "../../annotations";
 
 export interface ISlot {
@@ -10,12 +10,12 @@ export interface ISlot {
 export class Slot {
 
 	public id: number;
-	public type: SlotType;
+	public type?: string;
 	public startDate: Date;
 
 	constructor(slot: ISlot) {
 		this.id = slot.id;
-		this.type = slot.type;
+		this.type = SlotType.toString(slot.type);
 		this.startDate = slot.startDate;
 	}
 
@@ -24,6 +24,7 @@ export class Slot {
 export interface ICreateSlotRequest {
 	startDate: Date;
 	type: SlotType;
+	availableDrivers: number;
 }
 
 export class CreateSlotRequest {
@@ -34,34 +35,13 @@ export class CreateSlotRequest {
 	@Required()
 	public type: SlotType;
 
+	@Required()
+	public availableDrivers: number;
+
 	constructor(request: ICreateSlotRequest) {
 		this.startDate = request.startDate;
 		this.type = request.type;
-	}
-
-}
-
-export interface ISearchSlotRequest {
-	from: Date;
-	to: Date;
-	types: SlotType[];
-}
-
-export class SearchSlotRequest {
-
-	@Required()
-	public from: Date;
-
-	@Required()
-	public to: Date;
-
-	@Required()
-	public types: SlotType[];
-
-	constructor(request: ISearchSlotRequest) {
-		this.from = request.from;
-		this.to = request.to;
-		this.types = request.types;
+		this.availableDrivers = request.availableDrivers;
 	}
 
 }

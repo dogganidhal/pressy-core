@@ -62,11 +62,13 @@ describe("OrderRepository Operations", () => {
 		// Create Slots
 		pickupSlot = await slotRepository.createSlot({
 			startDate: DateUtils.dateByAddingTimeInterval(new Date, 3600 * 48),
-			type: SlotType.GOLD
+			type: SlotType.GOLD,
+			availableDrivers: 5
 		});
 		deliverySlot = await slotRepository.createSlot({
 			startDate: DateUtils.dateByAddingTimeInterval(pickupSlot.startDate, 3600 * 24),
-			type: SlotType.GOLD
+			type: SlotType.GOLD,
+			availableDrivers: 5
 		});
 
 		address = await addressRepository.createAddress({

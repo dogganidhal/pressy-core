@@ -9,86 +9,86 @@ import { Address as AddressEntity } from "../model/entity/common/address";
 
 export class AddressRepository extends BaseRepository {
 
-  private _addressRepository: Repository<AddressEntity> = this.connection.getRepository(AddressEntity);
-  private _geocodeService: GeocodeService = new GeocodeService();
+	private _addressRepository: Repository<AddressEntity> = this.connection.getRepository(AddressEntity);
+	private _geocodeService: GeocodeService = new GeocodeService();
 
-  public async getAddressById(id: number): Promise<AddressEntity | undefined> {
-    return await this._addressRepository.findOne(id);
-  }
+	public async getAddressById(id: number): Promise<AddressEntity | undefined> {
+		return await this._addressRepository.findOne(id);
+	}
 
-  public async getMemberAddresses(member: Member): Promise<Address[]> {
-    return await this._addressRepository.find({member: member});
-  }
- 
-  public async createAddress(createAddressRequest: CreateAddressRequest, member: Member): Promise<AddressEntity> {
-    
-    let addressDTO: Address;
+	public async getMemberAddresses(member: Member): Promise<Address[]> {
+		return await this._addressRepository.find({member: member});
+	}
 
-    if (createAddressRequest.googlePlaceId)
-      addressDTO = await this._geocodeService.getAddressWithPlaceId(createAddressRequest.googlePlaceId);
-    else if (createAddressRequest.coordinates)
-      addressDTO = await this._geocodeService.getAddressWithCoordinates(createAddressRequest.coordinates);
-    else 
-      throw new exception.CannotCreateAddressException;
+	public async createAddress(createAddressRequest: CreateAddressRequest, member: Member): Promise<AddressEntity> {
 
-    let address = AddressEntity.create({
-      ...addressDTO,
-      name: createAddressRequest.name,
-      extraLine: createAddressRequest.extraLine
-    });
+		let addressDTO: Address;
 
-    address.member = member;
-    address = await this._addressRepository.save(address);
+		if (createAddressRequest.googlePlaceId)
+			addressDTO = await this._geocodeService.getAddressWithPlaceId(createAddressRequest.googlePlaceId);
+		else if (createAddressRequest.coordinates)
+			addressDTO = await this._geocodeService.getAddressWithCoordinates(createAddressRequest.coordinates);
+		else
+			throw new exception.CannotCreateAddressException;
 
-    return address;
-    
-  }
+		let address = AddressEntity.create({
+			...addressDTO,
+			name: createAddressRequest.name,
+			extraLine: createAddressRequest.extraLine
+		});
 
-  public async duplicateAddress(address: Address): Promise<AddressEntity> {
-    return await this._addressRepository.save(AddressEntity.create({...address, id: undefined}));
-  }
+		address.member = member;
+		address = await this._addressRepository.save(address);
 
-  public async updateAddress(request: UpdateAddressRequest, member: Member) {
+		return address;
 
-    let address = await this._addressRepository.findOne(request.addressId);
-    
-    if (!address)
-      throw new exception.AddressNotFoundException(request.addressId);
+	}
 
-    if (!address.member || address.member.id != member.id)
-      throw new exception.CannotUpdateAddressException(request.addressId);
+	public async duplicateAddress(address: Address): Promise<AddressEntity> {
+		return await this._addressRepository.save(AddressEntity.create({...address, id: undefined}));
+	}
 
-    let newAddressDTO = null;
+	public async updateAddress(request: UpdateAddressRequest, member: Member) {
 
-    if (request.addressDetails.googlePlaceId)
-      newAddressDTO = await this._geocodeService.getAddressWithPlaceId(request.addressDetails.googlePlaceId);
-    else if (request.addressDetails.coordinates)
-      newAddressDTO = await this._geocodeService.getAddressWithCoordinates(request.addressDetails.coordinates);
+		let address = await this._addressRepository.findOne(request.addressId);
 
-    if (newAddressDTO != null)
-      address = AddressEntity.create({
-        ...newAddressDTO,
-        id: address.id
-      });
+		if (!address)
+			throw new exception.AddressNotFoundException(request.addressId);
 
-    address.name = request.addressDetails.name;
-    address.extraLine = request.addressDetails.extraLine;
+		if (!address.member || address.member.id != member.id)
+			throw new exception.CannotUpdateAddressException(request.addressId);
 
-    await this._addressRepository.save(address);
-    
-  }
+		let newAddressDTO = null;
 
-  public async deleteAddress(request: DeleteAddressRequest, member: Member) {
+		if (request.addressDetails.googlePlaceId)
+			newAddressDTO = await this._geocodeService.getAddressWithPlaceId(request.addressDetails.googlePlaceId);
+		else if (request.addressDetails.coordinates)
+			newAddressDTO = await this._geocodeService.getAddressWithCoordinates(request.addressDetails.coordinates);
 
-    let address = await this._addressRepository.findOne(request.addressId, {relations: ["member"]});
+		if (newAddressDTO != null)
+			address = AddressEntity.create({
+				...newAddressDTO,
+				id: address.id
+			});
 
-    if (!address)
-      throw new exception.AddressNotFoundException(request.addressId);
+		address.name = request.addressDetails.name;
+		address.extraLine = request.addressDetails.extraLine;
 
-    if (!address.member || address.member.id != member.id)
-      throw new exception.CannotDeleteAddressException(request.addressId);
+		await this._addressRepository.save(address);
 
-    await this._addressRepository.delete({id: request.addressId});
-  }
+	}
+
+	public async deleteAddress(request: DeleteAddressRequest, member: Member) {
+
+		let address = await this._addressRepository.findOne(request.addressId, {relations: ["member"]});
+
+		if (!address)
+			throw new exception.AddressNotFoundException(request.addressId);
+
+		if (!address.member || address.member.id != member.id)
+			throw new exception.CannotDeleteAddressException(request.addressId);
+
+		await this._addressRepository.delete({id: request.addressId});
+	}
 
 }

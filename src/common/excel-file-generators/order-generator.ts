@@ -29,11 +29,11 @@ export class OrderExcelFileGenerator {
 
       workSheet.cell(4, 1).string("Créneau de collecte");
       workSheet.cell(4, 2)
-        .string(`${order.pickupSlot.startDate.toISOString()} -> ${DateUtils.addMinutes(order.pickupSlot.startDate, order.pickupSlot.getDurationInMinutes()).toISOString()}`);
+        .string(`${order.pickupSlot.startDate.toISOString()}`);
 
       workSheet.cell(5, 1).string("Créneau de livraison");
       workSheet.cell(5, 2)
-        .string(`${order.deliverySlot.startDate.toISOString()} -> ${DateUtils.addMinutes(order.pickupSlot.startDate, order.deliverySlot.getDurationInMinutes()).toISOString()}`);
+        .string(`${order.deliverySlot.startDate.toISOString()}`);
 
       workSheet.cell(6, 1).string("Nom et prénom du membre");
       workSheet.cell(6, 2).string(`${order.member.person.firstName} ${order.member.person.lastName}`);

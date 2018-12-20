@@ -10,10 +10,11 @@ import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import {GeocodeService} from "../../services/geocode-service";
 import { MemberMailSender } from "../../common/mail-senders/member-mail-sender";
 import { InternalServerError } from "typescript-rest/dist/server-errors";
-import { Security, Produces, Tags } from "typescript-rest-swagger";
+import {Security, Produces, Tags, Response} from "typescript-rest-swagger";
 import { MemberInfo, CreatePersonRequest, Address as AddressDTO, MobileDevice, CreateAddressRequest, UpdatePersonInfoRequest } from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
 import {Member} from "../../common/model/entity/users/member/member";
+
 
 @Produces("application/json")
 @Tags("Members")

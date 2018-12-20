@@ -62,7 +62,15 @@ export class OrderRepository extends BaseRepository {
 		  address: await addressRepository.duplicateAddress(addressEntity)
 	  });
 
-	  await this._addressRepository.insert(addressEntity);
+	  deliverySlot.availableDrivers--;
+	  pickupSlot.availableDrivers--;
+
+	  await Promise.all([
+			await this._slotRepository.save(deliverySlot),
+			await this._slotRepository.save(pickupSlot),
+			await this._addressRepository.insert(addressEntity)
+		]);
+
 	  await this._orderRepository.insert(order);
 	  this._orderStatusManger.registerOrderCreation(order);
 
