@@ -2,11 +2,11 @@ import {BaseController} from "../../common/controller/base-controller";
 import {Path, POST, GET, QueryParam} from "typescript-rest";
 import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import {SigningCategory} from "../../services/crypto";
-import {Database} from "../../common/db";
 import { Tags, Produces } from "typescript-rest-swagger";
 import { CreateSlotRequestDto, SlotDto } from "../../common/model/dto";
 import { JSONBody } from "../../common/annotations/json-body";
-import { SlotRepositoryImpl } from "../../common/repositories/slot-repository/slot-repository-impl";
+import { ISlotRepository } from "../../common/repositories/slot-repository";
+import { RepositoryFactory } from "../../common/repositories/factory";
 
 
 @Produces("application/json")
@@ -14,7 +14,7 @@ import { SlotRepositoryImpl } from "../../common/repositories/slot-repository/sl
 @Path("/slot")
 export class SlotController extends BaseController {
 
-	private _slotRepository: SlotRepositoryImpl = new SlotRepositoryImpl(Database.getConnection());
+	private _slotRepository: ISlotRepository = RepositoryFactory.instance.createSlotRepository();
 
 	@JSONEndpoint
 	@Authenticate(SigningCategory.ADMIN)
