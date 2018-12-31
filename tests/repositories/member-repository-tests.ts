@@ -1,19 +1,21 @@
+import { RepositoryFactory } from "./../../src/common/repositories/factory";
 import {Connection} from 'typeorm';
-import { MemberRepository } from '../../src/common/repositories/users/member-repository';
 import RandomString from "randomstring";
 import bcrypt from "bcrypt";
 import {Member} from "../../src/common/model/entity/users/member/member";
 import {Person} from "../../src/common/model/entity/users/person";
 import {Database} from "../../src/common/db";
-import {PersonRepository} from "../../src/common/repositories/users/person-repository";
 import {exception} from "../../src/common/errors";
 import { CreatePersonRequestDto } from '../../src/common/model/dto';
+import { IMemberRepository } from "../../src/common/repositories/member-repository";
+import { IPersonRepository } from "../../src/common/repositories/person-repository";
 
 
 describe("MemberRepository Write/Delete Operations Tests", () => {
 
-  let connection: Connection;
-  let memberRepository: MemberRepository;
+	let connection: Connection;
+	let repositoryFactory: RepositoryFactory;
+  let memberRepository: IMemberRepository;
 
 	const testMember = {
 		firstName: RandomString.generate(10),
@@ -31,8 +33,9 @@ describe("MemberRepository Write/Delete Operations Tests", () => {
 	} as CreatePersonRequestDto;
 
   beforeAll(async done => {
-    connection = await Database.createConnection();
-    memberRepository = new MemberRepository(connection);
+		connection = await Database.createConnection();
+		repositoryFactory = new RepositoryFactory(connection);
+    memberRepository = repositoryFactory.createMemberRepository();
     done();
   });
 
@@ -85,9 +88,10 @@ describe("MemberRepository Write/Delete Operations Tests", () => {
 
 describe("MemberRepository Read Operations Tests", () => {
 
-  let connection: Connection;
-  let memberRepository: MemberRepository;
-	let personRepository: PersonRepository;
+	let connection: Connection;
+	let repositoryFactory: RepositoryFactory;
+  let memberRepository: IMemberRepository;
+	let personRepository: IPersonRepository;
   const memberDTO: CreatePersonRequestDto = {
     firstName: RandomString.generate(10),
     lastName: RandomString.generate(10),
@@ -97,9 +101,10 @@ describe("MemberRepository Read Operations Tests", () => {
   };
 
   beforeAll(async (done) => {
-    connection = await Database.createConnection();
-    memberRepository = new MemberRepository(connection);
-    personRepository = new PersonRepository(connection);
+		connection = await Database.createConnection();
+		repositoryFactory = new RepositoryFactory(connection);
+    memberRepository = repositoryFactory.createMemberRepository();
+    personRepository = repositoryFactory.createPersonRepository();
     await memberRepository.createMember(memberDTO);
     done();
   }, 60000);

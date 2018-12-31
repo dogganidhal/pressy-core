@@ -1,21 +1,24 @@
 import {Connection} from 'typeorm';
-import {MemberRepository} from '../../src/common/repositories/users/member-repository';
 import RandomString from "randomstring";
 import {Member} from "../../src/common/model/entity/users/member/member";
 import {Database} from "../../src/common/db";
 import {crypto, AuthTokenType, SigningCategory} from "../../src/services/crypto";
 import {exception} from "../../src/common/errors";
+import { IMemberRepository } from '../../src/common/repositories/member-repository';
+import { RepositoryFactory } from '../../src/common/repositories/factory';
 
 
 describe("crypto Operations Tests", () => {
 
 	let connection: Connection;
-	let memberRepository: MemberRepository;
+	let repositoryFactory: RepositoryFactory;
+	let memberRepository: IMemberRepository;
 	let member: Member;
 
 	beforeAll(async (done) => {
 		connection = await Database.createConnection();
-		memberRepository = new MemberRepository(connection);
+		repositoryFactory = new RepositoryFactory(connection);
+		memberRepository = repositoryFactory.createMemberRepository();
 		member = await memberRepository.createMember({
 			firstName: RandomString.generate(10),
 			lastName: RandomString.generate(10),

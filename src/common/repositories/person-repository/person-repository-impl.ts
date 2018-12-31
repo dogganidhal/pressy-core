@@ -6,9 +6,10 @@ import {exception} from "../../errors";
 import {DateUtils} from "../../utils";
 import {EmailValidationCode, Person, PhoneValidationCode} from '../../model/entity/users/person';
 import { ResetPasswordRequestDto, UpdatePersonInfoRequestDto } from '../../model/dto';
+import { IPersonRepository } from '.';
 
 
-export class PersonRepository extends BaseRepository {
+export class PersonRepositoryImpl extends BaseRepository implements IPersonRepository {
 
   private _resetCodeRepository: Repository<PasswordResetCode> = this.connection.getRepository(PasswordResetCode);
   private _validateEmailRepository: Repository<EmailValidationCode> = this.connection.getRepository(EmailValidationCode);

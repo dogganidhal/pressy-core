@@ -1,15 +1,14 @@
 import {GET, PATCH, Path, POST, Accept, DELETE} from "typescript-rest";
-import {MemberRepository} from '../../common/repositories/users/member-repository';
 import {BaseController} from "../../common/controller/base-controller";
-import {Database} from "../../common/db";
 import {SigningCategory} from "../../services/crypto";
 import {http} from "../../common/utils/http";
 import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import { Security, Produces, Tags, Response } from "typescript-rest-swagger";
-import { AddressRepository } from "../../common/repositories/address-repository";
 import {AddressDto, UpdateAddressRequestDto, CreateAddressRequestDto, DeleteAddressRequestDto} from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
 import {Member} from "../../common/model/entity/users/member/member";
+import { IAddressRepository } from "../../common/repositories/address-repository";
+import { RepositoryFactory } from "../../common/repositories/factory";
 
 @Produces("application/json")
 @Tags("Addresses")
@@ -17,7 +16,7 @@ import {Member} from "../../common/model/entity/users/member/member";
 @Path('/addressId')
 export class AddressController extends BaseController {
 
-  private _addressRepository: AddressRepository = new AddressRepository(Database.getConnection());
+  private _addressRepository: IAddressRepository = RepositoryFactory.instance.createAddressRepository();
 
   @Security("Bearer")
   @JSONEndpoint

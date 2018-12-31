@@ -1,8 +1,7 @@
 import Randomstring from 'randomstring';
 import request from "supertest";
 import { Connection } from 'typeorm';
-import { APIV1 } from "../../src/common/http/api";
-import { MemberRepository } from '../../src/common/repositories/users/member-repository';
+import { APIV1 } from "../../src/common/http/api"
 import {APIError} from "../../src/common/errors/api-error";
 import {Database} from "../../src/common/db";
 import uuid = require("uuid");
@@ -10,11 +9,14 @@ import {MobileDevice} from "../../src/common/model/entity/users/device";
 import {SigningCategory, crypto, AuthCredentialsDto} from "../../src/services/crypto";
 import {http} from "../../src/common/utils/http";
 import { CreatePersonRequestDto, MobileDeviceDto} from '../../src/common/model/dto';
+import { RepositoryFactory } from '../../src/common/repositories/factory';
+import { IMemberRepository } from '../../src/common/repositories/member-repository';
 
 describe("Testing MemberController Endpoints =>", () => {
 
-  let connection: Connection;
-  let memberRepository: MemberRepository;
+	let connection: Connection;
+	let repositoryFactory: RepositoryFactory;
+  let memberRepository: IMemberRepository;
   const api = new APIV1(require("../../src/mobile-api/config"));
   const memberDTO: CreatePersonRequestDto = {
     firstName: Randomstring.generate(10),
@@ -32,8 +34,9 @@ describe("Testing MemberController Endpoints =>", () => {
 	} as CreatePersonRequestDto;
 
   beforeAll(async done => {
-    connection = await Database.createConnection();
-    memberRepository = new MemberRepository(connection);
+		connection = await Database.createConnection();
+		repositoryFactory = new RepositoryFactory(connection);
+    memberRepository = repositoryFactory.createMemberRepository();
 	  await memberRepository.createMember(duplicateMemberDTO);
     done();
   }, 60000);

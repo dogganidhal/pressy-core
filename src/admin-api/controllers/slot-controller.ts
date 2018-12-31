@@ -6,7 +6,7 @@ import {Database} from "../../common/db";
 import { Tags, Produces } from "typescript-rest-swagger";
 import { CreateSlotRequestDto, SlotDto } from "../../common/model/dto";
 import { JSONBody } from "../../common/annotations/json-body";
-import { SlotRepository } from "../../common/repositories/slot-repository";
+import { SlotRepositoryImpl } from "../../common/repositories/slot-repository/slot-repository-impl";
 
 
 @Produces("application/json")
@@ -14,7 +14,7 @@ import { SlotRepository } from "../../common/repositories/slot-repository";
 @Path("/slot")
 export class SlotController extends BaseController {
 
-	private _slotRepository: SlotRepository = new SlotRepository(Database.getConnection());
+	private _slotRepository: SlotRepositoryImpl = new SlotRepositoryImpl(Database.getConnection());
 
 	@JSONEndpoint
 	@Authenticate(SigningCategory.ADMIN)

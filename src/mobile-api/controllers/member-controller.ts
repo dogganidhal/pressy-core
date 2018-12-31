@@ -1,8 +1,5 @@
 import {GET, PATCH, Path, PathParam, POST, Return, Accept} from "typescript-rest";
-import {PersonRepository} from '../../common/repositories/users/person-repository';
-import {MemberRepository} from '../../common/repositories/users/member-repository';
 import {BaseController} from "../../common/controller/base-controller";
-import {Database} from "../../common/db";
 import {SigningCategory, AuthCredentialsDto, crypto} from "../../services/crypto";
 import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import { MemberMailSender } from "../../common/mail-senders/member-mail-sender";
@@ -10,6 +7,9 @@ import {Security, Produces, Tags} from "typescript-rest-swagger";
 import { MemberInfoDto, CreatePersonRequestDto, AddressDto, UpdatePersonInfoRequestDto } from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
 import {Member} from "../../common/model/entity/users/member/member";
+import { IPersonRepository } from "../../common/repositories/person-repository";
+import { RepositoryFactory } from "../../common/repositories/factory";
+import { IMemberRepository } from "../../common/repositories/member-repository";
 
 
 @Produces("application/json")
@@ -18,8 +18,8 @@ import {Member} from "../../common/model/entity/users/member/member";
 @Path('/member')
 export class MemberController extends BaseController {
 
-  private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
-  private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
+  private _memberRepository: IMemberRepository = RepositoryFactory.instance.createMemberRepository();
+  private _personRepository: IPersonRepository = RepositoryFactory.instance.createPersonRepository();
 
 	@Security("Bearer")
 	@JSONEndpoint

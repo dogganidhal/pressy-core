@@ -2,9 +2,10 @@ import {Connection} from "typeorm";
 import {OrderStatusUpdate, OrderStatusUpdateType} from "../../model/entity/status/order-status-update";
 import {Order} from "../../model/entity/order";
 import {Driver} from "../../model/entity/users/driver/driver";
+import { IOrderStatusRepository } from ".";
 
 
-export class OrderStatusManager {
+export class OrderStatusRepositoryImpl implements IOrderStatusRepository {
 
 	private _orderStatusRepository = this.connection.getRepository(OrderStatusUpdate);
 

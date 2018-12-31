@@ -1,15 +1,15 @@
 import { Tags, Security, Produces } from "typescript-rest-swagger";
 import {GET, Path, POST, QueryParam, Return} from "typescript-rest";
-import {OrderRepository} from '../../common/repositories/order/order-repository';
-import {SlotRepository} from '../../common/repositories/slot-repository';
 import {BaseController} from "../../common/controller/base-controller";
-import {Database} from "../../common/db";
 import {SigningCategory} from "../../services/crypto";
 import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import { OrderMailSender } from "../../common/mail-senders/order-mail-sender";
 import { CreateOrderRequestDto, OrderDto, SlotDto } from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
 import {Member} from "../../common/model/entity/users/member/member";
+import { IOrderRepository } from "../../common/repositories/order-repository";
+import { ISlotRepository } from "../../common/repositories/slot-repository";
+import { RepositoryFactory } from "../../common/repositories/factory";
 
 
 @Produces("application/json")
@@ -17,8 +17,8 @@ import {Member} from "../../common/model/entity/users/member/member";
 @Path('/order')
 export class OrderController extends BaseController {
 
-  private _orderRepository: OrderRepository = new OrderRepository(Database.getConnection());
-  private _slotsRepository: SlotRepository = new SlotRepository(Database.getConnection());
+  private _orderRepository: IOrderRepository = RepositoryFactory.instance.createOrderRepository();
+  private _slotsRepository: ISlotRepository = RepositoryFactory.instance.createSlotRepository();
 
 	@Security("Bearer")
   @JSONEndpoint

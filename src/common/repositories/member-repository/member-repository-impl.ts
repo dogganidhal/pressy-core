@@ -5,10 +5,11 @@ import {Member} from '../../model/entity/users/member/member';
 import {EmailValidationCode, Person, PhoneValidationCode} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
 import {validation} from "../../utils";
-import { CreatePersonRequestDto, MobileDeviceDto as MobileDeviceDTO } from '../../model/dto';
+import { CreatePersonRequestDto, MobileDeviceDto } from '../../model/dto';
+import { IMemberRepository } from '.';
 
 
-export class MemberRepository extends BaseRepository {
+export class MemberRepositoryImpl extends BaseRepository implements IMemberRepository {
 
   private _memberRepository: Repository<Member> = this.connection.getRepository(Member);
   private _mobileDeviceRepository: Repository<MobileDevice> = this.connection.getRepository(MobileDevice);
@@ -114,7 +115,7 @@ export class MemberRepository extends BaseRepository {
 
   }
 
-  public async registerMobileDevice(member: Member, mobileDeviceDTO: MobileDeviceDTO): Promise<MobileDevice> {
+  public async registerMobileDevice(member: Member, mobileDeviceDTO: MobileDeviceDto): Promise<MobileDevice> {
 
     const device = MobileDevice.create(member.person, mobileDeviceDTO.deviceId);
     await this._mobileDeviceRepository.insert(device);
@@ -122,7 +123,7 @@ export class MemberRepository extends BaseRepository {
 
   }
 
-  public async deleteMobileDevice(person: Person, mobileDeviceDTO: MobileDeviceDTO): Promise<void> {
+  public async deleteMobileDevice(person: Person, mobileDeviceDTO: MobileDeviceDto): Promise<void> {
 
     let mobileDevice = await this._mobileDeviceRepository.findOne(mobileDeviceDTO.deviceId, {relations: ["person"]});
 

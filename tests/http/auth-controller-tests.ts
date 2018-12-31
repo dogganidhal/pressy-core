@@ -1,4 +1,3 @@
-import { MemberRepository } from '../../src/common/repositories/users/member-repository';
 import { Connection } from 'typeorm';
 import request from "supertest";
 import {APIError} from "../../src/common/errors/api-error";
@@ -8,11 +7,14 @@ import {AuthTokenType} from "../../src/services/crypto";
 import { APIV1 } from "../../src/common/http/api";
 import {http} from "../../src/common/utils/http";
 import { CreatePersonRequestDto, LoginResponseDto } from '../../src/common/model/dto';
+import { RepositoryFactory } from '../../src/common/repositories/factory';
+import { IMemberRepository } from '../../src/common/repositories/member-repository';
 
 describe("Testing Authentication Endpoints", () => {
 
 	let connection: Connection;
-	let memberRepository: MemberRepository;
+	let repositoryFactory: RepositoryFactory;
+	let memberRepository: IMemberRepository;
 	const api = new APIV1(require("../../src/mobile-api/config"));
 	const testMember: CreatePersonRequestDto = {
 		firstName: RandomString.generate(10),
@@ -24,8 +26,9 @@ describe("Testing Authentication Endpoints", () => {
 
   beforeAll(async (done) => {
 
-    connection = await Database.createConnection();
-    memberRepository = new MemberRepository(connection);
+		connection = await Database.createConnection();
+		repositoryFactory = new RepositoryFactory(connection);
+    memberRepository = repositoryFactory.createMemberRepository();
 
     await memberRepository.createMember(testMember);
 

@@ -1,41 +1,44 @@
 import RandomString from "randomstring";
 import {Connection} from "typeorm";
-import {OrderRepository} from "../../src/common/repositories/order/order-repository";
 import {Database} from "../../src/common/db";
-import {MemberRepository} from "../../src/common/repositories/users/member-repository";
 import {Member} from "../../src/common/model/entity/users/member/member";
-import {PersonRepository} from "../../src/common/repositories/users/person-repository";
 import {Slot, SlotType} from "../../src/common/model/entity/slot";
-import {SlotRepository} from "../../src/common/repositories/slot-repository";
 import {DateUtils} from "../../src/common/utils";
 import {OrderStatus} from "../../src/common/model/entity/order";
 import {exception} from "../../src/common/errors";
 import {Address} from "../../src/common/model/entity/common/address";
-import {AddressRepository} from "../../src/common/repositories/address-repository";
+import { IOrderRepository } from "../../src/common/repositories/order-repository";
+import { IMemberRepository } from "../../src/common/repositories/member-repository";
+import { IPersonRepository } from "../../src/common/repositories/person-repository";
+import { ISlotRepository } from "../../src/common/repositories/slot-repository";
+import { IAddressRepository } from "../../src/common/repositories/address-repository";
+import { RepositoryFactory } from "../../src/common/repositories/factory";
 
 
 describe("OrderRepository Operations", () => {
 
 	let connection: Connection;
-	let orderRepository: OrderRepository;
-	let memberRepository: MemberRepository;
-	let personRepository: PersonRepository;
-	let slotRepository: SlotRepository;
+	let repositoryFactory: RepositoryFactory;
+	let orderRepository: IOrderRepository;
+	let memberRepository: IMemberRepository;
+	let personRepository: IPersonRepository;
+	let slotRepository: ISlotRepository;
 	let pickupSlot: Slot;
 	let deliverySlot: Slot;
 	let activeMember: Member;
 	let inactiveMember: Member;
-	let addressRepository: AddressRepository;
+	let addressRepository: IAddressRepository;
 	let address: Address;
 
 	async function createResources() {
 		// Create Database connection and repositories
 		connection = await Database.createConnection();
-		orderRepository = new OrderRepository(connection);
-		memberRepository = new MemberRepository(connection);
-		personRepository = new PersonRepository(connection);
-		slotRepository = new SlotRepository(connection);
-		addressRepository = new AddressRepository(connection);
+		repositoryFactory = new RepositoryFactory(connection);
+		orderRepository = repositoryFactory.createOrderRepository();
+		memberRepository = repositoryFactory.createMemberRepository();
+		personRepository = repositoryFactory.createPersonRepository();
+		slotRepository = repositoryFactory.createSlotRepository();
+		addressRepository = repositoryFactory.createAddressRepository();
 		// Create Members
 		activeMember = await memberRepository.createMember({
 			firstName: "John",

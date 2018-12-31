@@ -1,11 +1,12 @@
 import { BaseRepository } from "../base-repository";
-import { Admin } from "../../../common/model/entity/users/admin/admin";
+import { Admin } from "../../model/entity/users/admin/admin";
 import { Repository } from "typeorm";
 import {Person} from "../../model/entity/users/person";
 import {exception} from "../../errors";
+import { IAdminRepository } from ".";
 
 
-export class AdminRepository extends BaseRepository {
+export class AdminRepositoryImpl extends BaseRepository implements IAdminRepository {
 
   private _adminRepository: Repository<Admin> = this.connection.getRepository(Admin);
   private _personRepository: Repository<Person> = this.connection.getRepository(Person);

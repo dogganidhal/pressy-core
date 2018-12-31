@@ -2,14 +2,11 @@ import {sign, verify, SignOptions, VerifyOptions, JsonWebTokenError, TokenExpire
 import {getConfig} from "../config";
 import {exception} from "../common/errors";
 import {Database} from "../common/db";
-import {Person} from "../common/model/entity/users/person";
 import {User} from "../common/model/entity/users";
 import {Member} from "../common/model/entity/users/member/member";
 import {Admin} from "../common/model/entity/users/admin/admin";
 import {Driver} from "../common/model/entity/users/driver/driver";
-import {MemberRepository} from "../common/repositories/users/member-repository";
-import {AdminRepository} from "../common/repositories/users/admin-repository";
-import {DriverRepository} from "../common/repositories/users/driver-repository";
+import { RepositoryFactory } from "../common/repositories/factory";
 
 export enum SigningCategory {
 	MEMBER = 0,
@@ -109,13 +106,13 @@ export namespace crypto {
 				let user: User | undefined;
 				switch (payload.category) {
 					case SigningCategory.MEMBER:
-						user = await new MemberRepository(Database.getConnection()).getMemberById(payload.id);
+						user = await RepositoryFactory.instance.createMemberRepository().getMemberById(payload.id);
 						break;
 					case SigningCategory.ADMIN:
-						user = await new AdminRepository(Database.getConnection()).getAdminById(payload.id);
+						user = await RepositoryFactory.instance.createAdminRepository().getAdminById(payload.id);
 						break;
 					case SigningCategory.DRIVER:
-						user = await new DriverRepository(Database.getConnection()).getDriverById(payload.id);
+						user = await RepositoryFactory.instance.createDriverRepository().getDriverById(payload.id);
 						break;
 				}
 

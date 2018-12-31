@@ -1,14 +1,12 @@
-import {AssignDriverSlotsRequestDto } from "../../common/model/dto/driver";
 import {Produces, Security, Tags} from "typescript-rest-swagger";
-import {OrderRepository} from '../../common/repositories/order/order-repository';
 import {BaseController} from "../../common/controller/base-controller";
 import {GET, Path, POST, QueryParam} from "typescript-rest";
 import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import {SigningCategory} from "../../services/crypto";
-import {http} from "../../common/utils/http";
-import {Database} from '../../common/db';
 import {AssignOrderDriverRequestDto, OrderDto} from '../../common/model/dto';
 import {JSONBody} from "../../common/annotations/json-body";
+import { IOrderRepository } from "../../common/repositories/order-repository";
+import { RepositoryFactory } from "../../common/repositories/factory";
 
 
 @Produces("application/json")
@@ -16,7 +14,7 @@ import {JSONBody} from "../../common/annotations/json-body";
 @Path("/order")
 export class OrderController extends BaseController {
 
-  private _orderRepository: OrderRepository = new OrderRepository(Database.getConnection());
+  private _orderRepository: IOrderRepository = RepositoryFactory.instance.createOrderRepository();
 
 	@Security("Bearer")
   @Path("/assign-driver")

@@ -2,24 +2,24 @@ import {Order} from '../../model/entity/order';
 import {Repository} from "typeorm";
 import {Member} from '../../model/entity/users/member/member';
 import {BaseRepository} from '../base-repository';
-import {OrderStatusManager} from "./order-status-manager";
 import {Slot} from "../../model/entity/slot";
 import {exception} from "../../errors";
-import {GeocodeService} from "../../../services/geocode-service";
 import {Address} from "../../model/entity/common/address";
 import {Driver} from "../../model/entity/users/driver/driver";
 import { CreateOrderRequestDto, AssignOrderDriverRequestDto, AddressDto as AddressDTO } from '../../model/dto';
-import {AddressRepository} from "../address-repository";
+import { IOrderRepository } from '.';
+import { RepositoryFactory } from '../factory';
+import { IOrderStatusRepository } from '../order-status-repository';
 
 
-export class OrderRepository extends BaseRepository {
+export class OrderRepositoryImpl extends BaseRepository implements IOrderRepository {
 
   private _orderRepository: Repository<Order> = this.connection.getRepository(Order);
   private _slotRepository: Repository<Slot> = this.connection.getRepository(Slot);
 	private _addressRepository: Repository<Address> = this.connection.getRepository(Address);
 	private _driverRepository: Repository<Driver> = this.connection.getRepository(Driver);
 
-	private _orderStatusManger: OrderStatusManager = new OrderStatusManager(this.connection);
+	private _orderStatusManger: IOrderStatusRepository = RepositoryFactory.instance.createOrderStatusRepository();
 
   public async getOrdersForMember(member: Member): Promise<Order[]> {
 
@@ -50,7 +50,7 @@ export class OrderRepository extends BaseRepository {
 	  if (!deliverySlot)
 		  throw new exception.SlotNotFoundException(createOrderRequest.deliverySlotId);
 
-	  let addressRepository = new AddressRepository(this.connection);
+	  let addressRepository = RepositoryFactory.instance.createAddressRepository();
 	  let addressEntity = await addressRepository.getAddressById(createOrderRequest.addressId);
 
 	  if (!addressEntity)

@@ -1,17 +1,17 @@
 import {Path, POST} from "typescript-rest";
 import {BaseController} from "../../common/controller/base-controller";
-import {Database} from "../../common/db/index";
 import {SigningCategory} from "../../services/crypto";
 import {http} from "../../common/utils/http";
-import {DriverRepository} from "../../common/repositories/users/driver-repository";
 import {Authenticate, JSONEndpoint} from "../../common/annotations/index";
 import { CreatePersonRequestDto } from "../../common/model/dto";
+import { IDriverRepository } from "../../common/repositories/driver-repository";
+import { RepositoryFactory } from "../../common/repositories/factory";
 
 
 @Path("/driver/")
 export class DriverController extends BaseController {
 
-  private _driverRepository = new DriverRepository(Database.getConnection());
+  private _driverRepository: IDriverRepository = RepositoryFactory.instance.createDriverRepository();
 
   @Authenticate(SigningCategory.ADMIN)
   @JSONEndpoint

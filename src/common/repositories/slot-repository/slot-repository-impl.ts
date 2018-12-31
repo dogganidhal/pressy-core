@@ -1,11 +1,12 @@
-import {Slot, SlotType} from '../model/entity/slot';
+import {Slot, SlotType} from '../../model/entity/slot';
 import {Between, FindConditions, Repository} from "typeorm";
-import {DateUtils} from '../utils';
-import {BaseRepository} from './base-repository';
-import { CreateSlotRequestDto } from '../model/dto';
+import {DateUtils} from '../../utils';
+import {BaseRepository} from '../base-repository';
+import { CreateSlotRequestDto } from '../../model/dto';
+import { ISlotRepository } from '.';
 
 
-export class SlotRepository extends BaseRepository {
+export class SlotRepositoryImpl extends BaseRepository implements ISlotRepository {
 
   private _slotRepository: Repository<Slot> = this.connection.getRepository(Slot);
 

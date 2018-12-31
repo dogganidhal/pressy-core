@@ -1,16 +1,16 @@
-import { Config, getConfig } from './../../config/index';
-import { AdminRepository } from './../repositories/users/admin-repository';
+import { Config, getConfig } from './../../config';
 import { Order } from "../../common/model/entity/order";
 import { MailingService, MailTemplateName } from "../../services/mailing-service";
-import { Database } from '../../common/db';
 import { OrderExcelFileGenerator } from '../../common/excel-file-generators/order-generator';
+import { IAdminRepository } from '../repositories/admin-repository';
+import { RepositoryFactory } from '../repositories/factory';
 
 
 export class OrderMailSender {
 
   private _config: Config = getConfig();
   private _mailingService: MailingService = new MailingService;
-  private _adminRepository: AdminRepository = new AdminRepository(Database.getConnection());
+  private _adminRepository: IAdminRepository = RepositoryFactory.instance.createAdminRepository();
 
   public async sendOrderConfirmationMail(order: Order): Promise<void> {
     // TODO: Implement Order Confimation Email

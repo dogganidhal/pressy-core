@@ -1,14 +1,14 @@
 import { BaseController } from "../../common/controller/base-controller";
 import { Path, POST } from "typescript-rest";
 import { JSONEndpoint } from "../../common/annotations";
-import { Database } from "../../common/db";
 import { exception } from "../../common/errors";
 import bcrypt from "bcrypt";
-import { crypto, SigningCategory, AuthCredentialsDto as AuthCredentialsDto } from "../../services/crypto";
+import { crypto, SigningCategory, AuthCredentialsDto } from "../../services/crypto";
 import { LoginRequestDto } from "../../common/model/dto";
 import { Tags, Produces } from "typescript-rest-swagger";
 import {JSONBody} from "../../common/annotations/json-body";
-import {AdminRepository} from "../../common/repositories/users/admin-repository";
+import { IAdminRepository } from "../../common/repositories/admin-repository";
+import { RepositoryFactory } from "../../common/repositories/factory";
 
 
 @Produces("application/json")
@@ -16,7 +16,7 @@ import {AdminRepository} from "../../common/repositories/users/admin-repository"
 @Path("/auth")
 export class AuthController extends BaseController {
 
-  private _adminRepository: AdminRepository = new AdminRepository(Database.getConnection());
+  private _adminRepository: IAdminRepository = RepositoryFactory.instance.createAdminRepository();
 
   @Path("/login")
   @JSONEndpoint

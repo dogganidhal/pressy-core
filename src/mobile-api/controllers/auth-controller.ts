@@ -2,14 +2,14 @@ import { Tags, Produces } from "typescript-rest-swagger";
 import {Path, PathParam, POST, Return} from "typescript-rest";
 import {exception} from "../../common/errors";
 import bcrypt from "bcrypt";
-import {PersonRepository} from "../../common/repositories/users/person-repository";
 import {BaseController} from "../../common/controller/base-controller";
-import {Database} from "../../common/db";
 import {crypto, SigningCategory, AuthCredentialsDto} from "../../services/crypto";
 import {JSONEndpoint} from "../../common/annotations";
 import { LoginRequestDto, RefreshCredentialsRequestDto, ResetCodeRequestDto, ResetCodeDto, ResetPasswordRequestDto } from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
-import {MemberRepository} from "../../common/repositories/users/member-repository";
+import { IPersonRepository } from "../../common/repositories/person-repository";
+import { RepositoryFactory } from "../../common/repositories/factory";
+import { IMemberRepository } from "../../common/repositories/member-repository";
 
 
 @Produces("application/json")
@@ -17,8 +17,8 @@ import {MemberRepository} from "../../common/repositories/users/member-repositor
 @Path('/auth')
 export class AuthController extends BaseController {
 
-  private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
-	private _personRepository: PersonRepository = new PersonRepository(Database.getConnection());
+  private _memberRepository: IMemberRepository = RepositoryFactory.instance.createMemberRepository();
+	private _personRepository: IPersonRepository = RepositoryFactory.instance.createPersonRepository();
 
   @JSONEndpoint
   @POST

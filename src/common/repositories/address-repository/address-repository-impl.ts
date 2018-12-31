@@ -1,13 +1,14 @@
-import { BaseRepository } from "./base-repository";
+import { BaseRepository } from "../base-repository";
 import { Repository } from "typeorm";
-import {UpdateAddressRequestDto, CreateAddressRequestDto, AddressDto, DeleteAddressRequestDto} from "../model/dto";
-import { GeocodeService } from "../../services/geocode-service";
-import { exception } from "../errors";
-import { Member } from "../model/entity/users/member/member";
-import { Address as AddressEntity } from "../model/entity/common/address";
+import {UpdateAddressRequestDto, CreateAddressRequestDto, AddressDto, DeleteAddressRequestDto} from "../../model/dto";
+import { GeocodeService } from "../../../services/geocode-service";
+import { exception } from "../../errors";
+import { Member } from "../../model/entity/users/member/member";
+import { Address as AddressEntity } from "../../model/entity/common/address";
+import { IAddressRepository } from ".";
 
 
-export class AddressRepository extends BaseRepository {
+export class AddressRepositoryImpl extends BaseRepository implements IAddressRepository {
 
 	private _addressRepository: Repository<AddressEntity> = this.connection.getRepository(AddressEntity);
 	private _geocodeService: GeocodeService = new GeocodeService();

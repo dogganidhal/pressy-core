@@ -1,15 +1,13 @@
 import {GET, Path, POST, Accept, DELETE} from "typescript-rest";
-import {MemberRepository} from '../../common/repositories/users/member-repository';
 import {BaseController} from "../../common/controller/base-controller";
-import {Database} from "../../common/db";
 import {SigningCategory} from "../../services/crypto";
 import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import {Security, Produces, Tags} from "typescript-rest-swagger";
 import {MobileDeviceDto} from "../../common/model/dto";
-import {exception} from "../../common/errors";
-import * as Return from "typescript-rest/dist/server-return";
 import {JSONBody} from "../../common/annotations/json-body";
 import {Member} from "../../common/model/entity/users/member/member";
+import { IMemberRepository } from "../../common/repositories/member-repository";
+import { RepositoryFactory } from "../../common/repositories/factory";
 
 
 @Produces("application/json")
@@ -18,7 +16,7 @@ import {Member} from "../../common/model/entity/users/member/member";
 @Path('/devices')
 export class DeviceController extends BaseController {
 
-	private _memberRepository: MemberRepository = new MemberRepository(Database.getConnection());
+	private _memberRepository: IMemberRepository = RepositoryFactory.instance.createMemberRepository();
 
 	@JSONEndpoint
 	@Security("Bearer")
