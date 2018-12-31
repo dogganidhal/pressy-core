@@ -69,7 +69,7 @@ export interface IAssignOrderDriverRequest {
 	orderId: number;
 }
 
-export class AssignOrderDriverRequest {
+export class AssignOrderDriverRequestDto {
 
 	@Required()
 	public driverId: number;
@@ -77,8 +77,8 @@ export class AssignOrderDriverRequest {
 	@Required()
 	public orderId: number;
 
-	public static create(request: IAssignOrderDriverRequest): AssignOrderDriverRequest {
-		let createDriverAvailabilityRequest = new AssignOrderDriverRequest;
+	public static create(request: IAssignOrderDriverRequest): AssignOrderDriverRequestDto {
+		let createDriverAvailabilityRequest = new AssignOrderDriverRequestDto;
 		
 		createDriverAvailabilityRequest.driverId = request.driverId;
 		createDriverAvailabilityRequest.orderId = request.orderId;

@@ -8,7 +8,7 @@ import {exception} from "../../errors";
 import {GeocodeService} from "../../../services/geocode-service";
 import {Address} from "../../model/entity/common/address";
 import {Driver} from "../../model/entity/users/driver/driver";
-import { CreateOrderRequestDto, AssignOrderDriverRequest, AddressDto as AddressDTO } from '../../model/dto';
+import { CreateOrderRequestDto, AssignOrderDriverRequestDto, AddressDto as AddressDTO } from '../../model/dto';
 import {AddressRepository} from "../address-repository";
 
 
@@ -81,7 +81,7 @@ export class OrderRepository extends BaseRepository {
   	return this._orderRepository.find({take: pageLength, skip: offset});
 	}
 
-	public async assignDriverToOrder(request: AssignOrderDriverRequest): Promise<void> {
+	public async assignDriverToOrder(request: AssignOrderDriverRequestDto): Promise<void> {
 
 		let {driverId, orderId} = request;
 

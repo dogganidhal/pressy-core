@@ -1,4 +1,4 @@
-import {AssignDriverSlotsRequest as AssignDriverSlotsRequestDto} from "../../common/model/dto/driver";
+import {AssignDriverSlotsRequestDto } from "../../common/model/dto/driver";
 import {Produces, Security, Tags} from "typescript-rest-swagger";
 import {OrderRepository} from '../../common/repositories/order/order-repository';
 import {BaseController} from "../../common/controller/base-controller";
@@ -7,7 +7,7 @@ import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import {SigningCategory} from "../../services/crypto";
 import {http} from "../../common/utils/http";
 import {Database} from '../../common/db';
-import {AssignOrderDriverRequest, OrderDto} from '../../common/model/dto';
+import {AssignOrderDriverRequestDto, OrderDto} from '../../common/model/dto';
 import {JSONBody} from "../../common/annotations/json-body";
 
 
@@ -25,7 +25,7 @@ export class OrderController extends BaseController {
 	@POST
 	public async assignDriverToOrder(@JSONBody(AssignDriverSlotsRequestDto) request: AssignDriverSlotsRequestDto) {
 
-		let assignRequest = http.parseJSONBody(this.getPendingRequest().body, AssignOrderDriverRequest);
+		let assignRequest = http.parseJSONBody(this.getPendingRequest().body, AssignOrderDriverRequestDto);
 		await this._orderRepository.assignDriverToOrder(assignRequest);
 
 	}

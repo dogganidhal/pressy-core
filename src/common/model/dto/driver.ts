@@ -4,13 +4,13 @@ export interface IAssignDriverSlotsRequest {
 	driverSlotId: number;
 }
 
-export class AssignDriverSlotsRequest {
+export class AssignDriverSlotsRequestDto {
 
 	@Required()
 	public driverSlotId: number;
 
-	public static create(request: IAssignDriverSlotsRequest): AssignDriverSlotsRequest {
-		let createDriverAvailabilityRequest = new AssignDriverSlotsRequest;
+	public static create(request: IAssignDriverSlotsRequest): AssignDriverSlotsRequestDto {
+		let createDriverAvailabilityRequest = new AssignDriverSlotsRequestDto;
 		createDriverAvailabilityRequest.driverSlotId = request.driverSlotId;
 		return createDriverAvailabilityRequest;
 	}

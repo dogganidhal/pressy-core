@@ -5,7 +5,7 @@ import {EmailValidationCode, Person} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
 import {Driver} from "../../model/entity/users/driver/driver";
 import {DriverSlot} from "../../model/entity/users/driver/driver-slot";
-import { CreatePersonRequestDto, MobileDeviceDto as MobileDeviceDTO, AssignDriverSlotsRequest } from '../../model/dto';
+import { CreatePersonRequestDto, MobileDeviceDto as MobileDeviceDTO, AssignDriverSlotsRequestDto } from '../../model/dto';
 
 
 
@@ -133,7 +133,7 @@ export class DriverRepository extends BaseRepository {
 
 	}
 
-	public async assignDriverSlots(driver: Driver, slots: AssignDriverSlotsRequest[]): Promise<Driver> {
+	public async assignDriverSlots(driver: Driver, slots: AssignDriverSlotsRequestDto[]): Promise<Driver> {
 
 		let driverSlots: DriverSlot[] = [];
 
