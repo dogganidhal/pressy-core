@@ -2,7 +2,7 @@ import {Entity, OneToMany} from "typeorm";
 import {Person, PersonActivationStatus} from "../person";
 import {User} from "..";
 import {DriverSlot} from "./driver-slot";
-import { CreatePersonRequest } from "../../../dto";
+import { CreatePersonRequestDto } from "../../../dto";
 
 
 @Entity()
@@ -15,7 +15,7 @@ export class Driver extends User {
 		return this.person.status === PersonActivationStatus.ACTIVE;
 	}
 
-	public static create(createDriverRequest: CreatePersonRequest): Driver {
+	public static create(createDriverRequest: CreatePersonRequestDto): Driver {
 
 		const driver: Driver = new Driver();
 		driver.person = Person.create(createDriverRequest);

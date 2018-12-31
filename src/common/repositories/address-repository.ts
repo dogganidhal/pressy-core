@@ -1,6 +1,6 @@
 import { BaseRepository } from "./base-repository";
 import { Repository } from "typeorm";
-import {UpdateAddressRequest, CreateAddressRequest, Address, DeleteAddressRequest} from "../model/dto";
+import {UpdateAddressRequestDto, CreateAddressRequestDto, AddressDto, DeleteAddressRequestDto} from "../model/dto";
 import { GeocodeService } from "../../services/geocode-service";
 import { exception } from "../errors";
 import { Member } from "../model/entity/users/member/member";
@@ -16,13 +16,13 @@ export class AddressRepository extends BaseRepository {
 		return await this._addressRepository.findOne(id);
 	}
 
-	public async getMemberAddresses(member: Member): Promise<Address[]> {
+	public async getMemberAddresses(member: Member): Promise<AddressDto[]> {
 		return await this._addressRepository.find({member: member});
 	}
 
-	public async createAddress(createAddressRequest: CreateAddressRequest, member: Member): Promise<AddressEntity> {
+	public async createAddress(createAddressRequest: CreateAddressRequestDto, member: Member): Promise<AddressEntity> {
 
-		let addressDTO: Address;
+		let addressDTO: AddressDto;
 
 		if (createAddressRequest.googlePlaceId)
 			addressDTO = await this._geocodeService.getAddressWithPlaceId(createAddressRequest.googlePlaceId);
@@ -44,11 +44,11 @@ export class AddressRepository extends BaseRepository {
 
 	}
 
-	public async duplicateAddress(address: Address): Promise<AddressEntity> {
+	public async duplicateAddress(address: AddressDto): Promise<AddressEntity> {
 		return await this._addressRepository.save(AddressEntity.create({...address, id: undefined}));
 	}
 
-	public async updateAddress(request: UpdateAddressRequest, member: Member) {
+	public async updateAddress(request: UpdateAddressRequestDto, member: Member) {
 
 		let address = await this._addressRepository.findOne(request.addressId);
 
@@ -78,7 +78,7 @@ export class AddressRepository extends BaseRepository {
 
 	}
 
-	public async deleteAddress(request: DeleteAddressRequest, member: Member) {
+	public async deleteAddress(request: DeleteAddressRequestDto, member: Member) {
 
 		let address = await this._addressRepository.findOne(request.addressId, {relations: ["member"]});
 

@@ -7,16 +7,16 @@ import {APIError} from "../../src/common/errors/api-error";
 import {Database} from "../../src/common/db";
 import uuid = require("uuid");
 import {MobileDevice} from "../../src/common/model/entity/users/device";
-import {SigningCategory, crypto, AuthCredentials} from "../../src/services/crypto";
+import {SigningCategory, crypto, AuthCredentialsDto} from "../../src/services/crypto";
 import {http} from "../../src/common/utils/http";
-import { CreatePersonRequest, MobileDevice as MobileDeviceDTO} from '../../src/common/model/dto';
+import { CreatePersonRequestDto, MobileDeviceDto} from '../../src/common/model/dto';
 
 describe("Testing MemberController Endpoints =>", () => {
 
   let connection: Connection;
   let memberRepository: MemberRepository;
   const api = new APIV1(require("../../src/mobile-api/config"));
-  const memberDTO: CreatePersonRequest = {
+  const memberDTO: CreatePersonRequestDto = {
     firstName: Randomstring.generate(10),
     lastName: Randomstring.generate(10),
     email: `${Randomstring.generate(10)}@test.com`,
@@ -29,7 +29,7 @@ describe("Testing MemberController Endpoints =>", () => {
 		email: `${Randomstring.generate(10)}@test.com`,
 		phone: Randomstring.generate({length: 10, charset: "numeric"}),
 		password: 'qwerty2018'
-	} as CreatePersonRequest;
+	} as CreatePersonRequestDto;
 
   beforeAll(async done => {
     connection = await Database.createConnection();
@@ -47,7 +47,7 @@ describe("Testing MemberController Endpoints =>", () => {
 	    .expect(http.HttpStatus.HTTP_STATUS_OK)
 	    .then((response) => {
 
-	     	let authCredentials = response.body as AuthCredentials;
+	     	let authCredentials = response.body as AuthCredentialsDto;
 	     	expect(authCredentials.accessToken).not.toBeNull();
 				expect(authCredentials.refreshToken).not.toBeNull();
 				expect(authCredentials.type).toEqual("Bearer");
@@ -93,7 +93,7 @@ describe("Testing MemberController Endpoints =>", () => {
 		expect.assertions(2);
 
 		let mobileDeviceId = uuid.v1().toString();
-		let mobileDevice: MobileDeviceDTO = {
+		let mobileDevice: MobileDeviceDto = {
 			deviceId: mobileDeviceId
 		};
 		let member = await memberRepository.createMember({

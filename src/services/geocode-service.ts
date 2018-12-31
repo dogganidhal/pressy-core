@@ -2,7 +2,7 @@ import {Address} from '../common/model/entity/common/address';
 import {RestClient} from "typed-rest-client";
 import {getConfig} from '../config';
 import {exception} from "../common/errors";
-import {Address as AddressDTO} from "../common/model/dto";
+import {AddressDto as AddressDTO} from "../common/model/dto";
 
 export interface ICoordinates {
   latitude: number;

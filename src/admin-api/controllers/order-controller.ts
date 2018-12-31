@@ -1,13 +1,14 @@
-import { AssignDriverSlotsRequest } from "./../../common/model/dto/driver";
-import { Tags, Security, Produces } from "typescript-rest-swagger";
-import { OrderRepository } from './../../common/repositories/order/order-repository';
+import {AssignDriverSlotsRequest as AssignDriverSlotsRequestDto} from "../../common/model/dto/driver";
+import {Produces, Security, Tags} from "typescript-rest-swagger";
+import {OrderRepository} from '../../common/repositories/order/order-repository';
 import {BaseController} from "../../common/controller/base-controller";
-import {Path, POST} from "typescript-rest";
-import { JSONEndpoint, Authenticate } from "../../common/annotations";
-import { SigningCategory } from "../../services/crypto";
-import { http } from "../../common/utils/http";
-import { Database } from '../../common/db';
-import { AssignOrderDriverRequest } from '../../common/model/dto';
+import {GET, Path, POST, QueryParam} from "typescript-rest";
+import {Authenticate, JSONEndpoint} from "../../common/annotations";
+import {SigningCategory} from "../../services/crypto";
+import {http} from "../../common/utils/http";
+import {Database} from '../../common/db';
+import {AssignOrderDriverRequest, OrderDto} from '../../common/model/dto';
+import {JSONBody} from "../../common/annotations/json-body";
 
 
 @Produces("application/json")
@@ -22,11 +23,20 @@ export class OrderController extends BaseController {
 	@JSONEndpoint
 	@Authenticate(SigningCategory.ADMIN)
 	@POST
-	public async assignDriverToOrder(request: AssignDriverSlotsRequest) {
+	public async assignDriverToOrder(@JSONBody(AssignDriverSlotsRequestDto) request: AssignDriverSlotsRequestDto) {
 
 		let assignRequest = http.parseJSONBody(this.getPendingRequest().body, AssignOrderDriverRequest);
 		await this._orderRepository.assignDriverToOrder(assignRequest);
 
+	}
+
+	@Security("Bearer")
+	@Authenticate(SigningCategory.ADMIN)
+	@GET
+	@JSONEndpoint
+	public async getOrders(@QueryParam("length") pageLength: number = 10, @QueryParam("page") page: number = 0): Promise<OrderDto[]> {
+		let orders = await this._orderRepository.getOrders(pageLength, page);
+		return orders.map(order => new OrderDto(order));
 	}
 
 }

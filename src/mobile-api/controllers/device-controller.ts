@@ -5,7 +5,7 @@ import {Database} from "../../common/db";
 import {SigningCategory} from "../../services/crypto";
 import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import {Security, Produces, Tags} from "typescript-rest-swagger";
-import {MobileDevice} from "../../common/model/dto";
+import {MobileDeviceDto} from "../../common/model/dto";
 import {exception} from "../../common/errors";
 import * as Return from "typescript-rest/dist/server-return";
 import {JSONBody} from "../../common/annotations/json-body";
@@ -24,7 +24,7 @@ export class DeviceController extends BaseController {
 	@Security("Bearer")
 	@Authenticate(SigningCategory.MEMBER)
 	@POST
-	public async registerMobileDevice(@JSONBody(MobileDevice) request: MobileDevice) {
+	public async registerMobileDevice(@JSONBody(MobileDeviceDto) request: MobileDeviceDto) {
 		await this._memberRepository.registerMobileDevice(<Member>this.pendingUser, request);
 	}
 
@@ -32,7 +32,7 @@ export class DeviceController extends BaseController {
 	@JSONEndpoint
 	@Authenticate(SigningCategory.MEMBER)
 	@GET
-	public async getMobileDevices(): Promise<MobileDevice[]> {
+	public async getMobileDevices(): Promise<MobileDeviceDto[]> {
 		let mobileDevices = await this._memberRepository.getMobileDevices(<Member>this.pendingUser);
 		return mobileDevices.map(device => {
 			return {deviceId: device.id};
@@ -43,7 +43,7 @@ export class DeviceController extends BaseController {
 	@JSONEndpoint
 	@Authenticate(SigningCategory.MEMBER)
 	@DELETE
-	public async deleteMobileDevice(@JSONBody(MobileDevice) request: MobileDevice) {
+	public async deleteMobileDevice(@JSONBody(MobileDeviceDto) request: MobileDeviceDto) {
 		await this._memberRepository.deleteMobileDevice(this.pendingUser.person, request);
 	}
 

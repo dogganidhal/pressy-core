@@ -7,7 +7,7 @@ import {Person} from "../../src/common/model/entity/users/person";
 import {Database} from "../../src/common/db";
 import {PersonRepository} from "../../src/common/repositories/users/person-repository";
 import {exception} from "../../src/common/errors";
-import { CreatePersonRequest } from '../../src/common/model/dto';
+import { CreatePersonRequestDto } from '../../src/common/model/dto';
 
 
 describe("MemberRepository Write/Delete Operations Tests", () => {
@@ -21,14 +21,14 @@ describe("MemberRepository Write/Delete Operations Tests", () => {
 		email: `${RandomString.generate(10)}@email.com`,
 		phone: RandomString.generate({length: 10, charset: "numeric"}),
     password: "qwerty2018"
-	} as CreatePersonRequest;
+	} as CreatePersonRequestDto;
 	const testMember2 = {
 		firstName: RandomString.generate(10),
 		lastName: RandomString.generate(10),
 		email: `${RandomString.generate(10)}@email.com`,
 		phone: RandomString.generate({length: 10, charset: "numeric"}),
 		password: "qwerty2018"
-	} as CreatePersonRequest;
+	} as CreatePersonRequestDto;
 
   beforeAll(async done => {
     connection = await Database.createConnection();
@@ -88,7 +88,7 @@ describe("MemberRepository Read Operations Tests", () => {
   let connection: Connection;
   let memberRepository: MemberRepository;
 	let personRepository: PersonRepository;
-  const memberDTO: CreatePersonRequest = {
+  const memberDTO: CreatePersonRequestDto = {
     firstName: RandomString.generate(10),
     lastName: RandomString.generate(10),
     password: "qwerty2018",

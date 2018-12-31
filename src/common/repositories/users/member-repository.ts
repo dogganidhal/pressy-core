@@ -5,7 +5,7 @@ import {Member} from '../../model/entity/users/member/member';
 import {EmailValidationCode, Person, PhoneValidationCode} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
 import {validation} from "../../utils";
-import { CreatePersonRequest, MobileDevice as MobileDeviceDTO } from '../../model/dto';
+import { CreatePersonRequestDto, MobileDeviceDto as MobileDeviceDTO } from '../../model/dto';
 
 
 export class MemberRepository extends BaseRepository {
@@ -42,7 +42,7 @@ export class MemberRepository extends BaseRepository {
 
   }
 
-  public async createMember(createMemberRequest: CreatePersonRequest): Promise<Member> {
+  public async createMember(createMemberRequest: CreatePersonRequestDto): Promise<Member> {
 
     const { email, phone, password } = createMemberRequest;
 

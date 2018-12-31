@@ -1,6 +1,6 @@
 import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn} from "typeorm";
 import {Member} from "../users/member/member";
-import {Address as AddressDTO} from "../../dto";
+import {AddressDto as AddressDTO} from "../../dto";
 
 @Entity()
 export class Address {

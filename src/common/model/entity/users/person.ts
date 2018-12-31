@@ -2,7 +2,7 @@ import { DateUtils } from '../../../utils';
 import bcrypt from 'bcrypt';
 import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, PrimaryColumn, OneToOne, JoinColumn} from "typeorm";
 import uuid from "uuid";
-import { CreatePersonRequest } from '../../dto';
+import { CreatePersonRequestDto } from '../../dto';
 
 
 export enum PersonActivationStatus {
@@ -59,7 +59,7 @@ export class Person {
   	return (this.status & Person.IS_PHONE_VALIDATED_MASK) != 0;
 	}
 
-  public static create(createPersonRequest: CreatePersonRequest): Person {
+  public static create(createPersonRequest: CreatePersonRequestDto): Person {
 
     const person = new Person;
 

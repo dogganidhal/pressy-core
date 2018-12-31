@@ -5,10 +5,9 @@ import bcrypt from "bcrypt";
 import {PersonRepository} from "../../common/repositories/users/person-repository";
 import {BaseController} from "../../common/controller/base-controller";
 import {Database} from "../../common/db";
-import {crypto, SigningCategory, AuthCredentials} from "../../services/crypto";
-import {http} from "../../common/utils/http";
+import {crypto, SigningCategory, AuthCredentialsDto} from "../../services/crypto";
 import {JSONEndpoint} from "../../common/annotations";
-import { LoginRequest, RefreshCredentialsRequest, ResetCodeRequest, ResetCode, ResetPasswordRequest } from "../../common/model/dto";
+import { LoginRequestDto, RefreshCredentialsRequestDto, ResetCodeRequestDto, ResetCodeDto, ResetPasswordRequestDto } from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
 import {MemberRepository} from "../../common/repositories/users/member-repository";
 
@@ -23,7 +22,7 @@ export class AuthController extends BaseController {
 
   @JSONEndpoint
   @POST
-  public async login(@JSONBody(LoginRequest) request: LoginRequest): Promise<AuthCredentials> {
+  public async login(@JSONBody(LoginRequestDto) request: LoginRequestDto): Promise<AuthCredentialsDto> {
 
 	  let member = await this._memberRepository.getMemberByEmail(request.email);
 
@@ -40,7 +39,7 @@ export class AuthController extends BaseController {
   @JSONEndpoint
   @Path("/refresh")
   @POST
-  public async refreshCredentials(@JSONBody(RefreshCredentialsRequest) request: RefreshCredentialsRequest): Promise<AuthCredentials> {
+  public async refreshCredentials(@JSONBody(RefreshCredentialsRequestDto) request: RefreshCredentialsRequestDto): Promise<AuthCredentialsDto> {
 
 	  const {refreshToken} = request;
 	  return await crypto.refreshCredentials(refreshToken);
@@ -50,7 +49,7 @@ export class AuthController extends BaseController {
   @JSONEndpoint
   @Path("/reset")
   @POST
-  public async getResetPasswordCode(@JSONBody(ResetCodeRequest) request: ResetCodeRequest): Promise<ResetCode> {
+  public async getResetPasswordCode(@JSONBody(ResetCodeRequestDto) request: ResetCodeRequestDto): Promise<ResetCodeDto> {
 
 	  let member = await this._memberRepository.getMemberByEmail(request.email);
 
@@ -62,14 +61,14 @@ export class AuthController extends BaseController {
 	  // TODO: Return an empty "accepted" response, and call the email service
 	  return {
 	  	code: resetCode.id
-	  } as ResetCode;
+	  } as ResetCodeDto;
 
   }
 
   @JSONEndpoint
   @Path("/reset/:code")
   @POST
-  public async resetPassword(@PathParam("code") code: string, @JSONBody(ResetCodeRequest) request: ResetPasswordRequest) {
+  public async resetPassword(@PathParam("code") code: string, @JSONBody(ResetCodeRequestDto) request: ResetPasswordRequestDto) {
 	  await this._personRepository.resetPassword(code, request);
   }
 

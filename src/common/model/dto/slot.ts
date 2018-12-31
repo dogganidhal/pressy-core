@@ -1,19 +1,13 @@
-import {SlotType} from '../entity/slot';
+import {SlotType, Slot} from '../entity/slot';
 import {Required} from "../../annotations";
 
-export interface ISlot {
-	id: number;
-	type: SlotType;
-	startDate: Date;
-}
-
-export class Slot {
+export class SlotDto {
 
 	public id: number;
 	public type?: string;
 	public startDate: Date;
 
-	constructor(slot: ISlot) {
+	constructor(slot: Slot) {
 		this.id = slot.id;
 		this.type = SlotType.toString(slot.type);
 		this.startDate = slot.startDate;
@@ -27,7 +21,7 @@ export interface ICreateSlotRequest {
 	availableDrivers: number;
 }
 
-export class CreateSlotRequest {
+export class CreateSlotRequestDto {
 
 	@Required()
 	public startDate: Date;

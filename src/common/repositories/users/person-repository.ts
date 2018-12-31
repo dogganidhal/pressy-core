@@ -4,16 +4,8 @@ import {Repository} from "typeorm";
 import bcrypt from "bcrypt";
 import {exception} from "../../errors";
 import {DateUtils} from "../../utils";
-import {
-  EmailValidationCode,
-  Person,
-  PersonActivationStatus,
-  PhoneValidationCode
-} from '../../model/entity/users/person';
-import {Member} from "../../model/entity/users/member/member";
-import {Driver} from "../../model/entity/users/driver/driver";
-import {User} from "../../model/entity/users";
-import { ResetPasswordRequest, UpdatePersonInfoRequest } from '../../model/dto';
+import {EmailValidationCode, Person, PhoneValidationCode} from '../../model/entity/users/person';
+import { ResetPasswordRequestDto, UpdatePersonInfoRequestDto } from '../../model/dto';
 
 
 export class PersonRepository extends BaseRepository {
@@ -57,7 +49,7 @@ export class PersonRepository extends BaseRepository {
 
   }
 
-  public async resetPassword(code: string, resetPasswordRequest: ResetPasswordRequest): Promise<Person> {
+  public async resetPassword(code: string, resetPasswordRequest: ResetPasswordRequestDto): Promise<Person> {
 
     const passwordResetRequestCode = await this._resetCodeRepository.findOne(code, {relations: ["person"]});
 
@@ -101,7 +93,7 @@ export class PersonRepository extends BaseRepository {
 
   }
 
-	public async updatePersonInfo(person: Person,request: UpdatePersonInfoRequest): Promise<void> {
+	public async updatePersonInfo(person: Person,request: UpdatePersonInfoRequestDto): Promise<void> {
 
     if (request.email) {
 	    let personWithSameEmail = await this.getPersonByEmail(request.email);

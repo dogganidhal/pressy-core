@@ -5,7 +5,7 @@ import {SigningCategory} from "../../services/crypto";
 import {http} from "../../common/utils/http";
 import {DriverRepository} from "../../common/repositories/users/driver-repository";
 import {Authenticate, JSONEndpoint} from "../../common/annotations/index";
-import { CreatePersonRequest } from "../../common/model/dto";
+import { CreatePersonRequestDto } from "../../common/model/dto";
 
 
 @Path("/driver/")
@@ -18,7 +18,7 @@ export class DriverController extends BaseController {
   @POST
   public async createDriver() {
 
-    let createDriverRequest = http.parseJSONBody(this.getPendingRequest().body, CreatePersonRequest);
+    let createDriverRequest = http.parseJSONBody(this.getPendingRequest().body, CreatePersonRequestDto);
     await this._driverRepository.createDriver(createDriverRequest);
 
   }

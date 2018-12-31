@@ -8,7 +8,7 @@ import {exception} from "../../errors";
 import {GeocodeService} from "../../../services/geocode-service";
 import {Address} from "../../model/entity/common/address";
 import {Driver} from "../../model/entity/users/driver/driver";
-import { CreateOrderRequest, AssignOrderDriverRequest, Address as AddressDTO } from '../../model/dto';
+import { CreateOrderRequestDto, AssignOrderDriverRequest, AddressDto as AddressDTO } from '../../model/dto';
 import {AddressRepository} from "../address-repository";
 
 
@@ -19,7 +19,6 @@ export class OrderRepository extends BaseRepository {
 	private _addressRepository: Repository<Address> = this.connection.getRepository(Address);
 	private _driverRepository: Repository<Driver> = this.connection.getRepository(Driver);
 
-  private _geocodeService: GeocodeService = new GeocodeService;
 	private _orderStatusManger: OrderStatusManager = new OrderStatusManager(this.connection);
 
   public async getOrdersForMember(member: Member): Promise<Order[]> {
@@ -36,7 +35,7 @@ export class OrderRepository extends BaseRepository {
     
   }
 
-  public async createOrder(member: Member, createOrderRequest: CreateOrderRequest): Promise<Order> {
+  public async createOrder(member: Member, createOrderRequest: CreateOrderRequestDto): Promise<Order> {
 
   	if (!member.isActive())
   		throw new exception.InactiveMemberException(member);
@@ -77,6 +76,10 @@ export class OrderRepository extends BaseRepository {
 	  return order;
 
   }
+
+  public async getOrders(pageLength: number = 0, offset: number = 0): Promise<Order[]> {
+  	return this._orderRepository.find({take: pageLength, skip: offset});
+	}
 
 	public async assignDriverToOrder(request: AssignOrderDriverRequest): Promise<void> {
 

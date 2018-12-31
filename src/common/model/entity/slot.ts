@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-import { CreateSlotRequest } from "../dto";
+import { CreateSlotRequestDto } from "../dto";
 
 export enum SlotType {
   GOLD = 1,
@@ -53,7 +53,7 @@ export class Slot {
   @Column({nullable: false})
 	public availableDrivers: number;
 
-  public static create(slot: CreateSlotRequest): Slot {
+  public static create(slot: CreateSlotRequestDto): Slot {
 
     let slotEntity = new Slot;
 

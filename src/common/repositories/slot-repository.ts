@@ -1,8 +1,8 @@
 import {Slot, SlotType} from '../model/entity/slot';
-import {Between, FindConditions, FindManyOptions, Repository} from "typeorm";
+import {Between, FindConditions, Repository} from "typeorm";
 import {DateUtils} from '../utils';
 import {BaseRepository} from './base-repository';
-import { CreateSlotRequest } from '../model/dto';
+import { CreateSlotRequestDto } from '../model/dto';
 
 
 export class SlotRepository extends BaseRepository {
@@ -13,14 +13,8 @@ export class SlotRepository extends BaseRepository {
     return this._slotRepository.findOne(id);
   }
 
-  public async createSlot(createSlotRequest: CreateSlotRequest): Promise<Slot> {
-
-    let slot = Slot.create(createSlotRequest);
-
-    slot = await this._slotRepository.save(slot, {});
-
-    return slot;
-
+  public async createSlot(createSlotRequest: CreateSlotRequestDto): Promise<Slot> {
+    return await this._slotRepository.save(Slot.create(createSlotRequest));
   }
 
   public async getAvailableSlots(type?: string): Promise<Slot[]> {

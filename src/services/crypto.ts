@@ -33,7 +33,7 @@ enum SigningSubject {
 	REFRESH = "refresh"
 }
 
-export class AuthCredentials {
+export class AuthCredentialsDto {
 	accessToken: string;
 	refreshToken: string;
 	type: AuthTokenType;
@@ -57,7 +57,7 @@ export namespace crypto {
 
 	
 
-	export function signAuthToken(user: User, category: SigningCategory, options: SignOptions = {}): AuthCredentials {
+	export function signAuthToken(user: User, category: SigningCategory, options: SignOptions = {}): AuthCredentialsDto {
 
 		let payload: IAuthPayload = {
 			id: user.id,
@@ -136,9 +136,9 @@ export namespace crypto {
 
 	}
 
-	export async function refreshCredentials(refreshToken: string): Promise<AuthCredentials> {
+	export async function refreshCredentials(refreshToken: string): Promise<AuthCredentialsDto> {
 
-		return new Promise<AuthCredentials>((resolve, reject) => {
+		return new Promise<AuthCredentialsDto>((resolve, reject) => {
 
 			let verifyOptions = {
 				...__verifyOptions,

@@ -1,4 +1,4 @@
-import { Order } from './index';
+import { Order } from '.';
 import {Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column,} from "typeorm";
 import { CreateOrderElementRequest } from '../../dto';
 

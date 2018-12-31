@@ -2,9 +2,9 @@ import {Entity, JoinColumn, ManyToOne} from "typeorm";
 import {Person, PersonActivationStatus} from "../person";
 import {User} from "..";
 import {LaundryPartner} from ".";
-import { CreatePersonRequest } from "../../../dto";
+import { CreatePersonRequestDto } from "../../../dto";
 
-export interface ILaundrer extends CreatePersonRequest {
+export interface ILaundrer extends CreatePersonRequestDto {
 	laundryPartner: LaundryPartner;
 }
 

@@ -33,7 +33,7 @@ export class PersonInfo {
 
 }
 
-export class CreatePersonRequest {
+export class CreatePersonRequestDto {
 
 	@Required()
 	public firstName: string;
@@ -48,7 +48,7 @@ export class CreatePersonRequest {
 
 }
 
-export class UpdatePersonInfoRequest {
+export class UpdatePersonInfoRequestDto {
 
 	public firstName?: string;
 	public lastName?: string;
@@ -57,21 +57,21 @@ export class UpdatePersonInfoRequest {
 
 }
 
-export class ResetCode {
+export class ResetCodeDto {
 
 	@Required()
 	public code: string;
 
 }
 
-export class ResetCodeRequest {
+export class ResetCodeRequestDto {
 
 	@Required()
 	public email: string;
 
 }
 
-export class ResetPasswordRequest {
+export class ResetPasswordRequestDto {
 
 	@Required()
 	public oldPassword: string;
@@ -81,7 +81,7 @@ export class ResetPasswordRequest {
 
 }
 
-export class LoginRequest {
+export class LoginRequestDto {
 
 	@Required()
 	public password: string;
@@ -98,7 +98,7 @@ export interface ILoginResponse {
 	type?: string;
 }
 
-export class LoginResponse {
+export class LoginResponseDto {
 
 	public accessToken: string;
 	public refreshToken: string;
@@ -114,13 +114,13 @@ export class LoginResponse {
 
 }
 
-export class RefreshCredentialsRequest {
+export class RefreshCredentialsRequestDto {
 
 	@Required()
 	public refreshToken: string;
 
 }
 
-export class MobileDevice {
+export class MobileDeviceDto {
 	public deviceId: string;
 }

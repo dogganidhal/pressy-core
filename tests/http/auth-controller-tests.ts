@@ -7,14 +7,14 @@ import {Database} from "../../src/common/db";
 import {AuthTokenType} from "../../src/services/crypto";
 import { APIV1 } from "../../src/common/http/api";
 import {http} from "../../src/common/utils/http";
-import { CreatePersonRequest, LoginResponse } from '../../src/common/model/dto';
+import { CreatePersonRequestDto, LoginResponseDto } from '../../src/common/model/dto';
 
 describe("Testing Authentication Endpoints", () => {
 
 	let connection: Connection;
 	let memberRepository: MemberRepository;
 	const api = new APIV1(require("../../src/mobile-api/config"));
-	const testMember: CreatePersonRequest = {
+	const testMember: CreatePersonRequestDto = {
 		firstName: RandomString.generate(10),
 		lastName: RandomString.generate(10),
 		email: `${RandomString.generate(10)}@email.com`,
@@ -44,7 +44,7 @@ describe("Testing Authentication Endpoints", () => {
       .expect(http.HttpStatus.HTTP_STATUS_OK)
       .then(response => {
 
-        const token = response.body as LoginResponse;
+        const token = response.body as LoginResponseDto;
 
         expect(token.accessToken).not.toBeNull();
         expect(token.refreshToken).not.toBeNull();

@@ -2,7 +2,7 @@ import {Entity, JoinColumn, OneToMany} from "typeorm";
 import {Person} from "../person";
 import {User} from "..";
 import {Address} from "../../common/address";
-import { CreatePersonRequest } from "../../../dto";
+import { CreatePersonRequestDto } from "../../../dto";
 
 
 @Entity()
@@ -12,7 +12,7 @@ export class Member extends User {
   @JoinColumn()
   public addresses: Address[];
 
-  public static create(createPersonRequest: CreatePersonRequest): Member {
+  public static create(createPersonRequest: CreatePersonRequestDto): Member {
     
     const member: Member = new Member();
     member.person = Person.create(createPersonRequest);

@@ -1,25 +1,19 @@
 import {Required} from "../../annotations";
-import {ElementType} from "../entity/order/element";
-import { PersonInfo, IPersonInfo } from "./person";
-import { Address, IAddress, CreateAddressRequest } from "./address";
-import { Slot, ISlot } from "./slot";
+import {ElementType, Element as ElementEntity} from "../entity/order/element";
+import { AddressDto } from "./address";
+import { SlotDto} from "./slot";
+import { Order as OrderEntity } from "../entity/order";
 
-export interface IOrderElement {
-	orderId: number;
-	type: ElementType;
-	color: string;
-	comment?: string;
-}
 
-export class OrderElement {
+export class OrderElementDto {
 
 	public orderId: number;
 	public type: ElementType;
 	public color: string;
 	public comment?: string;
 
-	constructor(element: IOrderElement) {
-		this.orderId = element.orderId;
+	constructor(element: ElementEntity) {
+		this.orderId = element.order.id;
 		this.type = element.type;
 		this.color = element.color;
 		this.comment = element.comment;
@@ -39,7 +33,7 @@ export class CreateOrderElementRequest {
 
 }
 
-export class CreateOrderRequest {
+export class CreateOrderRequestDto {
 
 	@Required()
 	public pickupSlotId: number;
@@ -52,31 +46,20 @@ export class CreateOrderRequest {
 
 }
 
-export interface IOrder {
-	id: number;
-	pickupSlot: ISlot;
-	deliverySlot: ISlot;
-	address: IAddress;
-	elements: Array<IOrderElement>;
-	member: IPersonInfo;
-}
-
-export class Order {
+export class OrderDto {
 
 	public id: number;
-	public pickupSlot: Slot;
-	public deliverySlot: Slot;
-	public address: Address;
-	public elements: Array<IOrderElement>;
-	public member: IPersonInfo;
+	public pickupSlot: SlotDto;
+	public deliverySlot: SlotDto;
+	public address: AddressDto;
+	public elements: Array<OrderElementDto>;
 
-	constructor(order: IOrder) {
+	constructor(order: OrderEntity) {
 		this.id = order.id;
-		this.pickupSlot = new Slot(order.pickupSlot);
-		this.deliverySlot = new Slot(order.pickupSlot);
-		this.address = new Address(order.address);
-		this.elements = order.elements.map(element => new OrderElement(element));
-		this.member = new PersonInfo(order.member);
+		this.pickupSlot = new SlotDto(order.pickupSlot);
+		this.deliverySlot = new SlotDto(order.pickupSlot);
+		this.address = new AddressDto(order.address);
+		this.elements = order.elements.map(element => new OrderElementDto(element));
 	}
 
 }

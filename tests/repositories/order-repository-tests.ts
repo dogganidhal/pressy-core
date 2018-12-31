@@ -10,8 +10,6 @@ import {SlotRepository} from "../../src/common/repositories/slot-repository";
 import {DateUtils} from "../../src/common/utils";
 import {OrderStatus} from "../../src/common/model/entity/order";
 import {exception} from "../../src/common/errors";
-import {Element} from "../../src/common/model/entity/order/element";
-import { CreateOrderElementRequest } from "../../src/common/model/dto";
 import {Address} from "../../src/common/model/entity/common/address";
 import {AddressRepository} from "../../src/common/repositories/address-repository";
 

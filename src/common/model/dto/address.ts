@@ -1,13 +1,13 @@
 import {Required} from "../../annotations";
 
-export class DeleteAddressRequest {
+export class DeleteAddressRequestDto {
 
 	@Required()
 	public addressId: number;
 
 }
 
-export class CreateAddressRequest {
+export class CreateAddressRequestDto {
 
 	public name?: string;
 	public extraLine?: string;
@@ -19,13 +19,13 @@ export class CreateAddressRequest {
 
 }
 
-export class UpdateAddressRequest {
+export class UpdateAddressRequestDto {
 
 	@Required()
 	public addressId: number;
 
-	@Required(CreateAddressRequest)
-	public addressDetails: CreateAddressRequest;
+	@Required(CreateAddressRequestDto)
+	public addressDetails: CreateAddressRequestDto;
 
 }
 
@@ -41,7 +41,7 @@ export interface IAddress {
 	extraLine?: string;
 }
 
-export class Address {
+export class AddressDto {
 
 	public id?: number;
 	public streetName: string;
