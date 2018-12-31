@@ -1,4 +1,5 @@
 import {Required} from "../../annotations";
+import { PersonInfo } from "./person";
 
 export interface IAssignDriverSlotsRequest {
 	driverSlotId: number;
@@ -15,4 +16,8 @@ export class AssignDriverSlotsRequestDto {
 		return createDriverAvailabilityRequest;
 	}
 
+}
+
+export class DriverInfoDto extends PersonInfo {
+	
 }

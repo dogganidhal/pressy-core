@@ -1,8 +1,10 @@
 import {Required} from "../../annotations";
 import {ElementType, Element as ElementEntity} from "../entity/order/element";
-import { AddressDto } from "./address";
-import { SlotDto} from "./slot";
-import { Order as OrderEntity } from "../entity/order";
+import {AddressDto} from "./address";
+import {SlotDto} from "./slot";
+import {Order} from "../entity/order";
+import { DriverInfoDto } from "./driver";
+import { MemberInfoDto } from "./member";
 
 
 export class OrderElementDto {
@@ -53,13 +55,26 @@ export class OrderDto {
 	public deliverySlot: SlotDto;
 	public address: AddressDto;
 	public elements: Array<OrderElementDto>;
+	public driver: DriverInfoDto;
+	public member: MemberInfoDto;
 
-	constructor(order: OrderEntity) {
+	constructor(order: Order) {
+		
 		this.id = order.id;
 		this.pickupSlot = new SlotDto(order.pickupSlot);
 		this.deliverySlot = new SlotDto(order.pickupSlot);
 		this.address = new AddressDto(order.address);
-		this.elements = order.elements.map(element => new OrderElementDto(element));
+		this.member = new MemberInfoDto({
+			...order.member.person,
+			addresses: order.member.addresses
+		});
+
+		if (order.driver)
+			this.driver = new DriverInfoDto(order.driver.person);
+
+		if (order.elements)
+			this.elements = order.elements.map(element => new OrderElementDto(element));	
+
 	}
 
 }

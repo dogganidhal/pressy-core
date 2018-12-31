@@ -23,11 +23,8 @@ export class OrderController extends BaseController {
 	@JSONEndpoint
 	@Authenticate(SigningCategory.ADMIN)
 	@POST
-	public async assignDriverToOrder(@JSONBody(AssignDriverSlotsRequestDto) request: AssignDriverSlotsRequestDto) {
-
-		let assignRequest = http.parseJSONBody(this.getPendingRequest().body, AssignOrderDriverRequestDto);
-		await this._orderRepository.assignDriverToOrder(assignRequest);
-
+	public async assignDriverToOrder(@JSONBody(AssignOrderDriverRequestDto) request: AssignOrderDriverRequestDto) {
+		await this._orderRepository.assignDriverToOrder(request);
 	}
 
 	@Security("Bearer")

@@ -75,10 +75,17 @@ export class OrderRepository extends BaseRepository {
 
 	  return order;
 
-  }
+	}
 
   public async getOrders(pageLength: number = 0, offset: number = 0): Promise<Order[]> {
-  	return this._orderRepository.find({take: pageLength, skip: offset});
+  	return this._orderRepository.find({
+			take: pageLength, 
+			skip: offset, 
+			relations: [
+				"pickupSlot", "deliverySlot", "address", "member", 
+				"member.person", "driver", "driver.person", "member.addresses"
+			]
+		});
 	}
 
 	public async assignDriverToOrder(request: AssignOrderDriverRequestDto): Promise<void> {

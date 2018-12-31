@@ -32,10 +32,14 @@ export class CreateSlotRequestDto {
 	@Required()
 	public availableDrivers: number;
 
-	constructor(request: ICreateSlotRequest) {
-		this.startDate = request.startDate;
-		this.type = request.type;
-		this.availableDrivers = request.availableDrivers;
+	constructor();
+	constructor(request: ICreateSlotRequest);
+	constructor(request?: ICreateSlotRequest) {
+		if (request) {
+			this.startDate = request.startDate;
+			this.type = request.type;
+			this.availableDrivers = request.availableDrivers;
+		}
 	}
 
 }
