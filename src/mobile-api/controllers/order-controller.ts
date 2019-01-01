@@ -6,7 +6,7 @@ import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import { OrderMailSender } from "../../common/mail-senders/order-mail-sender";
 import { CreateOrderRequestDto, OrderDto, SlotDto } from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
-import {Member} from "../../common/model/entity/users/member/member";
+import {Member} from "../../common/model/entity/users/member";
 import { IOrderRepository } from "../../common/repositories/order-repository";
 import { ISlotRepository } from "../../common/repositories/slot-repository";
 import { RepositoryFactory } from "../../common/repositories/factory";

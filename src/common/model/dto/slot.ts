@@ -21,6 +21,26 @@ export interface ICreateSlotRequest {
 	availableDrivers: number;
 }
 
+export class DeleteSlotRequest {
+
+	@Required()
+	public id: number;
+	
+}
+
+export class EditSlotRequestDto {
+
+	@Required()
+	public id: number;
+
+	public startDate?: Date;
+
+	public type?: SlotType;
+
+	public availableDrivers?: number;
+
+}
+
 export class CreateSlotRequestDto {
 
 	@Required()

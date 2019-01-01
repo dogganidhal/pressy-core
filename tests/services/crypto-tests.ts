@@ -1,6 +1,6 @@
 import {Connection} from 'typeorm';
 import RandomString from "randomstring";
-import {Member} from "../../src/common/model/entity/users/member/member";
+import {Member} from "../../src/common/model/entity/users/member";
 import {Database} from "../../src/common/db";
 import {crypto, AuthTokenType, SigningCategory} from "../../src/services/crypto";
 import {exception} from "../../src/common/errors";

@@ -1,7 +1,7 @@
 import {MobileDevice} from '../../model/entity/users/device';
 import {Repository} from "typeorm";
 import {exception} from "../../errors";
-import {Member} from '../../model/entity/users/member/member';
+import {Member} from '../../model/entity/users/member';
 import {EmailValidationCode, Person, PhoneValidationCode} from '../../model/entity/users/person';
 import {BaseRepository} from '../base-repository';
 import {validation} from "../../utils";

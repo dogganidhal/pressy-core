@@ -1,4 +1,4 @@
-import { Member } from "../../model/entity/users/member/member";
+import { Member } from "../../model/entity/users/member";
 import { CreatePersonRequestDto, MobileDeviceDto } from "../../model/dto";
 import { MobileDevice } from "../../model/entity/users/device";
 import { Person } from "../../model/entity/users/person";

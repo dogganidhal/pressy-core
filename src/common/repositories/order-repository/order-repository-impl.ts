@@ -1,15 +1,16 @@
-import {Order} from '../../model/entity/order';
+import {Order, Element, OrderMission, OrderMissionType} from '../../model/entity/order';
 import {Repository} from "typeorm";
-import {Member} from '../../model/entity/users/member/member';
+import {Member} from '../../model/entity/users/member';
 import {BaseRepository} from '../base-repository';
 import {Slot} from "../../model/entity/slot";
 import {exception} from "../../errors";
 import {Address} from "../../model/entity/common/address";
 import {Driver} from "../../model/entity/users/driver/driver";
-import { CreateOrderRequestDto, AssignOrderDriverRequestDto, AddressDto as AddressDTO } from '../../model/dto';
+import { CreateOrderRequestDto, AssignOrderDriverRequestDto, EditOrderRequestDto, CreateOrderElementRequest } from '../../model/dto';
 import { IOrderRepository } from '.';
 import { RepositoryFactory } from '../factory';
 import { IOrderStatusRepository } from '../order-status-repository';
+import { OrderElement } from '../../model/entity/order/order-element';
 
 
 export class OrderRepositoryImpl extends BaseRepository implements IOrderRepository {
@@ -18,6 +19,9 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
   private _slotRepository: Repository<Slot> = this.connection.getRepository(Slot);
 	private _addressRepository: Repository<Address> = this.connection.getRepository(Address);
 	private _driverRepository: Repository<Driver> = this.connection.getRepository(Driver);
+	private _orderElementRepository: Repository<OrderElement> = this.connection.getRepository(OrderElement);
+	private _elementRepository: Repository<Element> = this.connection.getRepository(Element);
+	private _orderMissionRepository: Repository<OrderMission> = this.connection.getRepository(OrderMission);
 
 	private _orderStatusManger: IOrderStatusRepository = RepositoryFactory.instance.createOrderStatusRepository();
 
@@ -50,7 +54,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 	  if (!deliverySlot)
 		  throw new exception.SlotNotFoundException(createOrderRequest.deliverySlotId);
 
-	  let addressRepository = RepositoryFactory.instance.createAddressRepository();
+		let addressRepository = RepositoryFactory.instance.createAddressRepository();
 	  let addressEntity = await addressRepository.getAddressById(createOrderRequest.addressId);
 
 	  if (!addressEntity)
@@ -58,11 +62,9 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 
 	  let order = await Order.create({
 		  member: member, pickupSlot: pickupSlot, deliverySlot: deliverySlot,
-		  address: await addressRepository.duplicateAddress(addressEntity)
+			address: await addressRepository.duplicateAddress(addressEntity),
+			type: createOrderRequest.type
 	  });
-
-	  deliverySlot.availableDrivers--;
-	  pickupSlot.availableDrivers--;
 
 	  await Promise.all([
 			await this._slotRepository.save(deliverySlot),
@@ -88,7 +90,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		});
 	}
 
-	public async assignDriverToOrder(request: AssignOrderDriverRequestDto): Promise<void> {
+	public async assignDriverToPickupOrder(request: AssignOrderDriverRequestDto): Promise<void> {
 
 		let {driverId, orderId} = request;
 
@@ -106,9 +108,124 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		if (!order)
 			throw new exception.OrderNotFoundException(orderId);
 
-		order.driver = driver;
+		let orderMission = OrderMission.create(OrderMissionType.PICKUP, order, driver);
+		await this._orderMissionRepository.save(orderMission);
+		
+		order.pickupSlot.availableDrivers--;
 
 		await this._orderRepository.save(order);
+
+	}
+
+	public async assignDriverToDeliverOrder(request: AssignOrderDriverRequestDto): Promise<void> {
+
+		let {driverId, orderId} = request;
+
+		let driver: Driver | undefined;
+		let order: Order | undefined;
+		
+		await Promise.all([
+			driver = await this._driverRepository.findOne(driverId),
+			order = await this._orderRepository.findOne(orderId)
+		]);
+
+		if (!driver)
+			throw new exception.DriverNotFoundException(driverId);
+
+		if (!order)
+			throw new exception.OrderNotFoundException(orderId);
+
+		let orderMission = OrderMission.create(OrderMissionType.DELIVERY, order, driver);
+		await this._orderMissionRepository.save(orderMission);
+
+		order.pickupSlot.availableDrivers--;
+
+		await this._orderRepository.save(order);
+
+	}
+
+	public async setOrderElements(order: Order, elements: CreateOrderElementRequest[]): Promise<OrderElement[]> {
+
+		let orderElements: OrderElement[] = [];
+		let asyncTasks: PromiseLike<any>[] = [];
+
+		elements.forEach(async element => {
+			asyncTasks.push(Promise.resolve(async () => {
+
+				var elementEntity = await this._elementRepository.findOne(element.elementId);
+				
+				if (!elementEntity)
+					throw new exception.ElementNotFound(element.elementId);
+
+				var orderElement = OrderElement.create(order, element, elementEntity);
+				orderElements.push(await this._orderElementRepository.save(orderElement))
+				
+			}));
+		});
+
+		await Promise.all(asyncTasks);
+
+		return orderElements;
+
+	}
+
+	public async editOrder(editOrderRequest: EditOrderRequestDto): Promise<Order> {
+
+		let order = await this._orderRepository.findOne(editOrderRequest.id);
+
+		if (!order)
+			throw new exception.OrderNotFoundException(editOrderRequest.id);
+
+		let asyncTasks: PromiseLike<any>[] = [];
+
+		if (editOrderRequest.address) {
+			let addressRepository = RepositoryFactory.instance.createAddressRepository();
+			asyncTasks.push(
+				Promise.resolve(
+					order.address = await addressRepository.createAddress(editOrderRequest.address, undefined)
+				)
+			);
+		}
+
+		if (editOrderRequest.pickupSlot) {
+			let slotRepository = RepositoryFactory.instance.createSlotRepository();
+			asyncTasks.push(
+				Promise.resolve(
+					order.pickupSlot = await slotRepository.createSlot(order.pickupSlot)
+				)
+			);
+		}
+		
+		if (editOrderRequest.deliverySlot) {
+			let slotRepository = RepositoryFactory.instance.createSlotRepository();
+			asyncTasks.push(
+				Promise.resolve(
+					order.deliverySlot = await slotRepository.createSlot(order.deliverySlot)
+				)
+			);
+		}
+
+		if (editOrderRequest.memberId) {
+			let memberRepository = RepositoryFactory.instance.createMemberRepository();
+			let member = await memberRepository.getMemberById(editOrderRequest.memberId);
+			if (!member)
+				throw new exception.MemberNotFoundException(editOrderRequest.memberId);
+			order.member = member;
+		}
+
+		if (editOrderRequest.elements) {
+			asyncTasks.push(
+				Promise.resolve(
+					order.elements = await this.setOrderElements(order, editOrderRequest.elements)
+				)
+			);
+		}
+
+		await Promise.all(asyncTasks);
+
+		order.type = editOrderRequest.type || order.type;
+
+		return await this._orderRepository.save(order);
 
 	}
 

@@ -1,4 +1,4 @@
-import { Member } from '../model/entity/users/member/member';
+import { Member } from '../model/entity/users/member';
 import { Config, getConfig } from './../../config';
 import { MailingService, MailTemplateName } from './../../services/mailing-service';
 

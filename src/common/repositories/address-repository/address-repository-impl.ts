@@ -3,7 +3,7 @@ import { Repository } from "typeorm";
 import {UpdateAddressRequestDto, CreateAddressRequestDto, AddressDto, DeleteAddressRequestDto} from "../../model/dto";
 import { GeocodeService } from "../../../services/geocode-service";
 import { exception } from "../../errors";
-import { Member } from "../../model/entity/users/member/member";
+import { Member } from "../../model/entity/users/member";
 import { Address as AddressEntity } from "../../model/entity/common/address";
 import { IAddressRepository } from ".";
 
@@ -21,7 +21,7 @@ export class AddressRepositoryImpl extends BaseRepository implements IAddressRep
 		return await this._addressRepository.find({member: member});
 	}
 
-	public async createAddress(createAddressRequest: CreateAddressRequestDto, member: Member): Promise<AddressEntity> {
+	public async createAddress(createAddressRequest: CreateAddressRequestDto, member?: Member): Promise<AddressEntity> {
 
 		let addressDTO: AddressDto;
 

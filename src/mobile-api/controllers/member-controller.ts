@@ -1,4 +1,4 @@
-import {GET, PATCH, Path, PathParam, POST, Return, Accept} from "typescript-rest";
+import {GET, PATCH, Path, PathParam, POST, Accept} from "typescript-rest";
 import {BaseController} from "../../common/controller/base-controller";
 import {SigningCategory, AuthCredentialsDto, crypto} from "../../services/crypto";
 import {Authenticate, JSONEndpoint} from "../../common/annotations";
@@ -6,7 +6,7 @@ import { MemberMailSender } from "../../common/mail-senders/member-mail-sender";
 import {Security, Produces, Tags} from "typescript-rest-swagger";
 import { MemberInfoDto, CreatePersonRequestDto, AddressDto, UpdatePersonInfoRequestDto } from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
-import {Member} from "../../common/model/entity/users/member/member";
+import {Member} from "../../common/model/entity/users/member";
 import { IPersonRepository } from "../../common/repositories/person-repository";
 import { RepositoryFactory } from "../../common/repositories/factory";
 import { IMemberRepository } from "../../common/repositories/member-repository";

@@ -1,4 +1,4 @@
-import {Member} from "../model/entity/users/member/member";
+import {Member} from "../model/entity/users/member";
 import {http} from "../utils/http";
 
 export namespace exception {
@@ -35,6 +35,12 @@ export namespace exception {
     constructor(email: string) {
       super('AccountNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No registered account with email '${email}' was found`);
     }
+	}
+	
+	export class MemberNotFoundException extends APIException {
+    constructor(id: number) {
+      super('MemberNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No member account with id '${id}' was found`);
+    }
   }
 
   export class UnauthenticatedRequestException extends APIException {
@@ -46,6 +52,12 @@ export namespace exception {
   export class AccessTokenNotFoundException extends APIException {
     constructor() {
       super('AccessTokenNotFoundException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Access token not found`);
+    }
+	}
+	
+	export class ElementNotFound extends APIException {
+    constructor(id: number) {
+      super('ElementNotFound', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No element with id ${id} was found`);
     }
   }
 

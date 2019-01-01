@@ -20,7 +20,7 @@ import { OrderStatusRepositoryImpl } from "./order-status-repository/order-statu
 
 export class RepositoryFactory {
 
-  public static _instance: RepositoryFactory;
+  private static _instance: RepositoryFactory;
 
   public static get instance(): RepositoryFactory {
     if (!this._instance) {

@@ -16,7 +16,7 @@
     }
   },
   "mailingServiceOptions": {
-    "defaultSender": "Nidhal DOGGA <dogga.nidhal@icloud.com>",
+    "defaultSender": "Pressy Administration <administration@pressy.app>",
     "senders": []
   },
   "runtime": {

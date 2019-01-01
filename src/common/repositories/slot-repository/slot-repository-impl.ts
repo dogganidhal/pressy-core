@@ -2,8 +2,9 @@ import {Slot, SlotType} from '../../model/entity/slot';
 import {Between, FindConditions, Repository} from "typeorm";
 import {DateUtils} from '../../utils';
 import {BaseRepository} from '../base-repository';
-import { CreateSlotRequestDto } from '../../model/dto';
+import { CreateSlotRequestDto, EditSlotRequestDto, DeleteSlotRequest } from '../../model/dto';
 import { ISlotRepository } from '.';
+import { exception } from '../../errors';
 
 
 export class SlotRepositoryImpl extends BaseRepository implements ISlotRepository {
@@ -35,6 +36,25 @@ export class SlotRepositoryImpl extends BaseRepository implements ISlotRepositor
 
     return this._slotRepository.find({where: findOptions});
 
+  }
+
+  public async editSlot(editSlotRequest: EditSlotRequestDto): Promise<Slot> {
+    
+    let slot = await this._slotRepository.findOne(editSlotRequest.id);
+
+    if (!slot)
+      throw new exception.SlotNotFoundException(editSlotRequest.id);
+
+    slot.availableDrivers = editSlotRequest.availableDrivers || slot.availableDrivers;
+    slot.startDate = editSlotRequest.startDate || slot.startDate;
+    slot.type = editSlotRequest.type || slot.type;
+
+    return await this._slotRepository.save(slot);
+
+  }
+
+  public async deleteSlot(deleteSlotRequest: DeleteSlotRequest): Promise<void> {
+    await this._slotRepository.delete(deleteSlotRequest.id);
   }
 
 }

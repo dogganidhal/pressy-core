@@ -2,7 +2,7 @@ import { RepositoryFactory } from "./../../src/common/repositories/factory";
 import {Connection} from 'typeorm';
 import RandomString from "randomstring";
 import bcrypt from "bcrypt";
-import {Member} from "../../src/common/model/entity/users/member/member";
+import {Member} from "../../src/common/model/entity/users/member";
 import {Person} from "../../src/common/model/entity/users/person";
 import {Database} from "../../src/common/db";
 import {exception} from "../../src/common/errors";

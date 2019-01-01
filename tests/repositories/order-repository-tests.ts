@@ -1,18 +1,14 @@
 import RandomString from "randomstring";
 import {Connection} from "typeorm";
 import {Database} from "../../src/common/db";
-import {Member} from "../../src/common/model/entity/users/member/member";
+import {Member} from "../../src/common/model/entity/users/member";
 import {Slot, SlotType} from "../../src/common/model/entity/slot";
 import {DateUtils} from "../../src/common/utils";
-import {OrderStatus} from "../../src/common/model/entity/order";
 import {exception} from "../../src/common/errors";
 import {Address} from "../../src/common/model/entity/common/address";
-import { IOrderRepository } from "../../src/common/repositories/order-repository";
-import { IMemberRepository } from "../../src/common/repositories/member-repository";
-import { IPersonRepository } from "../../src/common/repositories/person-repository";
-import { ISlotRepository } from "../../src/common/repositories/slot-repository";
-import { IAddressRepository } from "../../src/common/repositories/address-repository";
 import { RepositoryFactory } from "../../src/common/repositories/factory";
+import { OrderType } from "../../src/common/model/entity/order";
+import { IOrderRepository, IMemberRepository, IPersonRepository, ISlotRepository, IAddressRepository } from "../../src/common/repositories";
 
 
 describe("OrderRepository Operations", () => {
@@ -89,18 +85,15 @@ describe("OrderRepository Operations", () => {
 
 	test("Creates Order for an active member", async done => {
 
-		expect.assertions(13);
+		expect.assertions(11);
 
 		try {
 			let order = await orderRepository.createOrder(activeMember, {
 				pickupSlotId: pickupSlot.id,
 				deliverySlotId: deliverySlot.id,
-				addressId: address.id
+				addressId: address.id, type: OrderType.PRESSING
 			});
 
-			expect(order.status).toEqual(OrderStatus.UNVALIDATED);
-
-			expect(order.driver).toBeUndefined();
 			expect(order.member).toEqual(activeMember);
 
 			expect(order.pickupSlot.type).toEqual(SlotType.GOLD);
@@ -132,7 +125,7 @@ describe("OrderRepository Operations", () => {
 			await orderRepository.createOrder(inactiveMember, {
 				pickupSlotId: pickupSlot.id,
 				deliverySlotId: deliverySlot.id,
-				addressId: address.id,
+				addressId: address.id, type: OrderType.PRESSING
 			});
 			done.fail();
 
