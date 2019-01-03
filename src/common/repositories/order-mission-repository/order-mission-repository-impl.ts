@@ -12,23 +12,36 @@ export class OrderMissionRepositoryImpl extends BaseRepository implements IOrder
   
   public async getOrderMissionsForDriver(driver: Driver): Promise<OrderMission[]> {
     return this._orderMissionRepository.find({
-      driver: driver,
-      order: {
-        pickupSlot: {
-          startDate: Between(DateUtils.now(), DateUtils.addDaysFromNow(1))
-        }
-      },
+      relations: [
+        "order", "order.pickupSlot", "order.deliverySlot", "order.address", "order.member",
+        "driver", "driver.person", "order.member.person"
+      ],
+      where: {
+        driver: {
+          id: driver.id
+        },
+        order: {
+          pickupSlot: {
+            startDate: Between(DateUtils.now(), DateUtils.addDaysFromNow(1))
+          }
+        },
+      }
     });
   }
 
-  public async getMissionHistoryForDriver(driver: Driver): Promise<OrderMission[]> {
+  public async getMissionHistoryForDriver(driver: Driver, skip?: number, take: number = 10): Promise<OrderMission[]> {
     return this._orderMissionRepository.find({
-      select: ["driver", "order", "order", "created", "id", "type"],
-      where: {driver: driver},
       relations: [
-        "driver", "driver.person",
-        "order", "order.pickupSlot", "order.deliverySlot", "order.address"
-      ]
+        "order", "order.pickupSlot", "order.deliverySlot", "order.address", "order.member",
+        "driver", "driver.person", "order.member.person"
+      ],
+      where: {
+        driver: {
+          id: driver.id
+        }
+      },
+      skip: skip,
+      take: take
     });
   }
 

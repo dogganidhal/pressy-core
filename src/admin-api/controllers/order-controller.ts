@@ -27,10 +27,13 @@ export class OrderController extends BaseController {
 		switch(missionType) {
 			case OrderMissionType.PICKUP:
 				await this._orderRepository.assignDriverToPickupOrder(request);
+				break;
 			case OrderMissionType.DELIVERY:
 				await this._orderRepository.assignDriverToDeliverOrder(request);
+				break;
 			default:
 				throw new NotFoundError();
+				break;
 		}
 	}
 

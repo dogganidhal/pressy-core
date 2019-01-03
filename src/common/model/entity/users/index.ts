@@ -1,4 +1,4 @@
-import {Person, PersonActivationStatus} from "./person";
+import {Person} from "./person";
 import {JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 
 export abstract class User {

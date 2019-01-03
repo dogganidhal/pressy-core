@@ -14,7 +14,7 @@ export class MemberInfoDto extends PersonInfo {
 	constructor(memberInfo: MemberInfoDto);
 	constructor(memberInfo?: IMemberInfo) {
 		super(memberInfo as IPersonInfo);
-		if (memberInfo) {
+		if (memberInfo && memberInfo.addresses) {
 			this.addresses = memberInfo.addresses.map(a => new AddressDto(a));
 		}
 	}

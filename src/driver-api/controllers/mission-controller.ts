@@ -1,4 +1,4 @@
-import {Path, GET} from "typescript-rest";
+import {Path, GET, QueryParam} from "typescript-rest";
 import {BaseController} from "../../common/controller/base-controller";
 import { RepositoryFactory } from "../../common/repositories/factory";
 import { Tags, Produces, Security } from "typescript-rest-swagger";
@@ -33,11 +33,19 @@ export class MissionController extends BaseController {
   @Security("Bearer")
   @JSONEndpoint
   @GET
-  public async getMissionHistory(): Promise<OrderMissionDto[]> {
+  public async getMissionHistory(@QueryParam("skip") skip?: string, @QueryParam("take") take?: string): Promise<OrderMissionDto[]> {
     
-    // TODO: Make it possible to filter / paginate
     let driver = <Driver>this.pendingUser;
-    let missions = await this._orderMissionRepository.getMissionHistoryForDriver(driver);
+
+    let skipValue: number | undefined;
+    let takeValue: number | undefined;
+
+    if (skip)
+      skipValue = parseInt(skip);
+    if (take)
+      takeValue = parseInt(take);
+
+    let missions = await this._orderMissionRepository.getMissionHistoryForDriver(driver, skipValue, takeValue);
     return missions.map(mission => new OrderMissionDto(mission));
 
   }

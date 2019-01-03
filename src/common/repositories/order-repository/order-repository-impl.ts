@@ -98,8 +98,13 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		let order: Order | undefined;
 		
 		await Promise.all([
-			driver = await this._driverRepository.findOne(driverId),
-			order = await this._orderRepository.findOne(orderId)
+			driver = await this._driverRepository.findOne(driverId, {relations: ["person"]}),
+			order = await this._orderRepository.findOne(orderId, {
+				relations: [
+					"pickupSlot", "deliverySlot", "address", "member", 
+					"member.person", "member.addresses"
+				]
+			})
 		]);
 
 		if (!driver)
@@ -126,7 +131,12 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		
 		await Promise.all([
 			driver = await this._driverRepository.findOne(driverId),
-			order = await this._orderRepository.findOne(orderId)
+			order = await this._orderRepository.findOne(orderId, {
+				relations: [
+					"pickupSlot", "deliverySlot", "address", "member", 
+					"member.person", "member.addresses"
+				]
+			})
 		]);
 
 		if (!driver)
