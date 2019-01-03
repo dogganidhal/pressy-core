@@ -143,6 +143,12 @@ export namespace exception {
     constructor(slotId: number) {
       super('SlotNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No slot with id ${slotId} was found`);
     }
+	}
+	
+	export class OrderStatusUpdateNotFound extends APIException {
+    constructor(type: string) {
+      super('OrderStatusUpdateNotFound', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Order update type '${type}' is not supported`);
+    }
   }
 
 	export class DriverSlotNotFoundException extends APIException {

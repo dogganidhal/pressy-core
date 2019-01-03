@@ -13,5 +13,6 @@ export interface IOrderRepository {
 	assignDriverToDeliverOrder(request: AssignOrderDriverRequestDto): Promise<void>;
 	setOrderElements(order: Order, elements: CreateOrderElementRequest[]): Promise<OrderElement[]>;
 	editOrder(editOrderRequest: EditOrderRequestDto): Promise<Order>;
-
+	setOrderElementCount(order: Order, elementCount: number): Promise<Order>;
+	
 }

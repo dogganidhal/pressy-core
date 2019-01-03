@@ -55,6 +55,9 @@ export class Order {
   @OneToMany(type => OrderElement, element => element.order, {nullable: false})
   public elements: OrderElement[];
 
+  @Column({nullable: false, default: 0})
+  public elementCount: number = 0;
+
   public static async create(order: IOrder): Promise<Order> {
 
     let orderEntity = new Order;

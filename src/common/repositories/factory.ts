@@ -16,6 +16,8 @@ import { ISlotRepository } from "./slot-repository";
 import { SlotRepositoryImpl } from "./slot-repository/slot-repository-impl";
 import { IOrderStatusRepository } from "./order-status-repository";
 import { OrderStatusRepositoryImpl } from "./order-status-repository/order-status-repository-impl";
+import { IOrderMissionRepository } from "./order-mission-repository";
+import { OrderMissionRepositoryImpl } from "./order-mission-repository/order-mission-repository-impl";
 
 
 export class RepositoryFactory {
@@ -61,6 +63,10 @@ export class RepositoryFactory {
 
   public createSlotRepository(): ISlotRepository {
     return new SlotRepositoryImpl(this._connection);
+  }
+
+  public createOrderMissionRepository(): IOrderMissionRepository {
+    return new OrderMissionRepositoryImpl(this._connection);
   }
 
 }

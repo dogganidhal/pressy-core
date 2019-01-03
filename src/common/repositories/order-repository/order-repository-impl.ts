@@ -229,4 +229,9 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 
 	}
 
+	public async setOrderElementCount(order: Order, elementCount: number): Promise<Order> {
+		order.elementCount = elementCount;
+		return await this._orderRepository.save(order);
+	}
+
 }
