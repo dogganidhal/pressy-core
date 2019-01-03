@@ -2,7 +2,7 @@ import { BaseRepository } from "../base-repository";
 import { IOrderMissionRepository } from ".";
 import { Driver } from "../../model/entity/users/driver/driver";
 import { OrderMission } from "../../model/entity/order";
-import { Repository, MoreThan, Between } from "typeorm";
+import { Repository, Between } from "typeorm";
 import { DateUtils } from "../../utils";
 
 
