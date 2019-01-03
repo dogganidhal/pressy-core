@@ -2,7 +2,7 @@ import {BaseController} from "../../common/controller/base-controller";
 import {Path, POST, GET, QueryParam, PATCH, DELETE} from "typescript-rest";
 import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import {SigningCategory} from "../../services/crypto";
-import { Tags, Produces } from "typescript-rest-swagger";
+import { Tags, Produces, Security } from "typescript-rest-swagger";
 import { CreateSlotRequestDto, SlotDto, EditSlotRequestDto, DeleteSlotRequest } from "../../common/model/dto";
 import { JSONBody } from "../../common/annotations/json-body";
 import { ISlotRepository } from "../../common/repositories/slot-repository";
@@ -16,6 +16,7 @@ export class SlotController extends BaseController {
 
 	private _slotRepository: ISlotRepository = RepositoryFactory.instance.createSlotRepository();
 
+	@Security("Bearer")
 	@JSONEndpoint
 	@Authenticate(SigningCategory.ADMIN)
 	@GET
@@ -24,6 +25,7 @@ export class SlotController extends BaseController {
     return slots.map(slot => new SlotDto(slot));
   }
   
+  @Security("Bearer")
   @JSONEndpoint
 	@Authenticate(SigningCategory.ADMIN)
 	@POST
@@ -31,7 +33,8 @@ export class SlotController extends BaseController {
     let slot = await this._slotRepository.createSlot(request);
     return new SlotDto(slot);
 	}
-	
+  
+  @Security("Bearer")
 	@JSONEndpoint
 	@Authenticate(SigningCategory.ADMIN)
 	@PATCH
@@ -39,7 +42,8 @@ export class SlotController extends BaseController {
     let slot = await this._slotRepository.editSlot(request);
     return new SlotDto(slot);
 	}
-	
+  
+  @Security("Bearer")
 	@JSONEndpoint
 	@Authenticate(SigningCategory.ADMIN)
 	@DELETE

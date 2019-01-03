@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import {Person} from "../../model/entity/users/person";
 import {exception} from "../../errors";
 import { IAdminRepository } from ".";
+import { CreatePersonRequestDto } from "../../model/dto";
 
 
 export class AdminRepositoryImpl extends BaseRepository implements IAdminRepository {
@@ -24,6 +25,17 @@ export class AdminRepositoryImpl extends BaseRepository implements IAdminReposit
     if (!person)
       throw new exception.AccountNotFoundException(email);
     return this._adminRepository.findOne({person: person}, {relations:["person"]});
+  }
+
+  public async createAdmin(request: CreatePersonRequestDto): Promise<Admin> {
+    
+    let admin = Admin.create(request);
+    
+    await this._personRepository.insert(admin.person);
+    await this._adminRepository.insert(admin);
+
+    return admin;
+
   }
 
 }

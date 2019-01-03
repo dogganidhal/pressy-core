@@ -6,7 +6,7 @@ export abstract class User {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
-	@OneToOne(type => Person)
+	@OneToOne(type => Person, {nullable: false})
 	@JoinColumn()
 	public person: Person;
 
