@@ -13,7 +13,7 @@ import { RepositoryFactory } from "../../common/repositories/factory";
 @Produces("application/json")
 @Tags("Addresses")
 @Accept("application/json")
-@Path('/addressId')
+@Path('/address')
 export class AddressController extends BaseController {
 
   private _addressRepository: IAddressRepository = RepositoryFactory.instance.createAddressRepository();

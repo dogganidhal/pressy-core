@@ -17,8 +17,8 @@ export class MissionController extends BaseController {
   private _orderMissionRepository: IOrderMissionRepository = RepositoryFactory.instance.createOrderMissionRepository();
 
   @Authenticate(SigningCategory.DRIVER)
-  @Security("Bearer")
   @JSONEndpoint
+  @Security("Bearer")
   @GET
   public async getMissions(): Promise<OrderMissionDto[]> {
     
@@ -28,10 +28,10 @@ export class MissionController extends BaseController {
 
   }
 
-  @Path("/history")
   @Authenticate(SigningCategory.DRIVER)
-  @Security("Bearer")
   @JSONEndpoint
+  @Path("/history")
+  @Security("Bearer")
   @GET
   public async getMissionHistory(@QueryParam("skip") skip?: string, @QueryParam("take") take?: string): Promise<OrderMissionDto[]> {
     

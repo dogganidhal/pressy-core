@@ -30,7 +30,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
   return await this._orderRepository.find({
 	    where: {member: member},
 	    relations: [
-		    "address", "deliveryAddress",
+		    "address",
 		    "pickupSlot", "deliverySlot",
 		    "member", "member.person",
 		    "elements"
