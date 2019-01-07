@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne, Create
 import { Slot } from "../slot";
 import { Member } from '../users/member';
 import {LaundryPartner} from "../users/laundry";
-import { OrderElement } from './order-element';
+import { OrderItem } from './order-item';
 
 export enum OrderType {
   PRESSING,
@@ -17,7 +17,7 @@ export interface IOrder {
 	address: Address;
 	member: Member;
 	laundryPartner?: LaundryPartner;
-	elements?: OrderElement[];
+	elements?: OrderItem[];
 }
 
 @Entity()
@@ -52,8 +52,8 @@ export class Order {
 	@JoinColumn()
 	public laundryPartner: LaundryPartner;
 
-  @OneToMany(type => OrderElement, element => element.order, {nullable: false})
-  public elements: OrderElement[];
+  @OneToMany(type => OrderItem, element => element.order, {nullable: false})
+  public elements: OrderItem[];
 
   @Column({nullable: false, default: 0})
   public elementCount: number = 0;

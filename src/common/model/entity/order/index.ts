@@ -1,3 +1,3 @@
 export * from "./order";
-export * from "./element";
+export * from "./article";
 export * from "./order-mission";

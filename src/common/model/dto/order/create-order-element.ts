@@ -1,7 +1,7 @@
 import { Required } from "../../../annotations";
 
 
-export class CreateOrderElementRequest {
+export class CreateOrderItemRequest {
 
 	@Required()
 	public elementId: number;

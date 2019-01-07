@@ -55,9 +55,9 @@ export namespace exception {
     }
 	}
 	
-	export class ElementNotFound extends APIException {
+	export class ArticleNotFound extends APIException {
     constructor(id: number) {
-      super('ElementNotFound', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No element with id ${id} was found`);
+      super('ArticleNotFound', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No article with id ${id} was found`);
     }
   }
 

@@ -4,12 +4,13 @@ import {BaseController} from "../../common/controller/base-controller";
 import {SigningCategory} from "../../services/crypto";
 import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import { OrderMailSender } from "../../common/mail-senders/order-mail-sender";
-import { CreateOrderRequestDto, OrderDto, SlotDto } from "../../common/model/dto";
+import { CreateOrderRequestDto, OrderDto, SlotDto, ArticleDto } from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
 import {Member} from "../../common/model/entity/users/member";
 import { IOrderRepository } from "../../common/repositories/order-repository";
 import { ISlotRepository } from "../../common/repositories/slot-repository";
 import { RepositoryFactory } from "../../common/repositories/factory";
+import { IArticleRepository } from "../../common/repositories/article-repository";
 
 
 @Produces("application/json")
@@ -19,6 +20,7 @@ export class OrderController extends BaseController {
 
   private _orderRepository: IOrderRepository = RepositoryFactory.instance.createOrderRepository();
   private _slotsRepository: ISlotRepository = RepositoryFactory.instance.createSlotRepository();
+  private _articleRepository: IArticleRepository = RepositoryFactory.instance.createArticleRepository();
 
 	@Security("Bearer")
   @JSONEndpoint
@@ -54,6 +56,16 @@ export class OrderController extends BaseController {
     let slots = await this._slotsRepository.getAvailableSlots(type);
 	  return slots.map(slot => new SlotDto(slot));
 
+  }
+
+  @JSONEndpoint
+  @Path("/articles")
+  @GET
+  public async getArticles(): Promise<ArticleDto[]> {
+
+    var articles = await this._articleRepository.getArticles();
+    return articles.map(article => new ArticleDto(article));
+    
   }
 
 }

@@ -1,6 +1,6 @@
 import { Required } from "../../../annotations";
 import { OrderType } from "../../entity/order";
-import { CreateSlotRequestDto, CreateAddressRequestDto, CreateOrderElementRequest } from "..";
+import { CreateSlotRequestDto, CreateAddressRequestDto, CreateOrderItemRequest } from "..";
 
 
 export class EditOrderRequestDto {
@@ -12,7 +12,7 @@ export class EditOrderRequestDto {
 	public pickupSlot?: CreateSlotRequestDto;
 	public deliverySlot?: CreateSlotRequestDto;
 	public address?: CreateAddressRequestDto;
-	public elements?: Array<CreateOrderElementRequest>;
+	public elements?: Array<CreateOrderItemRequest>;
 	public memberId?: number;
 
 }

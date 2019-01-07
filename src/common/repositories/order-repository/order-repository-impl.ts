@@ -1,4 +1,4 @@
-import {Order, Element, OrderMission, OrderMissionType} from '../../model/entity/order';
+import {Order, Article, OrderMission, OrderMissionType} from '../../model/entity/order';
 import {Repository} from "typeorm";
 import {Member} from '../../model/entity/users/member';
 import {BaseRepository} from '../base-repository';
@@ -6,11 +6,11 @@ import {Slot} from "../../model/entity/slot";
 import {exception} from "../../errors";
 import {Address} from "../../model/entity/common/address";
 import {Driver} from "../../model/entity/users/driver/driver";
-import { CreateOrderRequestDto, AssignOrderDriverRequestDto, EditOrderRequestDto, CreateOrderElementRequest } from '../../model/dto';
+import { CreateOrderRequestDto, AssignOrderDriverRequestDto, EditOrderRequestDto, CreateOrderItemRequest } from '../../model/dto';
 import { IOrderRepository } from '.';
 import { RepositoryFactory } from '../factory';
 import { IOrderStatusRepository } from '../order-status-repository';
-import { OrderElement } from '../../model/entity/order/order-element';
+import { OrderItem } from '../../model/entity/order/order-item';
 
 
 export class OrderRepositoryImpl extends BaseRepository implements IOrderRepository {
@@ -19,8 +19,8 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
   private _slotRepository: Repository<Slot> = this.connection.getRepository(Slot);
 	private _addressRepository: Repository<Address> = this.connection.getRepository(Address);
 	private _driverRepository: Repository<Driver> = this.connection.getRepository(Driver);
-	private _orderElementRepository: Repository<OrderElement> = this.connection.getRepository(OrderElement);
-	private _elementRepository: Repository<Element> = this.connection.getRepository(Element);
+	private _orderItemRepository: Repository<OrderItem> = this.connection.getRepository(OrderItem);
+	private _articleRepository: Repository<Article> = this.connection.getRepository(Article);
 	private _orderMissionRepository: Repository<OrderMission> = this.connection.getRepository(OrderMission);
 
 	private _orderStatusManger: IOrderStatusRepository = RepositoryFactory.instance.createOrderStatusRepository();
@@ -154,28 +154,28 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 
 	}
 
-	public async setOrderElements(order: Order, elements: CreateOrderElementRequest[]): Promise<OrderElement[]> {
+	public async setOrderItems(order: Order, items: CreateOrderItemRequest[]): Promise<OrderItem[]> {
 
-		let orderElements: OrderElement[] = [];
+		let orderItems: OrderItem[] = [];
 		let asyncTasks: PromiseLike<any>[] = [];
 
-		elements.forEach(async element => {
+		items.forEach(async element => {
 			asyncTasks.push(Promise.resolve(async () => {
 
-				var elementEntity = await this._elementRepository.findOne(element.elementId);
+				var elementEntity = await this._articleRepository.findOne(element.elementId);
 				
 				if (!elementEntity)
-					throw new exception.ElementNotFound(element.elementId);
+					throw new exception.ArticleNotFound(element.elementId);
 
-				var orderElement = OrderElement.create(order, element, elementEntity);
-				orderElements.push(await this._orderElementRepository.save(orderElement))
+				var orderItem = OrderItem.create(order, element, elementEntity);
+				orderItems.push(await this._orderItemRepository.save(orderItem))
 				
 			}));
 		});
 
 		await Promise.all(asyncTasks);
 
-		return orderElements;
+		return orderItems;
 
 	}
 
@@ -226,7 +226,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		if (editOrderRequest.elements) {
 			asyncTasks.push(
 				Promise.resolve(
-					order.elements = await this.setOrderElements(order, editOrderRequest.elements)
+					order.elements = await this.setOrderItems(order, editOrderRequest.elements)
 				)
 			);
 		}
@@ -239,7 +239,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 
 	}
 
-	public async setOrderElementCount(order: Order, elementCount: number): Promise<Order> {
+	public async setOrderItemCount(order: Order, elementCount: number): Promise<Order> {
 		order.elementCount = elementCount;
 		return await this._orderRepository.save(order);
 	}

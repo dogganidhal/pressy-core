@@ -1,5 +1,5 @@
 import { OrderType, Order } from "../../entity/order";
-import { SlotDto, AddressDto, DriverInfoDto, MemberInfoDto, OrderElementDto } from "..";
+import { SlotDto, AddressDto, DriverInfoDto, MemberInfoDto, OrderItemDto } from "..";
 
 
 export class OrderDto {
@@ -9,7 +9,7 @@ export class OrderDto {
 	public pickupSlot: SlotDto;
 	public deliverySlot: SlotDto;
 	public address: AddressDto;
-	public elements: Array<OrderElementDto>;
+	public elements: Array<OrderItemDto>;
 	public driver: DriverInfoDto;
 	public member: MemberInfoDto;
 
@@ -26,7 +26,7 @@ export class OrderDto {
 		});
 
 		if (order.elements)
-			this.elements = order.elements.map(element => new OrderElementDto(element));	
+			this.elements = order.elements.map(element => new OrderItemDto(element));	
 
 	}
 

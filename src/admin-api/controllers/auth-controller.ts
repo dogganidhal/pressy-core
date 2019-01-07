@@ -4,7 +4,7 @@ import { JSONEndpoint } from "../../common/annotations";
 import { exception } from "../../common/errors";
 import bcrypt from "bcrypt";
 import { crypto, SigningCategory, AuthCredentialsDto } from "../../services/crypto";
-import { LoginRequestDto } from "../../common/model/dto";
+import { LoginRequestDto, RefreshCredentialsRequestDto } from "../../common/model/dto";
 import { Tags, Produces } from "typescript-rest-swagger";
 import {JSONBody} from "../../common/annotations/json-body";
 import { IAdminRepository } from "../../common/repositories/admin-repository";
@@ -33,6 +33,13 @@ export class AuthController extends BaseController {
 
 	  return crypto.signAuthToken(admin, SigningCategory.ADMIN);
 
+  }
+
+  @Path("/refresh")
+  @JSONEndpoint
+  @POST
+  public async refreshCredentials(@JSONBody(RefreshCredentialsRequestDto) request: RefreshCredentialsRequestDto): Promise<AuthCredentialsDto> {
+    return await crypto.refreshCredentials(request.refreshToken);
   }
 
 }
