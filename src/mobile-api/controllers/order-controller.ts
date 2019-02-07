@@ -41,7 +41,7 @@ export class OrderController extends BaseController {
   @JSONEndpoint
   @Authenticate(SigningCategory.MEMBER)
   @GET
-  public async getOrders() {
+  public async getOrders(): Promise<Array<OrderDto>> {
 
 	  let orders = await this._orderRepository.getOrdersForMember(<Member>this.pendingUser);
 	  return orders.map(order => new OrderDto(order));
