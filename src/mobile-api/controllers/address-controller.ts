@@ -1,4 +1,4 @@
-import {GET, PATCH, Path, POST, Accept, DELETE} from "typescript-rest";
+import {GET, PATCH, Path, POST, Accept, DELETE, PathParam} from "typescript-rest";
 import {BaseController} from "../../common/controller/base-controller";
 import {SigningCategory} from "../../services/crypto";
 import {http} from "../../common/utils/http";
@@ -48,9 +48,10 @@ export class AddressController extends BaseController {
   @JSONEndpoint
   @Security("Bearer")
   @Authenticate(SigningCategory.MEMBER)
+  @Path("/{address-id}")
   @DELETE
-  public async deleteAddress(@JSONBody(DeleteAddressRequestDto) request: DeleteAddressRequestDto) {
-    await this._addressRepository.deleteAddress(request, <Member>this.pendingUser);
+  public async deleteAddress(@PathParam("address-id") addressId: number) {
+    await this._addressRepository.deleteAddress(addressId, <Member>this.pendingUser);
   }
 
 }

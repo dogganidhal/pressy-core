@@ -10,6 +10,6 @@ export interface IAddressRepository {
   createAddress(createAddressRequest: CreateAddressRequestDto, member?: Member): Promise<Address>;
   duplicateAddress(address: AddressDto): Promise<Address>;
 	updateAddress(request: UpdateAddressRequestDto, member: Member): Promise<void>;
-  deleteAddress(request: DeleteAddressRequestDto, member: Member): Promise<void>;
+  deleteAddress(addressId: number, member: Member): Promise<void>;
   
 }

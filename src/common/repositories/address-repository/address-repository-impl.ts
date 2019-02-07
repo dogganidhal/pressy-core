@@ -79,17 +79,17 @@ export class AddressRepositoryImpl extends BaseRepository implements IAddressRep
 
 	}
 
-	public async deleteAddress(request: DeleteAddressRequestDto, member: Member) {
+	public async deleteAddress(addressId: number, member: Member) {
 
-		let address = await this._addressRepository.findOne(request.addressId, {relations: ["member"]});
+		let address = await this._addressRepository.findOne(addressId, {relations: ["member"]});
 
 		if (!address)
-			throw new exception.AddressNotFoundException(request.addressId);
+			throw new exception.AddressNotFoundException(addressId);
 
 		if (!address.member || address.member.id != member.id)
-			throw new exception.CannotDeleteAddressException(request.addressId);
+			throw new exception.CannotDeleteAddressException(addressId);
 
-		await this._addressRepository.delete({id: request.addressId});
+		await this._addressRepository.delete({id: addressId});
 	}
 
 }
