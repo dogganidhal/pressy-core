@@ -9,13 +9,13 @@ export class OrderItem {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @ManyToOne(type => Order, order => order.elements)
+  @ManyToOne(type => Order, order => order.items)
   @JoinColumn()
   public order: Order;
 
   @ManyToOne(type => Article)
   @JoinColumn()
-  public element: Article
+  public article: Article
 
   @Column({nullable: true})
   public color: string;
@@ -23,12 +23,12 @@ export class OrderItem {
   @Column({nullable: true})
   public comment?: string;
 
-  public static create(order: Order, createOrderItemRequest: CreateOrderItemRequest, element: Article): OrderItem {
+  public static create(order: Order, createOrderItemRequest: CreateOrderItemRequest, item: Article): OrderItem {
 
     let orderItem = new OrderItem;
 
     orderItem.order = order;
-    orderItem.element = element;
+    orderItem.article = item;
 	  orderItem.color = createOrderItemRequest.color;
 	  orderItem.comment = createOrderItemRequest.comment;
 

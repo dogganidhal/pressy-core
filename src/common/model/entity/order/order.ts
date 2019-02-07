@@ -17,7 +17,7 @@ export interface IOrder {
 	address: Address;
 	member: Member;
 	laundryPartner?: LaundryPartner;
-	elements?: OrderItem[];
+	items?: OrderItem[];
 }
 
 @Entity()
@@ -52,11 +52,11 @@ export class Order {
 	@JoinColumn()
 	public laundryPartner: LaundryPartner;
 
-  @OneToMany(type => OrderItem, element => element.order, {nullable: false})
-  public elements: OrderItem[];
+  @OneToMany(type => OrderItem, item => item.order, {nullable: false})
+  public items: OrderItem[];
 
   @Column({nullable: false, default: 0})
-  public elementCount: number = 0;
+  public itemCount: number = 0;
 
   public static async create(order: IOrder): Promise<Order> {
 
@@ -69,8 +69,8 @@ export class Order {
 	  orderEntity.deliverySlot = order.deliverySlot;
 	  orderEntity.address = order.address;
 
-	  if (order.elements)
-		  orderEntity.elements = order.elements;
+	  if (order.items)
+		  orderEntity.items = order.items;
 
     return orderEntity;
 

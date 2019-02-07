@@ -33,7 +33,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		    "address",
 		    "pickupSlot", "deliverySlot",
 		    "member", "member.person",
-		    "elements"
+		    "items"
 	    ]
     });
     
@@ -159,15 +159,15 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		let orderItems: OrderItem[] = [];
 		let asyncTasks: PromiseLike<any>[] = [];
 
-		items.forEach(async element => {
+		items.forEach(async items => {
 			asyncTasks.push(Promise.resolve(async () => {
 
-				var elementEntity = await this._articleRepository.findOne(element.elementId);
+				var itemEntity = await this._articleRepository.findOne(items.itemId);
 				
-				if (!elementEntity)
-					throw new exception.ArticleNotFound(element.elementId);
+				if (!itemEntity)
+					throw new exception.ArticleNotFound(items.itemId);
 
-				var orderItem = OrderItem.create(order, element, elementEntity);
+				var orderItem = OrderItem.create(order, items, itemEntity);
 				orderItems.push(await this._orderItemRepository.save(orderItem))
 				
 			}));
@@ -223,10 +223,10 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 			order.member = member;
 		}
 
-		if (editOrderRequest.elements) {
+		if (editOrderRequest.items) {
 			asyncTasks.push(
 				Promise.resolve(
-					order.elements = await this.setOrderItems(order, editOrderRequest.elements)
+					order.items = await this.setOrderItems(order, editOrderRequest.items)
 				)
 			);
 		}
@@ -239,8 +239,8 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 
 	}
 
-	public async setOrderItemCount(order: Order, elementCount: number): Promise<Order> {
-		order.elementCount = elementCount;
+	public async setOrderItemCount(order: Order, itemCount: number): Promise<Order> {
+		order.itemCount = itemCount;
 		return await this._orderRepository.save(order);
 	}
 

@@ -12,7 +12,7 @@ export class EditOrderRequestDto {
 	public pickupSlot?: CreateSlotRequestDto;
 	public deliverySlot?: CreateSlotRequestDto;
 	public address?: CreateAddressRequestDto;
-	public elements?: Array<CreateOrderItemRequest>;
+	public items?: Array<CreateOrderItemRequest>;
 	public memberId?: number;
 
 }

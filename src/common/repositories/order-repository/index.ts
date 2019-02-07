@@ -11,8 +11,8 @@ export interface IOrderRepository {
 	getOrders(pageLength?: number, offset?: number): Promise<Order[]>;
 	assignDriverToPickupOrder(request: AssignOrderDriverRequestDto): Promise<void>;
 	assignDriverToDeliverOrder(request: AssignOrderDriverRequestDto): Promise<void>;
-	setOrderItems(order: Order, elements: CreateOrderItemRequest[]): Promise<OrderItem[]>;
+	setOrderItems(order: Order, items: CreateOrderItemRequest[]): Promise<OrderItem[]>;
 	editOrder(editOrderRequest: EditOrderRequestDto): Promise<Order>;
-	setOrderItemCount(order: Order, elementCount: number): Promise<Order>;
+	setOrderItemCount(order: Order, itemCount: number): Promise<Order>;
 	
 }

@@ -4,7 +4,7 @@ import { Required } from "../../../annotations";
 export class CreateOrderItemRequest {
 
 	@Required()
-	public elementId: number;
+	public itemId: number;
 
 	@Required()
 	public color: string;

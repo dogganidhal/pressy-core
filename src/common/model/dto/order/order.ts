@@ -9,7 +9,7 @@ export class OrderDto {
 	public pickupSlot: SlotDto;
 	public deliverySlot: SlotDto;
 	public address: AddressDto;
-	public elements: Array<OrderItemDto>;
+	public items: Array<OrderItemDto>;
 	public driver: DriverInfoDto;
 	public member: MemberInfoDto;
 
@@ -25,8 +25,8 @@ export class OrderDto {
 			addresses: order.member.addresses
 		});
 
-		if (order.elements)
-			this.elements = order.elements.map(element => new OrderItemDto(element));	
+		if (order.items)
+			this.items = order.items.map(item => new OrderItemDto(item));	
 
 	}
 
