@@ -171,7 +171,9 @@ describe("MemberRepository Read Operations Tests", () => {
 
   	await personRepository.updatePersonInfo(memberToUpdate.person, {
   		firstName: "John",
-		  lastName: "DOE"
+		  lastName: "DOE",
+			phone: memberToUpdate.person.phone,
+			email: memberToUpdate.person.email
 	  });
 
   	let updatedMember = await memberRepository.getMemberByEmail(memberToUpdate.person.email) || done.fail();
@@ -207,7 +209,10 @@ describe("MemberRepository Read Operations Tests", () => {
 
 		try {
 			await personRepository.updatePersonInfo(memberToUpdate.person, {
-				email: duplicateEmail
+				email: duplicateEmail,
+				phone: memberToUpdate.person.phone,
+				firstName: memberToUpdate.person.firstName,
+				lastName: memberToUpdate.person.lastName,
 			});
 			done.fail();
 		} catch (error) {
@@ -240,7 +245,10 @@ describe("MemberRepository Read Operations Tests", () => {
 
 		try {
 			await personRepository.updatePersonInfo(memberToUpdate.person, {
-				phone: duplicatePhone
+				phone: duplicatePhone,
+				email: memberToUpdate.person.email,
+				firstName: memberToUpdate.person.firstName,
+				lastName: memberToUpdate.person.lastName,
 			});
 			done.fail();
 		} catch (error) {
