@@ -11,19 +11,15 @@
   "scripts": {
     "start": "node scripts/start",
     "postinstall": "ts-node scripts/generate-docs",
-
     "mobile-api-dev": "NODE_ENV=local node scripts/launch mobile-api",
     "mobile-api-staging": "NODE_ENV=staging node scripts/launch mobile-api",
     "mobile-api-prod": "NODE_ENV=production node scripts/launch mobile-api",
-
     "driver-api-dev": "NODE_ENV=local node scripts/launch driver-api",
     "driver-api-staging": "NODE_ENV=staging node scripts/launch driver-api",
     "driver-api-prod": "NODE_ENV=production node scripts/launch driver-api",
-
     "admin-api-dev": "NODE_ENV=local node scripts/launch admin-api",
     "admin-api-staging": "NODE_ENV=staging node scripts/launch admin-api",
     "admin-api-prod": "NODE_ENV=production node scripts/launch admin-api",
-    
     "sync": "node scripts/sync.js",
     "generate-docs": "ts-node scripts/generate-docs.ts",
     "test": "export TEST_ENV=$NODE_ENV && jest --detectOpenHandles"

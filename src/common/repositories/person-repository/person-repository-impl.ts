@@ -94,24 +94,20 @@ export class PersonRepositoryImpl extends BaseRepository implements IPersonRepos
 
   }
 
-	public async updatePersonInfo(person: Person,request: UpdatePersonInfoRequestDto): Promise<void> {
+	public async updatePersonInfo(person: Person, request: UpdatePersonInfoRequestDto): Promise<void> {
 
-    if (request.email) {
-	    let personWithSameEmail = await this.getPersonByEmail(request.email);
-	    if (personWithSameEmail)
+    let personWithSameEmail = await this.getPersonByEmail(request.email);
+	    if (personWithSameEmail && personWithSameEmail.id !== person.id)
 	      throw new exception.EmailAlreadyExistsException(request.email);
-    }
 
-    if (request.phone) {
-      let personWithSamePhone = await this.getPersonByPhone(request.phone);
-      if (personWithSamePhone)
+    let personWithSamePhone = await this.getPersonByPhone(request.phone);
+      if (personWithSamePhone && personWithSamePhone.id !== person.id)
         throw new exception.PhoneAlreadyExists(request.phone);
-    }
 
-		person.email = request.email || person.email;
-		person.phone = request.phone || person.phone;
-		person.firstName = request.firstName || person.firstName;
-		person.lastName = request.lastName || person.lastName;
+		person.email = request.email;
+		person.phone = request.phone;
+		person.firstName = request.firstName;
+		person.lastName = request.lastName;
 
 		await this._personRepository.save(person);
 

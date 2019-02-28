@@ -50,10 +50,14 @@ export class CreatePersonRequestDto {
 
 export class UpdatePersonInfoRequestDto {
 
-	public firstName?: string;
-	public lastName?: string;
-	public email?: string;
-	public phone?: string;
+	@Required()
+	public firstName: string;
+	@Required()
+	public lastName: string;
+	@Required()
+	public email: string;
+	@Required()
+	public phone: string;
 
 }
 
