@@ -48,6 +48,8 @@ export class Address {
     address.streetName = dto.streetName;
     address.streetNumber = dto.streetNumber;
     address.zipCode = dto.zipCode;
+    address.name = dto.name;
+    address.extraLine = dto.extraLine;
 
     return address;
 
