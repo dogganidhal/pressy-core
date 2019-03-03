@@ -48,9 +48,9 @@ export class AddressController extends BaseController {
   @JSONEndpoint
   @Security("Bearer")
   @Authenticate(SigningCategory.MEMBER)
-  @Path("/{address-id}")
+  @Path("/:addressId")
   @DELETE
-  public async deleteAddress(@PathParam("address-id") addressId: number) {
+  public async deleteAddress(@PathParam("addressId") addressId: number) {
     await this._addressRepository.deleteAddress(addressId, <Member>this.pendingUser);
   }
 

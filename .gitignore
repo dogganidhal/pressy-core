@@ -2,7 +2,6 @@ node_modules
 *.DS_Store
 tslint.json
 secrets
-.vscode
 playground.pgsql
 ormlogs.log
 *.env
