@@ -1,4 +1,3 @@
-import { PaymentAccount } from "common/model/entity/payment/payment-account";
 
 export interface IPaymentAccount {
   cardAlias: string;

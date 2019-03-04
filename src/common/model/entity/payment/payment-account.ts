@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { Member } from "../users/member";
-import { IPaymentAccount } from "common/model/dto/payment/payment-account";
-import { ICreatePaymentAccount } from "common/model/dto/payment/create-payment-account";
+import { ICreatePaymentAccount } from "../../../../common/model/dto/payment/create-payment-account";
 
 
 @Entity()
