@@ -10,6 +10,7 @@ import {Member} from "../../common/model/entity/users/member";
 import { IPersonRepository } from "../../common/repositories/person-repository";
 import { RepositoryFactory } from "../../common/repositories/factory";
 import { IMemberRepository } from "../../common/repositories/member-repository";
+import { PaymentAccountDto } from "common/model/dto/payment/payment-account";
 
 
 @Produces("application/json")
@@ -36,7 +37,8 @@ export class MemberController extends BaseController {
 			created: memberEntity.person.created,
 			email: memberEntity.person.email,
 			phone: memberEntity.person.phone,
-			addresses: memberEntity.addresses.map(a => new AddressDto(a))
+			addresses: memberEntity.addresses.map(a => new AddressDto(a)),
+			paymentAccounts: memberEntity.paymentAccounts.map(pa => new PaymentAccountDto(pa))
 		});
 
   }

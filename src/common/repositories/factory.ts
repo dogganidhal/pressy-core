@@ -20,6 +20,9 @@ import { IOrderMissionRepository } from "./order-mission-repository";
 import { OrderMissionRepositoryImpl } from "./order-mission-repository/order-mission-repository-impl";
 import { IArticleRepository } from "./article-repository";
 import { ArticleRepositoryImpl } from "./article-repository/article-repository-impl";
+import { IPaymentAccount } from "common/model/dto/payment/payment-account";
+import { IPaymentAccountRepository } from "./payment-account-repository";
+import { PaymentAccountRepositoryImpl } from "./payment-account-repository/payment-account-repository-impl";
 
 
 export class RepositoryFactory {
@@ -73,6 +76,10 @@ export class RepositoryFactory {
 
   public createArticleRepository(): IArticleRepository {
     return new ArticleRepositoryImpl(this._connection);
+  }
+
+  public createPaymentAccountRepository(): IPaymentAccountRepository {
+    return new PaymentAccountRepositoryImpl(this._connection);
   }
 
 }

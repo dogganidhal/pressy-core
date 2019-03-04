@@ -175,6 +175,12 @@ export namespace exception {
 	  }
 	}
 
+	export class PaymentAccountNotFoundException extends APIException {
+	  constructor(id: string) {
+		  super('PaymentAccountNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Can't find payment account with id '${id}'`);
+	  }
+	}
+
  export class CannotDeleteAddressException extends APIException {
 	constructor(id: number) {
 	 super('CannotDeleteAddressException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Address with id '${id}' can't be deleted`);
