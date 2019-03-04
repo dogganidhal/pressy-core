@@ -10,7 +10,7 @@ import {Member} from "../../common/model/entity/users/member";
 import { IPersonRepository } from "../../common/repositories/person-repository";
 import { RepositoryFactory } from "../../common/repositories/factory";
 import { IMemberRepository } from "../../common/repositories/member-repository";
-import { PaymentAccountDto } from "common/model/dto/payment/payment-account";
+import { PaymentAccountDto } from "../../common/model/dto/payment/payment-account";
 
 
 @Produces("application/json")
