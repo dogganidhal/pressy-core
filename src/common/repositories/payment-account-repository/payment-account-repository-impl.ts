@@ -1,11 +1,10 @@
 import { IPaymentAccountRepository } from ".";
-import { Member } from "common/model/entity/users/member";
-import { PaymentAccountDto } from "common/model/dto/payment/payment-account";
-import { CreatePaymentAccountDto } from "common/model/dto/payment/create-payment-account";
+import { Member } from "../../../common/model/entity/users/member";
+import { CreatePaymentAccountDto } from "../../../common/model/dto/payment/create-payment-account";
 import { BaseRepository } from "../base-repository";
 import { Repository } from "typeorm";
-import { PaymentAccount } from "common/model/entity/payment/payment-account";
-import { exception } from "common/errors";
+import { PaymentAccount } from "../../../common/model/entity/payment/payment-account";
+import { exception } from "../../../common/errors";
 
 
 export class PaymentAccountRepositoryImpl extends BaseRepository implements IPaymentAccountRepository {

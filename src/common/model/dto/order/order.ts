@@ -22,7 +22,8 @@ export class OrderDto {
 		this.address = new AddressDto(order.address);
 		this.member = new MemberInfoDto({
 			...order.member.person,
-			addresses: order.member.addresses
+			addresses: order.member.addresses,
+			paymentAccounts: order.member.paymentAccounts
 		});
 
 		if (order.items)
