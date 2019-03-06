@@ -18,7 +18,7 @@ export class MemberRepositoryImpl extends BaseRepository implements IMemberRepos
   private _phoneValidationCodeRepository: Repository<PhoneValidationCode> = this.connection.getRepository(PhoneValidationCode);
 
   public async getMemberById(id: number): Promise<Member | undefined> {
-    return await this._memberRepository.findOne(id, {relations: ["person", "addresses"]});
+    return await this._memberRepository.findOne(id, {relations: ["person", "addresses", "paymentAccounts"]});
   }
 
   public async getMemberByEmail(email: string): Promise<Member | undefined> {
