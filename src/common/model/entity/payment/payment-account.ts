@@ -29,7 +29,7 @@ export class PaymentAccount {
   public expiryYear: number;
 
   @Column({nullable: false})
-  public cvc: number;
+  public cvc: string;
 
   public static create(member: Member, account: ICreatePaymentAccount): PaymentAccount {
     let paymentAccount = new PaymentAccount();

@@ -8,7 +8,7 @@ export interface ICreatePaymentAccount {
   holderName: string;
   expiryMonth: number;
   expiryYear: number;
-  cvc: number;
+  cvc: string;
 }
 
 
@@ -30,6 +30,6 @@ export class CreatePaymentAccountDto {
   public expiryYear: number;
 
   @Required()
-  public cvc: number;
+  public cvc: string;
 
 }

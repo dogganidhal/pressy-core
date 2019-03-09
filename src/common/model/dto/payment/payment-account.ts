@@ -4,7 +4,7 @@ export interface IPaymentAccount {
   holderName: string;
   expiryMonth: number;
   expiryYear: number;
-  cvc: number;
+  cvc: string;
 }
 
 export class PaymentAccountDto {
@@ -13,7 +13,7 @@ export class PaymentAccountDto {
   public holderName: string;
   public expiryMonth: number;
   public expiryYear: number;
-  public cvc: number;
+  public cvc: string;
 
   constructor(account: IPaymentAccount) {
     this.cardAlias = account.cardAlias;
