@@ -28,7 +28,7 @@ export class MemberRepositoryImpl extends BaseRepository implements IMemberRepos
     if (!person)
       return undefined;
 
-    return await this._memberRepository.findOne({person: person}, {relations: ["person", "addresses"]});
+    return await this._memberRepository.findOne({person: person}, {relations: ["person", "addresses", "paymentAccounts"]});
     
   }
 
@@ -39,7 +39,7 @@ export class MemberRepositoryImpl extends BaseRepository implements IMemberRepos
     if (!person)
       return undefined;
 
-    return await this._memberRepository.findOne({person: {id: person.id}}, {relations: ["person", "addresses"]});
+    return await this._memberRepository.findOne({person: {id: person.id}}, {relations: ["person", "addresses", "paymentAccounts"]});
 
   }
 
