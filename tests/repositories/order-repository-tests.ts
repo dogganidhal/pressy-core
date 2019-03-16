@@ -59,12 +59,12 @@ describe("OrderRepository Operations", () => {
 		// Create Slots
 		pickupSlot = await slotRepository.createSlot({
 			startDate: DateUtils.dateByAddingTimeInterval(new Date, 3600 * 48),
-			type: SlotType.GOLD,
+			type: SlotType.STANDARD,
 			availableDrivers: 5
 		});
 		deliverySlot = await slotRepository.createSlot({
 			startDate: DateUtils.dateByAddingTimeInterval(pickupSlot.startDate, 3600 * 24),
-			type: SlotType.GOLD,
+			type: SlotType.STANDARD,
 			availableDrivers: 5
 		});
 
@@ -96,8 +96,8 @@ describe("OrderRepository Operations", () => {
 
 			expect(order.member).toEqual(activeMember);
 
-			expect(order.pickupSlot.type).toEqual(SlotType.GOLD);
-			expect(order.deliverySlot.type).toEqual(SlotType.GOLD);
+			expect(order.pickupSlot.type).toEqual(SlotType.STANDARD);
+			expect(order.deliverySlot.type).toEqual(SlotType.STANDARD);
 
 			expect(order.address).toEqual(order.address);
 			expect(order.address.city).toEqual("Paris");
