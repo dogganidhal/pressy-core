@@ -1,10 +1,11 @@
 import {Slot, SlotType} from '../../model/entity/slot';
-import {Between, FindConditions, Repository} from "typeorm";
+import {Between, FindConditions, Repository, MoreThan} from "typeorm";
 import {DateUtils} from '../../utils';
 import {BaseRepository} from '../base-repository';
 import { CreateSlotRequestDto, EditSlotRequestDto, DeleteSlotRequest } from '../../model/dto';
 import { ISlotRepository } from '.';
 import { exception } from '../../errors';
+import { APIError } from '../../errors/api-error';
 
 
 export class SlotRepositoryImpl extends BaseRepository implements ISlotRepository {
@@ -17,6 +18,31 @@ export class SlotRepositoryImpl extends BaseRepository implements ISlotRepositor
 
   public async createSlot(createSlotRequest: CreateSlotRequestDto): Promise<Slot> {
     return await this._slotRepository.save(Slot.create(createSlotRequest));
+  }
+
+  public async getDeliverySlotsForPickupSlot(pickupSlotId: number): Promise<Slot[]> {
+
+    let pickupSlot = await this._slotRepository.findOne(pickupSlotId);
+
+    if (!pickupSlot) 
+      throw new exception.SlotNotFoundException(pickupSlotId);
+
+    var minimumStartDate: Date = DateUtils.addDays(pickupSlot.startDate, 2);
+    switch(pickupSlot.type) {
+      case SlotType.STANDARD:
+        minimumStartDate = DateUtils.addDays(pickupSlot.startDate, 2);
+        break;
+      case SlotType.VIP:
+        minimumStartDate = DateUtils.addDays(pickupSlot.startDate, 1);
+        break;
+    }
+
+    var deliverySlots = await this._slotRepository.find({where: {
+      startDate: MoreThan(minimumStartDate)
+    }});
+
+    return deliverySlots;
+
   }
 
   public async getAvailableSlots(type?: string): Promise<Slot[]> {

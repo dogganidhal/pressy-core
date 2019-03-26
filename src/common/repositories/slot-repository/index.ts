@@ -7,6 +7,7 @@ export interface ISlotRepository {
   getSlotById(id: number): Promise<Slot | undefined>;
   createSlot(createSlotRequest: CreateSlotRequestDto): Promise<Slot>;
   getAvailableSlots(type?: string): Promise<Slot[]>;
+  getDeliverySlotsForPickupSlot(pickupSlotId: number): Promise<Slot[]>;
   editSlot(editSlotRequest: EditSlotRequestDto): Promise<Slot>;
   deleteSlot(deleteSlotRequest: DeleteSlotRequest): Promise<void>;
 
