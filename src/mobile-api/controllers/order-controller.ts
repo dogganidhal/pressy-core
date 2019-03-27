@@ -59,9 +59,9 @@ export class OrderController extends BaseController {
   }
 
   @JSONEndpoint
-  @Path("/delivery-slots/:pickup-slot-id")
+  @Path("/delivery-slots/:pickupSlotId")
   @GET
-  public async getDeliverySlots(@PathParam("pickup-slot-id") pickupSlotId: number): Promise<SlotDto[]> {
+  public async getDeliverySlots(@PathParam("pickupSlotId") pickupSlotId: number): Promise<SlotDto[]> {
 
     let slots = await this._slotsRepository.getDeliverySlotsForPickupSlot(pickupSlotId);
     return slots.map(slot => new SlotDto(slot));
