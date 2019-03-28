@@ -31,6 +31,7 @@ export class Article {
     if (article) {
       this.laundryPrice = article.laundryPrice;
       this.name = article.name;
+      this.photoUrl = article.photoUrl;
       this.comment = article.comment;
     }
   }
