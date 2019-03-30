@@ -18,7 +18,7 @@ export class OrderDto {
 		this.id = order.id;
 		this.type = order.type;
 		this.pickupSlot = new SlotDto(order.pickupSlot);
-		this.deliverySlot = new SlotDto(order.pickupSlot);
+		this.deliverySlot = new SlotDto(order.deliverySlot);
 		this.address = new AddressDto(order.address);
 		this.member = new MemberInfoDto({
 			...order.member.person,
