@@ -9,7 +9,7 @@ export namespace exception {
 
 	export class MissingFieldsException extends APIException {
 		constructor(fields: string) {
-			super('MissingFieldsException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Missing required fields ${fields}`);
+			super('Champs manquants', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Les champs suivants sont obligatoires : ${fields}`);
 		}
 	}
 
@@ -27,103 +27,103 @@ export namespace exception {
 
   export class WrongPasswordException extends APIException {
     constructor() {
-      super('WrongPasswordException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `The given password does not match our records`);
+      super('Mot de passe faux', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Le mot de passe que vous avez introduit ne correspond pas à votre compte`);
     }
   }
 
   export class AccountNotFoundException extends APIException {
     constructor(email: string) {
-      super('AccountNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No registered account with email '${email}' was found`);
+			super('Membre non trouvé', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Aucun membre avec l'email '${email}' n'a été trouvé`);
     }
 	}
 	
 	export class MemberNotFoundException extends APIException {
     constructor(id: number) {
-      super('MemberNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No member account with id '${id}' was found`);
+      super('Membre non trouvé', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Aucun membre avec l'id '${id}' n'a été trouvé`);
     }
   }
 
   export class UnauthenticatedRequestException extends APIException {
     constructor() {
-      super('UnauthenticatedRequestException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Must provide auth token to access requested resource`);
+      super('Accès refusé', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Il faut fournir un jeton d'accès pour accèder à la ressource demandée`);
     }
   }
 
   export class AccessTokenNotFoundException extends APIException {
     constructor() {
-      super('AccessTokenNotFoundException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Access token not found`);
+			super('Session invalide', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Le jeton de votre session n'est pas valide`);
     }
 	}
 	
 	export class ArticleNotFound extends APIException {
     constructor(id: number) {
-      super('ArticleNotFound', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No article with id ${id} was found`);
+			super('Article non trouvé', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Aucun article avec l'id '${id}' n'a été trouvé`);
     }
   }
 
   export class AccessTokenExpiredException extends APIException {
     constructor() {
-      super('AccessTokenExpiredException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Access token expired`);
+      super('Session expirée', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Votre session a éxpiré`);
     }
   }
 
   export class InvalidAccessTokenException extends APIException {
     constructor() {
-      super('InvalidAccessTokenException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Invalid access token`);
+			super('Session invalide', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Le jeton de votre session n'est pas valide`);
     }
   }
 
 	export class InvalidRefreshTokenException extends APIException {
 		constructor() {
-			super('InvalidRefreshTokenException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Invalid access token`);
+			super('Session invalide', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Le jeton de votre session n'est pas valide`);
 		}
 	}
 
 	export class InactiveMemberException extends APIException {
 		constructor(member: Member) {
-			super('InactiveMemberException', http.HttpStatus.HTTP_STATUS_FORBIDDEN, `Member with email '${member.person.email}' is not active, activate your account before ordering`);
+			super('Membre non actif', http.HttpStatus.HTTP_STATUS_FORBIDDEN, `Le membre '${member.person.firstName}' n'est pas actif, veuillez activer votre compte`);
 		}
 	}
 
   export class EmailAlreadyExistsException extends APIException {
     constructor(email?: string) {
-      super('DuplicateUser', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Email ${email ? "'" + email + "' " : ""}already exists`);
+      super('Email existant', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Un compte avec l'email ${email ? "'" + email + "' " : ""}existe déjà`);
     }
   }
 
   export class PhoneAlreadyExists extends APIException {
     constructor(phone?: string) {
-      super('DuplicateUser', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Phone ${phone ? "'" + phone + "' " : ""}already exists`);
+      super('Téléphone existant', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Le Téléphone ${phone ? "'" + phone + "' " : ""}existe déjà`);
     }
   }
 
 	export class InvalidEmailException extends APIException {
 		constructor(email: string) {
-			super('InvalidEmailException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Email '${email}' is not valid`);
+			super('Email non valide', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `l'email '${email}' n'est pas valide`);
 		}
 	}
 
 	export class InvalidPhoneException extends APIException {
 		constructor(phone: string) {
-			super('InvalidPhoneException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Phone '${phone}' is not valid`);
+			super('Téléphone non valide', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `le téléphone '${phone}' n'est pas valide`);
 		}
 	}
 
 	export class InvalidPasswordException extends APIException {
 		constructor(message: string) {
-			super('InvalidPasswordException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Invalid password: ${message}`);
+			super('Mot de passe non valide', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `le mot de passe est invalide : '${message}`);
 		}
 	}
 
   export class EmailValidationCodeNotFoundException extends APIException {
     constructor(code: string) {
-      super('EmailValidationCodeNotFoundException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Email validation code '${code}' was not found`);
+      super('Code de validation non trouvé', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `le code de validation '${code}' n'existe pas`);
     }
   }
 
 	export class PhoneValidationCodeNotFoundException extends APIException {
 		constructor(code: string) {
-			super('PhoneValidationCodeNotFoundException', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `Phone validation code '${code}' was not found`);
+			super('Code de validation non trouvé', http.HttpStatus.HTTP_STATUS_UNAUTHORIZED, `le code de validation '${code}' n'existe pas`);
 		}
 	}
 
@@ -135,13 +135,13 @@ export namespace exception {
   
   export class MethodNotAllowedException extends APIException {
 		constructor(method: string) {
-			super('MethodNotAllowedException', http.HttpStatus.HTTP_STATUS_METHOD_NOT_ALLOWED, `Method '${method}' not allowed`);
+			super('Méthode non supportée', http.HttpStatus.HTTP_STATUS_METHOD_NOT_ALLOWED, `la méthode '${method}' n'est pas supportée pour cet endpoint`);
 		}
 	}
 
   export class SlotNotFoundException extends APIException {
     constructor(slotId: number) {
-      super('SlotNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No slot with id ${slotId} was found`);
+      super('Créneau non trouvé', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Aucun créneau avec l'id ${slotId} n'a été trouvé`);
     }
 	}
 	
@@ -153,43 +153,43 @@ export namespace exception {
 
 	export class DriverSlotNotFoundException extends APIException {
 		constructor(slotId: number) {
-			super('DriverSlotNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No driver slot with id ${slotId} was found`);
+			super('Créneau chauffeur non trouvé', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Aucun créneau chauffeur avec l'id ${slotId} n'a été trouvé`);
 		}
   }
   
   export class DriverNotFoundException extends APIException {
 		constructor(driverId: number) {
-			super('DriverNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No driver with id ${driverId} was found`);
+			super('Chauffeur non trouvé', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `aucun chaffeur avec l'id ${driverId} n'a été trouvé`);
 		}
   }
 
   export class CannotCreateAddressException extends APIException {
 	  constructor() {
-		  super('CannotCreateAddressException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Can't create address, must provide either Google Place id or Coordinates`);
+			super('Impossible de créer l\'adresse', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Impossible de créer l'adresse, il faut fournir un Google Place Id ou des coordonnées GPS`);
 	  }
   }
   
   export class AddressNotFoundException extends APIException {
 	  constructor(id: number) {
-		  super('AddressNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Can't find address with id '${id}'`);
+		  super('Adresse non trouvée', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Aucune adresse avec l'id '${id}' n'a été trouvée`);
 	  }
 	}
 
 	export class PaymentAccountNotFoundException extends APIException {
 	  constructor(id: string) {
-		  super('PaymentAccountNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Can't find payment account with id '${id}'`);
+		  super('Moyen de paiement non trouvé', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Aucun moyen de paiement avec l'id '${id}' n'a été trouvé`);
 	  }
 	}
 
  export class CannotDeleteAddressException extends APIException {
 	constructor(id: number) {
-	 super('CannotDeleteAddressException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Address with id '${id}' can't be deleted`);
+	 super('Impossible de supprimer l\'adresse', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Impossible de supprimer l'adresse avec l'id '${id}', c'est peut être car c'est votre seul adresse renseignée`);
 	}
  }
 
 	export class CannotUpdateAddressException extends APIException {
 		constructor(id: number) {
-			super('CannotUpdateAddressException', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Address with id '${id}' can't be updated`);
+			super('Impossible de mettre à l\'adresse', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Impossible de modifier l'adresse avec l'id '${id}'`);
 		}
 	}
 
