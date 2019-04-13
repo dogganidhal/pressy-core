@@ -38,6 +38,10 @@ jobs: # a collection of steps
           name: Deploy Driver API to Heroku
           command: |
             git push https://heroku:04843c0f-09ac-4737-a369-d015e5fe617b@git.heroku.com/pressy-driver-api-dev.git develop:master
+      - run:
+          name: Deploy Laundry API to Heroku
+          command: |
+            git push https://heroku:04843c0f-09ac-4737-a369-d015e5fe617b@git.heroku.com/pressy-laundry-api-dev.git develop:master
 workflows:
   version: 2
   build-deploy:
