@@ -25,7 +25,7 @@
     "laundry-api-prod": "NODE_ENV=production node scripts/launch laundry-api",
     "sync": "node scripts/sync.js",
     "generate-docs": "ts-node scripts/generate-docs.ts",
-    "test": "export TEST_ENV=$NODE_ENV && jest --detectOpenHandles"
+    "test": "alsatian ./tests"
   },
   "author": "Nidhal DOGGA <dogga.nidhal@gmail.com>",
   "license": "ISC",
@@ -74,7 +74,6 @@
     "typed-rest-client": "^1.0.9",
     "typedi": "^0.8.0",
     "typeorm": "^0.2.14",
-    "typescript": "^3.0.3",
     "typescript-rest": "^1.7.0",
     "typescript-rest-swagger": "0.0.22",
     "uuid": "^3.3.2",
@@ -84,9 +83,11 @@
     "@types/open": "0.0.29",
     "@types/readline-sync": "^1.4.3",
     "@types/yargs-parser": "^11.0.2",
+    "alsatian": "^2.4.0",
     "nodemon": "^1.18.4",
     "open": "0.0.5",
     "readline-sync": "^1.4.9",
+    "typescript": "^3.4.3",
     "yargs-parser": "^11.1.1"
   },
   "jest": {
