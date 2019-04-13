@@ -23,7 +23,8 @@
     "port": {
       "mobile-api": 3000,
       "driver-api": 3001,
-      "admin-api": 3002
+      "admin-api": 3002,
+      "laundry-api": 3003
     },
     "hosts": {
       "mobile-api": {
@@ -40,6 +41,11 @@
         "local": "localhost:3002",
         "staging": "pressy-admin-api-dev.herokuapp.com",
         "production": "pressy-admin-api.herokuapp.com"
+      },
+      "laundry-api": {
+        "local": "localhost:3003",
+        "staging": "pressy-laundry-api-dev.herokuapp.com",
+        "production": "pressy-laundry-api.herokuapp.com"
       }
     }
   },
@@ -47,17 +53,20 @@
     "local": {
       "mobile-api": "mobile-api-dev",
       "driver-api": "driver-api-dev",
-      "admin-api": "admin-api-dev"
+      "admin-api": "admin-api-dev",
+      "laundry-api": "laundry-api-dev"
     },
     "staging": {
       "mobile-api": "mobile-api-staging",
       "driver-api": "driver-api-staging",
-      "admin-api": "admin-api-staging"
+      "admin-api": "admin-api-staging",
+      "laundry-api": "laundry-api-staging"
     },
     "production": {
       "mobile-api": "mobile-api-prod",
       "driver-api": "driver-api-prod",
-      "admin-api": "admin-api-prod"
+      "admin-api": "admin-api-prod",
+      "laundry-api": "laundry-api-prod"
     }
   }
 }

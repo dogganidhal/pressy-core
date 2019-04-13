@@ -52,6 +52,11 @@ let services = [
     serviceName: "admin-api",
     appName: "Pressy Admin API",
     host: hosts["admin-api"][process.env.NODE_ENV || "local"]
+  },
+  {
+    serviceName: "laundry-api",
+    appName: "Pressy Laundry API",
+    host: hosts["laundry-api"][process.env.NODE_ENV || "local"]
   }
 ];
 

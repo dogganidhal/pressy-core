@@ -28,11 +28,13 @@ interface RuntimeConfig {
     "mobile-api": number;
     "driver-api": number;
     "admin-api": number;
+    "laundry-api": number;
   },
   hosts: {
     "mobile-api": ServiceHost;
     "driver-api": ServiceHost;
     "admin-api": ServiceHost;
+    "laundry-api": ServiceHost;
   }
 }
 

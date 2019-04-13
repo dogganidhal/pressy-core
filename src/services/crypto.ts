@@ -114,6 +114,8 @@ export namespace crypto {
 					case SigningCategory.DRIVER:
 						user = await RepositoryFactory.instance.createDriverRepository().getDriverById(payload.id);
 						break;
+					case SigningCategory.LAUNDRER:
+						user = await RepositoryFactory.instance.createLaundryRepository().getLaundrerById(payload.id);
 				}
 
 				if (!user) {

@@ -22,6 +22,9 @@ import { IArticleRepository } from "./article-repository";
 import { ArticleRepositoryImpl } from "./article-repository/article-repository-impl";
 import { IPaymentAccountRepository } from "./payment-account-repository";
 import { PaymentAccountRepositoryImpl } from "./payment-account-repository/payment-account-repository-impl";
+import {ILaundryRepository} from "./laundry-repository";
+import {Laundrer} from "../model/entity/users/laundry/laundrer";
+import {LaundryRepositoryImpl} from "./laundry-repository/laundry-repository-impl";
 
 
 export class RepositoryFactory {
@@ -51,6 +54,10 @@ export class RepositoryFactory {
 
   public createMemberRepository(): IMemberRepository {
     return new MemberRepositoryImpl(this._connection);
+  }
+
+  public createLaundryRepository(): ILaundryRepository {
+    return new LaundryRepositoryImpl(this._connection);
   }
 
   public createOrderRepository(): IOrderRepository {

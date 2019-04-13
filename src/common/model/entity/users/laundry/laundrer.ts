@@ -19,13 +19,12 @@ export class Laundrer extends User {
 		return this.person.status === PersonActivationStatus.ACTIVE;
 	}
 
-	public static create(laundrer: ILaundrer): Laundrer {
+	public static create(request: CreatePersonRequestDto, laundryPartner: LaundryPartner): Laundrer {
 
-		const laundrerEntity: Laundrer = new Laundrer();
-		laundrerEntity.person = Person.create(laundrer);
-		laundrerEntity.laundryPartner = laundrer.laundryPartner;
-
-		return laundrerEntity;
+		let laundrer = new Laundrer();
+		laundrer.person = Person.create(request);
+		laundrer.laundryPartner = laundryPartner;
+		return laundrer;
 
 	}
 

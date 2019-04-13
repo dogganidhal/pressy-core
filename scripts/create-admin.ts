@@ -1,6 +1,6 @@
 import { Database } from "../src/common/db";
 import { RepositoryFactory } from "../src/common/repositories/factory";
-import { CreatePersonRequestDto, PersonInfo } from "../src/common/model/dto";
+import { CreatePersonRequestDto } from "../src/common/model/dto";
 import { question, questionEMail as questionEmail, questionNewPassword } from "readline-sync";
 import parse from "yargs-parser";
 import { Admin } from "../src/common/model/entity/users/admin/admin";

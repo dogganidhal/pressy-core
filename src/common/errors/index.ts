@@ -217,4 +217,9 @@ export namespace exception {
 	 }
 	}
 
+	export class LaundryPartnerNotFound extends APIException {
+		constructor(laundryPartnerId: number) {
+			super('Partenaire non trouvé', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Aucune partenaire avec l'id '${laundryPartnerId}' n'a été trouvé`);
+		}
+	}
 }

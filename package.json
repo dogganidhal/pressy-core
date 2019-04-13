@@ -20,6 +20,9 @@
     "admin-api-dev": "NODE_ENV=local node scripts/launch admin-api",
     "admin-api-staging": "NODE_ENV=staging node scripts/launch admin-api",
     "admin-api-prod": "NODE_ENV=production node scripts/launch admin-api",
+    "laundry-api-dev": "NODE_ENV=local node scripts/launch laundry-api",
+    "laundry-api-staging": "NODE_ENV=staging node scripts/launch laundry-api",
+    "laundry-api-prod": "NODE_ENV=production node scripts/launch laundry-api",
     "sync": "node scripts/sync.js",
     "generate-docs": "ts-node scripts/generate-docs.ts",
     "test": "export TEST_ENV=$NODE_ENV && jest --detectOpenHandles"

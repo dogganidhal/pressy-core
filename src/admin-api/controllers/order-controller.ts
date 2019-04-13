@@ -33,7 +33,6 @@ export class OrderController extends BaseController {
 				break;
 			default:
 				throw new NotFoundError();
-				break;
 		}
 	}
 
