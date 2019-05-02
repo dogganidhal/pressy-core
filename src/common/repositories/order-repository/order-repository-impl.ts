@@ -223,21 +223,23 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		let now = new Date(Date.now());
 		let todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0);
 		let tomorrowDate = DateUtils.addDays(todayDate, 1);
-		let orders = await this._orderRepository
-			.createQueryBuilder("order")
-			.select()
-			.where("order.laundryPartnerId = :laundryPartnerId", { laundryPartnerId: partner.id })
-			.andWhere("order.pickupSlot.startDate > :startDate", { startDate: todayDate })
-			.andWhere("order.pickupSlot.startDate < :endDate", { endDate: tomorrowDate })
-			.leftJoinAndSelect("order.pickupSlot", "pickupSlot")
-			.leftJoinAndSelect("order.deliverySlot", "deliverySlot")
-			.leftJoinAndSelect("order.address", "address")
-			.leftJoinAndSelect("order.member", "member")
-			// .leftJoinAndSelect("order.member.person", "member.person")
-			// .leftJoinAndSelect("order.member.addresses", "member.addresses")
-			.getMany();
-
-		return orders;
+		// TODO: Find a better way to filter on the orders in the db directly
+		let orders = await this._orderRepository.find({
+			where: {
+				laundryPartner: {
+					id: partner.id,
+				},
+				// pickupSlot: {
+				// 	startDate: Between(todayDate, tomorrowDate)
+				// }
+			},
+			relations: [
+				"pickupSlot", "deliverySlot", "address", "member",
+				"member.person", "member.addresses"
+			]
+		});
+		return orders
+			.filter(order => order.pickupSlot.startDate >= todayDate && order.pickupSlot.startDate <= tomorrowDate);
 		
 	}
 
