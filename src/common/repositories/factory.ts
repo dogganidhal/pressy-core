@@ -25,6 +25,8 @@ import { PaymentAccountRepositoryImpl } from "./payment-account-repository/payme
 import {ILaundryRepository} from "./laundry-repository";
 import {Laundrer} from "../model/entity/users/laundry/laundrer";
 import {LaundryRepositoryImpl} from "./laundry-repository/laundry-repository-impl";
+import {IInvoiceRepository} from "./invoice-repository";
+import {InvoiceRepositoryImpl} from "./invoice-repository/invoice-repository-impl";
 
 
 export class RepositoryFactory {
@@ -86,6 +88,10 @@ export class RepositoryFactory {
 
   public createPaymentAccountRepository(): IPaymentAccountRepository {
     return new PaymentAccountRepositoryImpl(this._connection);
+  }
+
+  public createInvoiceRepository(): IInvoiceRepository {
+    return new InvoiceRepositoryImpl(this._connection)
   }
 
 }

@@ -1,5 +1,5 @@
 import {Order, Article, OrderMission, OrderMissionType} from '../../model/entity/order';
-import {Repository} from "typeorm";
+import {Repository, MoreThan, Between} from "typeorm";
 import {Member} from '../../model/entity/users/member';
 import {BaseRepository} from '../base-repository';
 import {Slot} from "../../model/entity/slot";
@@ -11,6 +11,8 @@ import { IOrderRepository } from '.';
 import { RepositoryFactory } from '../factory';
 import { IOrderStatusRepository } from '../order-status-repository';
 import { OrderItem } from '../../model/entity/order/order-item';
+import { LaundryPartner } from '../../model/entity/users/laundry';
+import { DateUtils } from '../../utils';
 
 
 export class OrderRepositoryImpl extends BaseRepository implements IOrderRepository {
@@ -19,8 +21,6 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
   private _slotRepository: Repository<Slot> = this.connection.getRepository(Slot);
 	private _addressRepository: Repository<Address> = this.connection.getRepository(Address);
 	private _driverRepository: Repository<Driver> = this.connection.getRepository(Driver);
-	private _orderItemRepository: Repository<OrderItem> = this.connection.getRepository(OrderItem);
-	private _articleRepository: Repository<Article> = this.connection.getRepository(Article);
 	private _orderMissionRepository: Repository<OrderMission> = this.connection.getRepository(OrderMission);
 
 	private _orderStatusManger: IOrderStatusRepository = RepositoryFactory.instance.createOrderStatusRepository();
@@ -30,10 +30,8 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
   return await this._orderRepository.find({
 	    where: {member: member},
 	    relations: [
-		    "address",
-		    "pickupSlot", "deliverySlot",
-		    "member", "member.person",
-		    "items"
+		    "address", "pickupSlot", "deliverySlot",
+		    "member", "member.person", "items"
 	    ]
     });
     
@@ -154,31 +152,6 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 
 	}
 
-	public async setOrderItems(order: Order, items: CreateOrderItemRequest[]): Promise<OrderItem[]> {
-
-		let orderItems: OrderItem[] = [];
-		let asyncTasks: PromiseLike<any>[] = [];
-
-		items.forEach(async items => {
-			asyncTasks.push(Promise.resolve(async () => {
-
-				var itemEntity = await this._articleRepository.findOne(items.itemId);
-				
-				if (!itemEntity)
-					throw new exception.ArticleNotFound(items.itemId);
-
-				var orderItem = OrderItem.create(order, items, itemEntity);
-				orderItems.push(await this._orderItemRepository.save(orderItem))
-				
-			}));
-		});
-
-		await Promise.all(asyncTasks);
-
-		return orderItems;
-
-	}
-
 	public async editOrder(editOrderRequest: EditOrderRequestDto): Promise<Order> {
 
 		let order = await this._orderRepository.findOne(editOrderRequest.id);
@@ -223,14 +196,6 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 			order.member = member;
 		}
 
-		if (editOrderRequest.items) {
-			asyncTasks.push(
-				Promise.resolve(
-					order.items = await this.setOrderItems(order, editOrderRequest.items)
-				)
-			);
-		}
-
 		await Promise.all(asyncTasks);
 
 		order.type = editOrderRequest.type || order.type;
@@ -242,6 +207,38 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 	public async setOrderItemCount(order: Order, itemCount: number): Promise<Order> {
 		order.itemCount = itemCount;
 		return await this._orderRepository.save(order);
+	}
+
+	public async getOrderById(id: number): Promise<Order | undefined> {
+		return this._orderRepository.findOne(id, {
+			relations: [
+				"pickupSlot", "deliverySlot", "address", "member",
+				"member.person", "member.addresses"
+			]
+		});
+	}
+
+	public async getTodayOrdersByLaundryPartner(partner: LaundryPartner): Promise<Order[]> {
+
+		let now = new Date(Date.now());
+		let todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0);
+		let tomorrowDate = DateUtils.addDays(todayDate, 1);
+		let orders = await this._orderRepository
+			.createQueryBuilder("order")
+			.select()
+			.where("order.laundryPartnerId = :laundryPartnerId", { laundryPartnerId: partner.id })
+			.andWhere("order.pickupSlot.startDate > :startDate", { startDate: todayDate })
+			.andWhere("order.pickupSlot.startDate < :endDate", { endDate: tomorrowDate })
+			.leftJoinAndSelect("order.pickupSlot", "pickupSlot")
+			.leftJoinAndSelect("order.deliverySlot", "deliverySlot")
+			.leftJoinAndSelect("order.address", "address")
+			.leftJoinAndSelect("order.member", "member")
+			// .leftJoinAndSelect("order.member.person", "member.person")
+			// .leftJoinAndSelect("order.member.addresses", "member.addresses")
+			.getMany();
+
+		return orders;
+		
 	}
 
 }

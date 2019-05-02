@@ -20,4 +20,8 @@ export class ArticleRepositoryImpl extends BaseRepository implements IArticleRep
     
   }
 
+  public async getArticleById(articleId: number): Promise<Article | undefined> {
+	  return this._articleRepository.findOne(articleId);
+  }
+
 }

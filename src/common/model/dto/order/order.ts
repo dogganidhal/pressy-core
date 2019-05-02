@@ -26,9 +26,6 @@ export class OrderDto {
 			paymentAccounts: order.member.paymentAccounts
 		});
 
-		if (order.items)
-			this.items = order.items.map(item => new OrderItemDto(item));	
-
 	}
 
 }

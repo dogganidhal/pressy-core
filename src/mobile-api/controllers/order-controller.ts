@@ -11,6 +11,7 @@ import { IOrderRepository } from "../../common/repositories/order-repository";
 import { ISlotRepository } from "../../common/repositories/slot-repository";
 import { RepositoryFactory } from "../../common/repositories/factory";
 import { IArticleRepository } from "../../common/repositories/article-repository";
+import {Article} from "../../common/model/entity/order";
 
 
 @Produces("application/json")
@@ -86,7 +87,7 @@ export class OrderController extends BaseController {
     return new ArticleDto({
       id: -1,
       name: "Sac de 5Kg",
-      laundryPrice: 4.99,
+      laundryPrice: Article.WEIGHTED_ARTICLE_PRICE,
       photoUrl: "https://www.containerstore.com/catalogimages/110918/LaundryBagPolyCottonWhite_x.jpg?width=1200&height=1200&align=center"
     });
 

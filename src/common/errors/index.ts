@@ -222,4 +222,10 @@ export namespace exception {
 			super('Partenaire non trouvé', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Aucune partenaire avec l'id '${laundryPartnerId}' n'a été trouvé`);
 		}
 	}
+
+	export class OrderAlreadyInvoiced extends APIException {
+		constructor(orderId: number) {
+			super('Partenaire non trouvé', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `La commande avec l'id '${orderId}' a déjà été facturée`);
+		}
+	}
 }

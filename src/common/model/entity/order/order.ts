@@ -17,7 +17,6 @@ export interface IOrder {
 	address: Address;
 	member: Member;
 	laundryPartner?: LaundryPartner;
-	items?: OrderItem[];
 }
 
 @Entity()
@@ -52,9 +51,6 @@ export class Order {
 	@JoinColumn()
 	public laundryPartner: LaundryPartner;
 
-  @OneToMany(type => OrderItem, item => item.order, {nullable: false})
-  public items: OrderItem[];
-
   @Column({nullable: false, default: 0})
   public itemCount: number = 0;
 
@@ -68,9 +64,6 @@ export class Order {
     orderEntity.pickupSlot = order.pickupSlot;
 	  orderEntity.deliverySlot = order.deliverySlot;
 	  orderEntity.address = order.address;
-
-	  if (order.items)
-		  orderEntity.items = order.items;
 
     return orderEntity;
 

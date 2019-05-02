@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column } from "typeorm";
-import { Order, Article } from ".";
-import { CreateOrderItemRequest } from "../../dto";
+import { Article } from ".";
+import {Invoice} from "../payment/invoice";
 
 
 @Entity()
@@ -9,31 +9,18 @@ export class OrderItem {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @ManyToOne(type => Order, order => order.items)
+  @ManyToOne(type => Invoice, invoice => invoice.items)
   @JoinColumn()
-  public order: Order;
+  public invoice: Invoice;
 
   @ManyToOne(type => Article)
   @JoinColumn()
-  public article: Article
+  public article: Article;
 
   @Column({nullable: true})
-  public color: string;
+  public quantity: number;
 
   @Column({nullable: true})
   public comment?: string;
 
-  public static create(order: Order, createOrderItemRequest: CreateOrderItemRequest, item: Article): OrderItem {
-
-    let orderItem = new OrderItem;
-
-    orderItem.order = order;
-    orderItem.article = item;
-	  orderItem.color = createOrderItemRequest.color;
-	  orderItem.comment = createOrderItemRequest.comment;
-
-    return orderItem;
-
-  }
-  
 }

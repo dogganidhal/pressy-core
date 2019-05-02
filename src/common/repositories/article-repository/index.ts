@@ -6,5 +6,6 @@ export interface IArticleRepository {
 
   getArticles(): Promise<Article[]>;
   createArticle(request: CreateArticleRequestDto): Promise<void>;
+	getArticleById(articleId: number): Promise<Article | undefined>;
 
 }

@@ -10,6 +10,8 @@ interface IArticle {
 @Entity()
 export class Article {
 
+  public static WEIGHTED_ARTICLE_PRICE = 4.99;
+
   @PrimaryGeneratedColumn()
   public id: number;
 
