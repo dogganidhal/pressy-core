@@ -16,7 +16,7 @@ import { RepositoryFactory } from "../../common/repositories/factory";
 @Path("/auth")
 export class AuthController extends BaseController {
 
-  private _adminRepository: IAdminRepository = RepositoryFactory.instance.createAdminRepository();
+  private _adminRepository: IAdminRepository = RepositoryFactory.instance.adminRepository;
 
   @Path("/login")
   @JSONEndpoint

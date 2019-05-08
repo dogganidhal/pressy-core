@@ -1,6 +1,13 @@
 import { Config } from './index';
 import { readFileSync } from 'fs';
 
+interface MultiEnvSetting<T> {
+  local: T;
+  staging: T;
+  production: T;
+  [key: string]: T;
+}
+
 interface MailingConfig {
   host: string;
   port: number;
@@ -15,12 +22,7 @@ interface MailingOptions {
   senders: string[];
 }
 
-interface ServiceHost {
-  [key: string]: string;
-  local: string;
-  production: string;
-  staging: string;
-}
+type ServiceHost = MultiEnvSetting<string>;
 
 interface RuntimeConfig {
   port: {
@@ -38,6 +40,10 @@ interface RuntimeConfig {
   }
 }
 
+interface StripeConfig {
+  apiKey: string;
+}
+
 export interface Config {
 
   logEntriesLoggerAPIKey: string;
@@ -46,7 +52,8 @@ export interface Config {
   authenticationPrivateKey: string;
   mailingServiceConfig: MailingConfig;
   mailingServiceOptions: MailingOptions;
-  runtime: RuntimeConfig
+  runtime: RuntimeConfig;
+  stripeConfig: MultiEnvSetting<StripeConfig>;
 
 }
 

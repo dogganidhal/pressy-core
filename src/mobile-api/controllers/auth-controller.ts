@@ -17,8 +17,8 @@ import { IMemberRepository } from "../../common/repositories/member-repository";
 @Path('/auth')
 export class AuthController extends BaseController {
 
-  private _memberRepository: IMemberRepository = RepositoryFactory.instance.createMemberRepository();
-	private _personRepository: IPersonRepository = RepositoryFactory.instance.createPersonRepository();
+  private _memberRepository: IMemberRepository = RepositoryFactory.instance.memberRepository;
+	private _personRepository: IPersonRepository = RepositoryFactory.instance.personRepository;
 
   @JSONEndpoint
   @POST

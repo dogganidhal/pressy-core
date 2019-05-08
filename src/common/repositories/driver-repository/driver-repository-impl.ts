@@ -36,7 +36,7 @@ export class DriverRepositoryImpl extends BaseRepository implements IDriverRepos
 
 	public async getDriverByEmail(email: string): Promise<Driver | undefined> {
 
-		const person = await this._personRepository.findOne({email: email});
+		const person = await this._personRepository.findOne({email: email.toLowerCase()});
 
 		if (!person)
 			return undefined;
@@ -85,7 +85,7 @@ export class DriverRepositoryImpl extends BaseRepository implements IDriverRepos
 
 	public async deleteDriverByEmail(email: string): Promise<void> {
 
-		const person = await this._personRepository.findOne({email: email});
+		const person = await this._personRepository.findOne({email: email.toLowerCase()});
 
 		if (!person)
 			return;

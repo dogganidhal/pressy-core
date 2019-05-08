@@ -23,7 +23,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 	private _driverRepository: Repository<Driver> = this.connection.getRepository(Driver);
 	private _orderMissionRepository: Repository<OrderMission> = this.connection.getRepository(OrderMission);
 
-	private _orderStatusManger: IOrderStatusRepository = RepositoryFactory.instance.createOrderStatusRepository();
+	private _orderStatusManger: IOrderStatusRepository = RepositoryFactory.instance.orderStatusRepository;
 
   public async getOrdersForMember(member: Member): Promise<Order[]> {
 
@@ -52,7 +52,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 	  if (!deliverySlot)
 		  throw new exception.SlotNotFoundException(createOrderRequest.deliverySlotId);
 
-		let addressRepository = RepositoryFactory.instance.createAddressRepository();
+		let addressRepository = RepositoryFactory.instance.addressRepository;
 	  let addressEntity = await addressRepository.getAddressById(createOrderRequest.addressId);
 
 	  if (!addressEntity)
@@ -162,7 +162,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		let asyncTasks: PromiseLike<any>[] = [];
 
 		if (editOrderRequest.address) {
-			let addressRepository = RepositoryFactory.instance.createAddressRepository();
+			let addressRepository = RepositoryFactory.instance.addressRepository;
 			asyncTasks.push(
 				Promise.resolve(
 					order.address = await addressRepository.createAddress(editOrderRequest.address, undefined)
@@ -171,7 +171,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		}
 
 		if (editOrderRequest.pickupSlot) {
-			let slotRepository = RepositoryFactory.instance.createSlotRepository();
+			let slotRepository = RepositoryFactory.instance.slotRepository;
 			asyncTasks.push(
 				Promise.resolve(
 					order.pickupSlot = await slotRepository.createSlot(order.pickupSlot)
@@ -180,7 +180,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		}
 		
 		if (editOrderRequest.deliverySlot) {
-			let slotRepository = RepositoryFactory.instance.createSlotRepository();
+			let slotRepository = RepositoryFactory.instance.slotRepository;
 			asyncTasks.push(
 				Promise.resolve(
 					order.deliverySlot = await slotRepository.createSlot(order.deliverySlot)
@@ -189,7 +189,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		}
 
 		if (editOrderRequest.memberId) {
-			let memberRepository = RepositoryFactory.instance.createMemberRepository();
+			let memberRepository = RepositoryFactory.instance.memberRepository;
 			let member = await memberRepository.getMemberById(editOrderRequest.memberId);
 			if (!member)
 				throw new exception.MemberNotFoundException(editOrderRequest.memberId);

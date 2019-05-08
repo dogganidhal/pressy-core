@@ -11,6 +11,8 @@ import { IPersonRepository } from "../../common/repositories/person-repository";
 import { RepositoryFactory } from "../../common/repositories/factory";
 import { IMemberRepository } from "../../common/repositories/member-repository";
 import { PaymentAccountDto } from "../../common/model/dto/payment/payment-account";
+import { IMemberManager } from "../../common/manager/member";
+import { ManagerFactory } from "../../common/manager";
 
 
 @Produces("application/json")
@@ -19,8 +21,9 @@ import { PaymentAccountDto } from "../../common/model/dto/payment/payment-accoun
 @Path('/member')
 export class MemberController extends BaseController {
 
-  private _memberRepository: IMemberRepository = RepositoryFactory.instance.createMemberRepository();
-  private _personRepository: IPersonRepository = RepositoryFactory.instance.createPersonRepository();
+  private _memberRepository: IMemberRepository = RepositoryFactory.instance.memberRepository;
+	private _personRepository: IPersonRepository = RepositoryFactory.instance.personRepository;
+	private _memberManager: IMemberManager = ManagerFactory.instance.memberManager;
 
 	@Security("Bearer")
 	@JSONEndpoint
@@ -47,7 +50,7 @@ export class MemberController extends BaseController {
   @POST
   public async createMember(@JSONBody(CreatePersonRequestDto) request: CreatePersonRequestDto): Promise<AuthCredentialsDto> {
 
-		let member = await this._memberRepository.createMember(request);
+		let member = await this._memberManager.createMember(request);
 		let emailValidationCode = await this._personRepository.createEmailValidationCode(member.person);
 
 		new MemberMailSender().sendActivationCode(member, emailValidationCode.code);

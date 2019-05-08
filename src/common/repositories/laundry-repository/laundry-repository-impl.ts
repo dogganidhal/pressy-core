@@ -16,7 +16,7 @@ export class LaundryRepositoryImpl extends BaseRepository implements ILaundryRep
 
 	public async getLaundrerByEmail(email: string): Promise<Laundrer | undefined> {
 
-		let person = await this._personRepository.findOne({email: email});
+		let person = await this._personRepository.findOne({email: email.toLowerCase()});
 
 		if (!person)
 			return undefined;

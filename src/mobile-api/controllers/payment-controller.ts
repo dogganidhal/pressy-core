@@ -12,6 +12,9 @@ import { RepositoryFactory } from "../../common/repositories/factory";
 import { IPaymentAccountRepository } from "../../common/repositories/payment-account-repository";
 import { PaymentAccountDto } from "../../common/model/dto/payment/payment-account";
 import { CreatePaymentAccountDto } from "../../common/model/dto/payment/create-payment-account";
+import { IPaymentManager } from "../../common/manager/payment";
+import { PaymentManagerImpl } from "../../common/manager/payment/payment-manager-impl";
+import { ManagerFactory } from "../../common/manager";
 
 @Produces("application/json")
 @Tags("Payments")
@@ -19,13 +22,14 @@ import { CreatePaymentAccountDto } from "../../common/model/dto/payment/create-p
 @Path('/payment')
 export class PaymentController extends BaseController {
 
-  private _paymentAccountRepository: IPaymentAccountRepository = RepositoryFactory.instance.createPaymentAccountRepository();
+  private _paymentAccountRepository: IPaymentAccountRepository = RepositoryFactory.instance.paymentAccountRepository;
+  private _paymentManager: IPaymentManager = ManagerFactory.instance.paymentManager;
 
   @Security("Bearer")
   @JSONEndpoint
   @Authenticate(SigningCategory.MEMBER)
   @GET
-  public async getMemberAddresses(): Promise<PaymentAccountDto[]> {
+  public async getMemberPaymentAccounts(): Promise<PaymentAccountDto[]> {
     let paymentAccounts = await this._paymentAccountRepository.getMemberPaymentAccounts(<Member>this.pendingUser);
     return paymentAccounts.map(pa => new PaymentAccountDto(pa));
   }
@@ -34,8 +38,8 @@ export class PaymentController extends BaseController {
   @Security("Bearer")
   @Authenticate(SigningCategory.MEMBER)
   @POST
-  public async createAddress(@JSONBody(CreatePaymentAccountDto) request: CreatePaymentAccountDto): Promise<PaymentAccountDto> {
-    let paymentAccount = await this._paymentAccountRepository.createMemberPaymentAccount(<Member>this.pendingUser, request);
+  public async createPaymentAccount(@JSONBody(CreatePaymentAccountDto) request: CreatePaymentAccountDto): Promise<PaymentAccountDto> {
+    let paymentAccount = await this._paymentManager.addPaymentAccountForMember(<Member>this.pendingUser, request);
     return new PaymentAccountDto(paymentAccount);
   }
 
@@ -45,7 +49,7 @@ export class PaymentController extends BaseController {
   @Authenticate(SigningCategory.MEMBER)
   @Path("/:paymentAccountId")
   @DELETE
-  public async deleteAddress(@PathParam("paymentAccountId") paymentAccountId: string) {
+  public async deletePaymentAccount(@PathParam("paymentAccountId") paymentAccountId: string) {
     await this._paymentAccountRepository.deletePaymentAccount(paymentAccountId, <Member>this.pendingUser);
   }
 

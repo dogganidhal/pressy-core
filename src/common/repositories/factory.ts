@@ -23,7 +23,6 @@ import { ArticleRepositoryImpl } from "./article-repository/article-repository-i
 import { IPaymentAccountRepository } from "./payment-account-repository";
 import { PaymentAccountRepositoryImpl } from "./payment-account-repository/payment-account-repository-impl";
 import {ILaundryRepository} from "./laundry-repository";
-import {Laundrer} from "../model/entity/users/laundry/laundrer";
 import {LaundryRepositoryImpl} from "./laundry-repository/laundry-repository-impl";
 import {IInvoiceRepository} from "./invoice-repository";
 import {InvoiceRepositoryImpl} from "./invoice-repository/invoice-repository-impl";
@@ -42,55 +41,55 @@ export class RepositoryFactory {
 
   public constructor(private _connection: Connection) {}
 
-  public createAddressRepository(): IAddressRepository {
+  public get addressRepository(): IAddressRepository {
     return new AddressRepositoryImpl(this._connection);
   }
 
-  public createAdminRepository(): IAdminRepository {
+  public get adminRepository(): IAdminRepository {
     return new AdminRepositoryImpl(this._connection);
   }
 
-  public createDriverRepository(): IDriverRepository {
+  public get driverRepository(): IDriverRepository {
     return new DriverRepositoryImpl(this._connection);
   }
 
-  public createMemberRepository(): IMemberRepository {
+  public get memberRepository(): IMemberRepository {
     return new MemberRepositoryImpl(this._connection);
   }
 
-  public createLaundryRepository(): ILaundryRepository {
+  public get laundryRepository(): ILaundryRepository {
     return new LaundryRepositoryImpl(this._connection);
   }
 
-  public createOrderRepository(): IOrderRepository {
+  public get orderRepository(): IOrderRepository {
     return new OrderRepositoryImpl(this._connection);
   }
 
-  public createOrderStatusRepository(): IOrderStatusRepository {
+  public get orderStatusRepository(): IOrderStatusRepository {
     return new OrderStatusRepositoryImpl(this._connection);
   }
 
-  public createPersonRepository(): IPersonRepository {
+  public get personRepository(): IPersonRepository {
     return new PersonRepositoryImpl(this._connection);
   }
 
-  public createSlotRepository(): ISlotRepository {
+  public get slotRepository(): ISlotRepository {
     return new SlotRepositoryImpl(this._connection);
   }
 
-  public createOrderMissionRepository(): IOrderMissionRepository {
+  public get orderMissionRepository(): IOrderMissionRepository {
     return new OrderMissionRepositoryImpl(this._connection);
   }
 
-  public createArticleRepository(): IArticleRepository {
+  public get articleRepository(): IArticleRepository {
     return new ArticleRepositoryImpl(this._connection);
   }
 
-  public createPaymentAccountRepository(): IPaymentAccountRepository {
+  public get paymentAccountRepository(): IPaymentAccountRepository {
     return new PaymentAccountRepositoryImpl(this._connection);
   }
 
-  public createInvoiceRepository(): IInvoiceRepository {
+  public get invoiceRepository(): IInvoiceRepository {
     return new InvoiceRepositoryImpl(this._connection)
   }
 

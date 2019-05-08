@@ -1,4 +1,4 @@
-import {Entity, JoinColumn, OneToMany} from "typeorm";
+import {Entity, JoinColumn, OneToMany, Column} from "typeorm";
 import {Person} from "../person";
 import {User} from "..";
 import {Address} from "../../common/address";
@@ -17,10 +17,16 @@ export class Member extends User {
   @JoinColumn()
   public paymentAccounts: PaymentAccount[];
 
-  public static create(createPersonRequest: CreatePersonRequestDto): Member {
+  @Column({ unique: true, nullable: true })
+  public stripeCustomerId?: string;
+
+  public static create(createPersonRequest: CreatePersonRequestDto, stripeCustomerId?: string): Member {
     
-    const member: Member = new Member();
+    let member: Member = new Member();
     member.person = Person.create(createPersonRequest);
+    if (stripeCustomerId) {
+      member.stripeCustomerId = stripeCustomerId;
+    }
 
     return member;
 

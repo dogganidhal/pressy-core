@@ -15,10 +15,8 @@ export class PaymentAccountRepositoryImpl extends BaseRepository implements IPay
     return await this._repository.find({member: member});
   }  
 
-  public async createMemberPaymentAccount(member: Member, request: CreatePaymentAccountDto): Promise<PaymentAccount> {
-    let paymentAccount = PaymentAccount.create(member, request);
-    paymentAccount = await this._repository.save(paymentAccount);
-    return paymentAccount;
+  public async createMemberPaymentAccount(account: PaymentAccount): Promise<PaymentAccount> {
+    return await this._repository.save(account);
   }
   
   public async deletePaymentAccount(paymentAccountId: string, member: Member): Promise<void> {
@@ -27,6 +25,10 @@ export class PaymentAccountRepositoryImpl extends BaseRepository implements IPay
       throw new exception.PaymentAccountNotFoundException(paymentAccountId);
     }
     await this._repository.delete({id: paymentAccountId});
+  }
+
+  public async getPaymentAccountByToken(token: string): Promise<PaymentAccount | undefined> {
+    return await this._repository.findOne({ cardToken: token });
   }
 
 }

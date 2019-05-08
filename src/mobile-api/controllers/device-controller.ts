@@ -16,7 +16,7 @@ import { RepositoryFactory } from "../../common/repositories/factory";
 @Path('/devices')
 export class DeviceController extends BaseController {
 
-	private _memberRepository: IMemberRepository = RepositoryFactory.instance.createMemberRepository();
+	private _memberRepository: IMemberRepository = RepositoryFactory.instance.memberRepository;
 
 	@JSONEndpoint
 	@Security("Bearer")

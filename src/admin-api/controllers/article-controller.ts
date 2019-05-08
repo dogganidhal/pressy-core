@@ -15,7 +15,7 @@ import { IArticleRepository } from "../../common/repositories/article-repository
 @Path("/article")
 export class ArticleController extends BaseController {
 
-	private _articleRepository: IArticleRepository = RepositoryFactory.instance.createArticleRepository();
+	private _articleRepository: IArticleRepository = RepositoryFactory.instance.articleRepository;
 
 	@Security("Bearer")
 	@JSONEndpoint

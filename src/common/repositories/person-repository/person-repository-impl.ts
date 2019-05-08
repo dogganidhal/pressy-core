@@ -17,7 +17,7 @@ export class PersonRepositoryImpl extends BaseRepository implements IPersonRepos
   private _personRepository: Repository<Person>  = this.connection.getRepository(Person);
 
   public async getPersonByEmail(email: string): Promise<Person | undefined> {
-    return this._personRepository.findOne({email: email});
+    return this._personRepository.findOne({email: email.toLowerCase()});
   }
 
   public async getPersonByPhone(phone: string): Promise<Person | undefined> {

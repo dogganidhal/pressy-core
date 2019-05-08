@@ -23,7 +23,7 @@ export class MemberRepositoryImpl extends BaseRepository implements IMemberRepos
 
   public async getMemberByEmail(email: string): Promise<Member | undefined> {
 
-    const person = await this._personRepository.findOne({email: email});
+    const person = await this._personRepository.findOne({email: email.toLowerCase()});
 
     if (!person)
       return undefined;
@@ -43,46 +43,14 @@ export class MemberRepositoryImpl extends BaseRepository implements IMemberRepos
 
   }
 
-  public async createMember(createMemberRequest: CreatePersonRequestDto): Promise<Member> {
-
-    const { email, phone, password } = createMemberRequest;
-
-    if (!email)
-      throw new exception.MissingFieldsException("email");
-
-    if (!phone)
-	    throw new exception.MissingFieldsException("phone");
-
-    if (!validation.validateEmail(email))
-      throw new exception.InvalidEmailException(email);
-
-    if (!validation.validatePhoneNumber(phone))
-      throw new exception.InvalidPhoneException(phone);
-
-    let invalidPasswordReason = validation.validatePassword(password);
-	  if (invalidPasswordReason != null)
-		  throw new exception.InvalidPasswordException(invalidPasswordReason);
-
-    const memberWithSameEmail = await this.getMemberByEmail(email);
-    if (memberWithSameEmail)
-      throw new exception.EmailAlreadyExistsException(email);
-
-    const memberWithSamePhone = await this.getMemberByPhone(phone);
-    if (memberWithSamePhone)
-      throw new exception.PhoneAlreadyExists(phone);
-
-    const newMember = Member.create(createMemberRequest);
-
-    await this._personRepository.insert(newMember.person);
-	  await this._memberRepository.insert(newMember);
-
-    return newMember;
-
+  public async insertMember(member: Member): Promise<Member> {
+    await this._personRepository.insert(member.person);
+    return await this._memberRepository.save(member);
   }
   
   public async deleteMemberByEmail(email: string): Promise<void> {
 
-    const person = await this._personRepository.findOne({email: email});
+    const person = await this._personRepository.findOne({email: email.toLowerCase()});
 
     if (!person)
       return;

@@ -21,7 +21,7 @@ export class AdminRepositoryImpl extends BaseRepository implements IAdminReposit
   }
 
   public async getAdminByEmail(email: string): Promise<Admin | undefined> {
-    let person = await this._personRepository.findOne({email: email});
+    let person = await this._personRepository.findOne({email: email.toLowerCase()});
     if (!person)
       throw new exception.AccountNotFoundException(email);
     return this._adminRepository.findOne({person: person}, {relations:["person"]});

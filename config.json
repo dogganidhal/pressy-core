@@ -3,6 +3,17 @@
   "googleMapsAPIKey": "AIzaSyAfTv8yb7lNverE7jxCk2ZQgMQQRVodIvI",
   "authenticationPublicKey": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBANsa/OiRjKSTw3n6Tn4wI1B9+BK88PO3\nKuAB+rVvlyBud3NUkAiGouRB//bPHTK6McwoqIw5v5StSt+5hC08CVkCAwEAAQ==\n-----END PUBLIC KEY-----",
   "authenticationPrivateKey": "-----BEGIN RSA PRIVATE KEY-----\nMIIBOgIBAAJBANsa/OiRjKSTw3n6Tn4wI1B9+BK88PO3KuAB+rVvlyBud3NUkAiG\nouRB//bPHTK6McwoqIw5v5StSt+5hC08CVkCAwEAAQJAYWlpQbjcL5tmUAfB+AZM\n3Q90SFhqQ+COllMq9JltNkQz0IUlFfiGQOaH6ZRNcrlEArl7pKmGMvNGlKVkvPWm\nJQIhAPhkks+JvdK12o782EM34UdAQsJKlb1yAZw1ArhCDFODAiEA4dDMOnisOKld\n/TgG+URRrKYMxA0JdCFx+Hz5VIWE7PMCIBgzLD5+C/locEe4CJXb7t3TO+3T+GzB\nm7iNTZuIC81jAiA++N87HxPH6VNQniMzuB2eq9+7fHc6b2k9BnzxWRqsiQIhANun\nNRvws0eOMx3slILU0gxk1tVbFwzWjZM96kj+0QE4\n-----END RSA PRIVATE KEY-----",
+  "stripeConfig": {
+    "local": {
+      "apiKey": "sk_test_bE0qpsurUWPtTrGhplZzRXrd0090A7ugYO"
+    },
+    "staging": {
+      "apiKey": "sk_test_bE0qpsurUWPtTrGhplZzRXrd0090A7ugYO"
+    },
+    "production": {
+      "apiKey": "sk_live_mG3vP3zUp2vFoeM9PBUE0PcF00W0rHYNK8"
+    }
+  },
   "databaseURL": {
     "staging": "postgres://rsqhwbycjlvzuu:cac9efedcb4ea55297638432ad0b4e5abc3c92e0b6cdd7cefacab7b39ce04c43@ec2-79-125-127-60.eu-west-1.compute.amazonaws.com:5432/d8r87077slmlfm",
     "production": "postgres://mramijqpdzryzj:ae6ca19ac107e447e31404bd8f1f8909371fd6b4e3e616669a29eb5b4901fdd8@ec2-54-246-117-62.eu-west-1.compute.amazonaws.com:5432/d93humrasp2dne"

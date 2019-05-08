@@ -14,7 +14,7 @@ import { RepositoryFactory } from "../../common/repositories/factory";
 @Path("/slot")
 export class SlotController extends BaseController {
 
-	private _slotRepository: ISlotRepository = RepositoryFactory.instance.createSlotRepository();
+	private _slotRepository: ISlotRepository = RepositoryFactory.instance.slotRepository;
 
 	@Security("Bearer")
 	@JSONEndpoint

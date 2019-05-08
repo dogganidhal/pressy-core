@@ -19,9 +19,9 @@ import {Article} from "../../common/model/entity/order";
 @Path('/order')
 export class OrderController extends BaseController {
 
-  private _orderRepository: IOrderRepository = RepositoryFactory.instance.createOrderRepository();
-  private _slotsRepository: ISlotRepository = RepositoryFactory.instance.createSlotRepository();
-  private _articleRepository: IArticleRepository = RepositoryFactory.instance.createArticleRepository();
+  private _orderRepository: IOrderRepository = RepositoryFactory.instance.orderRepository;
+  private _slotsRepository: ISlotRepository = RepositoryFactory.instance.slotRepository;
+  private _articleRepository: IArticleRepository = RepositoryFactory.instance.articleRepository;
 
 	@Security("Bearer")
   @JSONEndpoint

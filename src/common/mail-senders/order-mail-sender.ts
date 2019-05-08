@@ -10,7 +10,7 @@ export class OrderMailSender {
 
   private _config: Config = getConfig();
   private _mailingService: MailingService = new MailingService;
-  private _adminRepository: IAdminRepository = RepositoryFactory.instance.createAdminRepository();
+  private _adminRepository: IAdminRepository = RepositoryFactory.instance.adminRepository;
 
   public async sendOrderConfirmationMail(order: Order): Promise<void> {
     // TODO: Implement Order Confimation Email

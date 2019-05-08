@@ -14,7 +14,7 @@ import { SigningCategory } from "../../services/crypto";
 @Path("/missions/")
 export class MissionController extends BaseController {
 
-  private _orderMissionRepository: IOrderMissionRepository = RepositoryFactory.instance.createOrderMissionRepository();
+  private _orderMissionRepository: IOrderMissionRepository = RepositoryFactory.instance.orderMissionRepository;
 
   @Authenticate(SigningCategory.DRIVER)
   @JSONEndpoint

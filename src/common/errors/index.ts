@@ -95,7 +95,13 @@ export namespace exception {
     constructor(phone?: string) {
       super('Téléphone existant', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Le Téléphone ${phone ? "'" + phone + "' " : ""}existe déjà`);
     }
-  }
+	}
+	
+	export class PaymentAccountAlreadyExists extends APIException {
+		constructor(token: string) {
+			super('CB déjà enregistrée', http.HttpStatus.HTTP_STATUS_BAD_REQUEST, `Une CB avec le token ${token} existe déjà`);
+		}
+	}
 
 	export class InvalidEmailException extends APIException {
 		constructor(email: string) {

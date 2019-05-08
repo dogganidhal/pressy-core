@@ -18,7 +18,7 @@ import {ILaundryRepository} from "../../common/repositories/laundry-repository";
 @Path('/auth')
 export class AuthController extends BaseController {
 
-  private _laundryRepository: ILaundryRepository = RepositoryFactory.instance.createLaundryRepository();
+  private _laundryRepository: ILaundryRepository = RepositoryFactory.instance.laundryRepository;
 
   @JSONEndpoint
   @POST

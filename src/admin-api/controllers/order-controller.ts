@@ -16,7 +16,7 @@ import { NotFoundError } from "typescript-rest/dist/server-errors";
 @Path("/order")
 export class OrderController extends BaseController {
 
-  private _orderRepository: IOrderRepository = RepositoryFactory.instance.createOrderRepository();
+  private _orderRepository: IOrderRepository = RepositoryFactory.instance.orderRepository;
 
 	@Security("Bearer")
   @Path("/assign-driver/:orderMissionType")

@@ -16,7 +16,7 @@ import { IDriverRepository } from "../../common/repositories";
 @Path("/auth")
 export class AuthController extends BaseController {
 
-  private _driverRepository: IDriverRepository = RepositoryFactory.instance.createDriverRepository();
+  private _driverRepository: IDriverRepository = RepositoryFactory.instance.driverRepository;
 
   @Path("/login")
   @JSONEndpoint

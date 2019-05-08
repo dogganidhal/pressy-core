@@ -67,7 +67,7 @@ export class Person {
     person.lastName = createPersonRequest.lastName;
     person.passwordHash = bcrypt.hashSync(createPersonRequest.password, 10);
     person.phone = createPersonRequest.phone;
-    person.email = createPersonRequest.email;
+    person.email = createPersonRequest.email.toLowerCase();
 
     return person;
 

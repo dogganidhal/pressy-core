@@ -16,7 +16,7 @@ import { RepositoryFactory } from "../../common/repositories/factory";
 @Path('/address')
 export class AddressController extends BaseController {
 
-  private _addressRepository: IAddressRepository = RepositoryFactory.instance.createAddressRepository();
+  private _addressRepository: IAddressRepository = RepositoryFactory.instance.addressRepository;
 
   @Security("Bearer")
   @JSONEndpoint

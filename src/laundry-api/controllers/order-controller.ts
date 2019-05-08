@@ -23,9 +23,9 @@ import { Laundrer } from "../../common/model/entity/users/laundry/laundrer";
 @Path('/order')
 export class OrderController extends BaseController {
 
-  private _orderRepository: IOrderRepository = RepositoryFactory.instance.createOrderRepository();
-  private _invoiceRepository: IInvoiceRepository = RepositoryFactory.instance.createInvoiceRepository();
-  private _articleRepository: IArticleRepository = RepositoryFactory.instance.createArticleRepository();
+  private _orderRepository: IOrderRepository = RepositoryFactory.instance.orderRepository;
+  private _invoiceRepository: IInvoiceRepository = RepositoryFactory.instance.invoiceRepository;
+  private _articleRepository: IArticleRepository = RepositoryFactory.instance.articleRepository;
   
   @Security("Bearer")
   @JSONEndpoint

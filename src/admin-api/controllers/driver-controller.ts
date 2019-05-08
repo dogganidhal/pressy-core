@@ -14,7 +14,7 @@ import { RepositoryFactory } from "../../common/repositories/factory";
 @Path("/driver")
 export class DriverController extends BaseController {
 
-	private _driverRepository: IDriverRepository = RepositoryFactory.instance.createDriverRepository();
+	private _driverRepository: IDriverRepository = RepositoryFactory.instance.driverRepository;
 
 	@Security("Bearer")
 	@JSONEndpoint

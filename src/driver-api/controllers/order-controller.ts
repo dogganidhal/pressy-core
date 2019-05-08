@@ -15,7 +15,7 @@ import {Driver} from "../../common/model/entity/users/driver/driver";
 @Path("/order")
 export class OrderController extends BaseController {
 
-  private _orderStatusRepository: IOrderStatusRepository = RepositoryFactory.instance.createOrderStatusRepository();
+  private _orderStatusRepository: IOrderStatusRepository = RepositoryFactory.instance.orderStatusRepository;
 
   @Security("Bearer")
   @Authenticate(SigningCategory.DRIVER)

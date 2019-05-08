@@ -106,16 +106,16 @@ export namespace crypto {
 				let user: User | undefined;
 				switch (payload.category) {
 					case SigningCategory.MEMBER:
-						user = await RepositoryFactory.instance.createMemberRepository().getMemberById(payload.id);
+						user = await RepositoryFactory.instance.memberRepository.getMemberById(payload.id);
 						break;
 					case SigningCategory.ADMIN:
-						user = await RepositoryFactory.instance.createAdminRepository().getAdminById(payload.id);
+						user = await RepositoryFactory.instance.adminRepository.getAdminById(payload.id);
 						break;
 					case SigningCategory.DRIVER:
-						user = await RepositoryFactory.instance.createDriverRepository().getDriverById(payload.id);
+						user = await RepositoryFactory.instance.driverRepository.getDriverById(payload.id);
 						break;
 					case SigningCategory.LAUNDRER:
-						user = await RepositoryFactory.instance.createLaundryRepository().getLaundrerById(payload.id);
+						user = await RepositoryFactory.instance.laundryRepository.getLaundrerById(payload.id);
 				}
 
 				if (!user) {
