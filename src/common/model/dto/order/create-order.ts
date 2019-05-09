@@ -16,4 +16,7 @@ export class CreateOrderRequestDto {
 	@Required()
 	public type: OrderType;
 
+	@Required()
+	public paymentAccountId: string;
+
 }

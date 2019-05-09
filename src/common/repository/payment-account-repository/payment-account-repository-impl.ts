@@ -31,4 +31,8 @@ export class PaymentAccountRepositoryImpl extends BaseRepository implements IPay
     return await this._repository.findOne({ cardToken: token });
   }
 
+  public async getPaymentAccountById(id: string): Promise<PaymentAccount | undefined> {
+    return await this._repository.findOne({id: id}, {relations: ["member"]});
+  }
+
 }

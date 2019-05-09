@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne, Create
 import { Slot } from "../slot";
 import { Member } from '../users/member';
 import {LaundryPartner} from "../users/laundry";
-import { OrderItem } from './order-item';
+import { PaymentAccount } from '../payment/payment-account';
 
 export enum OrderType {
   PRESSING,
@@ -11,6 +11,7 @@ export enum OrderType {
 }
 
 export interface IOrder {
+  paymentAccount: PaymentAccount;
   type: OrderType;
 	pickupSlot: Slot;
 	deliverySlot: Slot;
@@ -47,6 +48,10 @@ export class Order {
   @JoinColumn()
   public member: Member;
 
+  @ManyToOne(type => PaymentAccount, { nullable: false })
+  @JoinColumn()
+  public paymentAccount: PaymentAccount;
+
 	@ManyToOne(type => LaundryPartner, {nullable: true})
 	@JoinColumn()
 	public laundryPartner: LaundryPartner;
@@ -63,7 +68,8 @@ export class Order {
 
     orderEntity.pickupSlot = order.pickupSlot;
 	  orderEntity.deliverySlot = order.deliverySlot;
-	  orderEntity.address = order.address;
+    orderEntity.address = order.address;
+    orderEntity.paymentAccount = order.paymentAccount;
 
     return orderEntity;
 

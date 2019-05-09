@@ -3,7 +3,8 @@ import { PaymentAccount } from "../../../common/model/entity/payment/payment-acc
 
 
 export interface IPaymentAccountRepository {
-
+  
+  getPaymentAccountById(paymentAccountId: string): Promise<PaymentAccount | undefined>;
   getMemberPaymentAccounts(member: Member): Promise<Array<PaymentAccount>>;
   getPaymentAccountByToken(token: string): Promise<PaymentAccount | undefined>;
   createMemberPaymentAccount(account: PaymentAccount): Promise<PaymentAccount>;

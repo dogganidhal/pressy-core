@@ -12,6 +12,7 @@ import { IArticleRepository } from "../../repository/article-repository";
 import { Invoice } from "../../model/entity/payment/invoice";
 import { getConfig } from "../../../config";
 import Stripe from "stripe";
+import { IPaymentAccountRepository } from "../../repository/payment-account-repository";
 
 
 export class OrderManagerImpl implements IOrderManager {
@@ -20,6 +21,7 @@ export class OrderManagerImpl implements IOrderManager {
   private _slotRepository: ISlotRepository = RepositoryFactory.instance.slotRepository;
   private _orderRepository: IOrderRepository = RepositoryFactory.instance.orderRepository;
   private _invoiceRepository: IInvoiceRepository = RepositoryFactory.instance.invoiceRepository;
+  private _paymentAccountRepository: IPaymentAccountRepository = RepositoryFactory.instance.paymentAccountRepository;
 
   public async order(member: Member, request: CreateOrderRequestDto): Promise<Order> {
 
@@ -42,15 +44,19 @@ export class OrderManagerImpl implements IOrderManager {
     if (!addressEntity)
       throw new exception.AddressNotFoundException(request.addressId);
 
+    let paymentAccount = await this._paymentAccountRepository.getPaymentAccountById(request.paymentAccountId);
+    if (!paymentAccount || paymentAccount.member.id != member.id)
+      throw new exception.PaymentAccountNotFoundException(request.paymentAccountId);
+
     await Promise.all([
       deliverySlot = await this._slotRepository.createSlot(deliverySlot),
       pickupSlot = await this._slotRepository.createSlot(pickupSlot),
     ]);
 
     let order = Order.create({
-      member: member, pickupSlot: pickupSlot, deliverySlot: deliverySlot,
+      member, pickupSlot, deliverySlot,
       address: await addressRepository.duplicateAddress(addressEntity),
-      type: request.type
+      type: request.type, paymentAccount
     });
 
     return await this._orderRepository.createOrder(order);
