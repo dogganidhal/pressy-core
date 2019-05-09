@@ -36,40 +36,9 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
     
   }
 
-  public async createOrder(member: Member, createOrderRequest: CreateOrderRequestDto): Promise<Order> {
+  public async createOrder(order: Order): Promise<Order> {
 
-  	if (!member.isActive())
-  		throw new exception.InactiveMemberException(member);
-
-  	let pickupSlot = await this._slotRepository.findOne(createOrderRequest.pickupSlotId);
-
-  	if (!pickupSlot)
-  		  throw new exception.SlotNotFoundException(createOrderRequest.pickupSlotId);
-
-  	let deliverySlot = await this._slotRepository.findOne(createOrderRequest.deliverySlotId);
-
-	  if (!deliverySlot)
-		  throw new exception.SlotNotFoundException(createOrderRequest.deliverySlotId);
-
-		let addressRepository = RepositoryFactory.instance.addressRepository;
-	  let addressEntity = await addressRepository.getAddressById(createOrderRequest.addressId);
-
-	  if (!addressEntity)
-	  	throw new exception.AddressNotFoundException(createOrderRequest.addressId);
-
-	  let order = await Order.create({
-		  member: member, pickupSlot: pickupSlot, deliverySlot: deliverySlot,
-			address: await addressRepository.duplicateAddress(addressEntity),
-			type: createOrderRequest.type
-	  });
-
-	  await Promise.all([
-			await this._slotRepository.save(deliverySlot),
-			await this._slotRepository.save(pickupSlot),
-			await this._addressRepository.insert(addressEntity)
-		]);
-
-	  await this._orderRepository.insert(order);
+	  order = await this._orderRepository.save(order);
 	  this._orderStatusManger.registerOrderCreation(order);
 
 	  return order;

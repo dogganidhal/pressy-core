@@ -7,10 +7,10 @@ import {crypto, SigningCategory, AuthCredentialsDto} from "../../services/crypto
 import {JSONEndpoint} from "../../common/annotations";
 import { LoginRequestDto, RefreshCredentialsRequestDto } from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
-import { IPersonRepository } from "../../common/repositories/person-repository";
-import { RepositoryFactory } from "../../common/repositories/factory";
-import { IMemberRepository } from "../../common/repositories/member-repository";
-import {ILaundryRepository} from "../../common/repositories/laundry-repository";
+import { IPersonRepository } from "../../common/repository/person-repository";
+import { RepositoryFactory } from "../../common/repository/factory";
+import { IMemberRepository } from "../../common/repository/member-repository";
+import {ILaundryRepository} from "../../common/repository/laundry-repository";
 
 
 @Produces("application/json")

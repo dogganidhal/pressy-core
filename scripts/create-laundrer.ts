@@ -1,5 +1,5 @@
 import { Database } from "../src/common/db";
-import { RepositoryFactory } from "../src/common/repositories/factory";
+import { RepositoryFactory } from "../src/common/repository/factory";
 import { CreatePersonRequestDto } from "../src/common/model/dto";
 import {question, questionEMail as questionEmail, questionInt, questionNewPassword} from "readline-sync";
 import parse from "yargs-parser";
@@ -37,7 +37,7 @@ async function createLaundrer(request: CreatePersonRequestDto, partnerId: number
 
 	let connection = await Database.createConnection(vargs.config);
 	let repositoryFactory = new RepositoryFactory(connection);
-	let laundryRepository = repositoryFactory.createLaundryRepository();
+	let laundryRepository = repositoryFactory.laundryRepository;
 
 	let admin = await laundryRepository.createLaundrer(request, partnerId);
 

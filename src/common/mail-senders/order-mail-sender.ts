@@ -2,8 +2,8 @@ import { Config, getConfig } from './../../config';
 import { Order } from "../../common/model/entity/order";
 import { MailingService, MailTemplateName } from "../../services/mailing-service";
 import { OrderExcelFileGenerator } from '../../common/excel-file-generators/order-generator';
-import { IAdminRepository } from '../repositories/admin-repository';
-import { RepositoryFactory } from '../repositories/factory';
+import { IAdminRepository } from '../repository/admin-repository';
+import { RepositoryFactory } from '../repository/factory';
 
 
 export class OrderMailSender {

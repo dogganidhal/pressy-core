@@ -5,8 +5,8 @@ import {SigningCategory} from "../../services/crypto";
 import { Tags, Produces, Security } from "typescript-rest-swagger";
 import { CreatePersonRequestDto as CreatePersonRequestDto } from "../../common/model/dto";
 import { JSONBody } from "../../common/annotations/json-body";
-import { IDriverRepository } from "../../common/repositories/driver-repository";
-import { RepositoryFactory } from "../../common/repositories/factory";
+import { IDriverRepository } from "../../common/repository/driver-repository";
+import { RepositoryFactory } from "../../common/repository/factory";
 
 
 @Produces("application/json")

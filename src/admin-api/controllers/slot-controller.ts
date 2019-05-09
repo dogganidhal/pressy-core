@@ -5,8 +5,8 @@ import {SigningCategory} from "../../services/crypto";
 import { Tags, Produces, Security } from "typescript-rest-swagger";
 import { CreateSlotRequestDto, SlotDto, EditSlotRequestDto, DeleteSlotRequest } from "../../common/model/dto";
 import { JSONBody } from "../../common/annotations/json-body";
-import { ISlotRepository } from "../../common/repositories/slot-repository";
-import { RepositoryFactory } from "../../common/repositories/factory";
+import { ISlotRepository } from "../../common/repository/slot-repository";
+import { RepositoryFactory } from "../../common/repository/factory";
 
 
 @Produces("application/json")

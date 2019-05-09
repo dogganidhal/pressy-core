@@ -1,5 +1,5 @@
 import { Database } from "../src/common/db";
-import { RepositoryFactory } from "../src/common/repositories/factory";
+import { RepositoryFactory } from "../src/common/repository/factory";
 import { CreatePersonRequestDto } from "../src/common/model/dto";
 import { question, questionEMail as questionEmail, questionNewPassword } from "readline-sync";
 import parse from "yargs-parser";
@@ -36,7 +36,7 @@ async function createAdmin(request: CreatePersonRequestDto): Promise<Admin> {
 
   let connection = await Database.createConnection(vargs.config);
   let repositoryFactory = new RepositoryFactory(connection);
-  let adminRepository = repositoryFactory.createAdminRepository();
+  let adminRepository = repositoryFactory.adminRepository;
 
   let admin = await adminRepository.createAdmin(request);
 

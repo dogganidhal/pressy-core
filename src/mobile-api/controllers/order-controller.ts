@@ -7,11 +7,13 @@ import { OrderMailSender } from "../../common/mail-senders/order-mail-sender";
 import { CreateOrderRequestDto, OrderDto, SlotDto, ArticleDto } from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
 import {Member} from "../../common/model/entity/users/member";
-import { IOrderRepository } from "../../common/repositories/order-repository";
-import { ISlotRepository } from "../../common/repositories/slot-repository";
-import { RepositoryFactory } from "../../common/repositories/factory";
-import { IArticleRepository } from "../../common/repositories/article-repository";
+import { IOrderRepository } from "../../common/repository/order-repository";
+import { ISlotRepository } from "../../common/repository/slot-repository";
+import { RepositoryFactory } from "../../common/repository/factory";
+import { IArticleRepository } from "../../common/repository/article-repository";
 import {Article} from "../../common/model/entity/order";
+import { IOrderManager } from "../../common/manager/order";
+import { ManagerFactory } from "../../common/manager";
 
 
 @Produces("application/json")
@@ -22,6 +24,7 @@ export class OrderController extends BaseController {
   private _orderRepository: IOrderRepository = RepositoryFactory.instance.orderRepository;
   private _slotsRepository: ISlotRepository = RepositoryFactory.instance.slotRepository;
   private _articleRepository: IArticleRepository = RepositoryFactory.instance.articleRepository;
+  private _orderManager: IOrderManager = ManagerFactory.instance.orderManager;
 
 	@Security("Bearer")
   @JSONEndpoint
@@ -29,7 +32,7 @@ export class OrderController extends BaseController {
   @POST
   public async createOrder(@JSONBody(CreateOrderRequestDto) request: CreateOrderRequestDto) {
 
-		let order = await this._orderRepository.createOrder(<Member>this.pendingUser, request);
+		let order = await this._orderManager.order(<Member>this.pendingUser, request);
 		let orderMailSender = new OrderMailSender;
 
 		orderMailSender.sendOrderInformationMailToAdmins(order);

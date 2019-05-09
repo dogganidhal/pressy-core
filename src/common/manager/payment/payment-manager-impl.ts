@@ -6,8 +6,8 @@ import { Repository } from "typeorm";
 import { Database } from "../../db";
 import Stripe from "stripe";
 import { getConfig } from "../../../config";
-import { IPaymentAccountRepository } from "../../repositories/payment-account-repository";
-import { RepositoryFactory } from "../../repositories/factory";
+import { IPaymentAccountRepository } from "../../repository/payment-account-repository";
+import { RepositoryFactory } from "../../repository/factory";
 import { exception } from "../../errors";
 
 

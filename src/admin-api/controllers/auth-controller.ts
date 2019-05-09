@@ -7,8 +7,8 @@ import { crypto, SigningCategory, AuthCredentialsDto } from "../../services/cryp
 import { LoginRequestDto, RefreshCredentialsRequestDto } from "../../common/model/dto";
 import { Tags, Produces } from "typescript-rest-swagger";
 import {JSONBody} from "../../common/annotations/json-body";
-import { IAdminRepository } from "../../common/repositories/admin-repository";
-import { RepositoryFactory } from "../../common/repositories/factory";
+import { IAdminRepository } from "../../common/repository/admin-repository";
+import { RepositoryFactory } from "../../common/repository/factory";
 
 
 @Produces("application/json")

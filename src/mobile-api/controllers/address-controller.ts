@@ -7,8 +7,8 @@ import { Security, Produces, Tags, Response } from "typescript-rest-swagger";
 import {AddressDto, UpdateAddressRequestDto, CreateAddressRequestDto, DeleteAddressRequestDto} from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
 import {Member} from "../../common/model/entity/users/member";
-import { IAddressRepository } from "../../common/repositories/address-repository";
-import { RepositoryFactory } from "../../common/repositories/factory";
+import { IAddressRepository } from "../../common/repository/address-repository";
+import { RepositoryFactory } from "../../common/repository/factory";
 
 @Produces("application/json")
 @Tags("Addresses")

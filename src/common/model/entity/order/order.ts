@@ -54,7 +54,7 @@ export class Order {
   @Column({nullable: false, default: 0})
   public itemCount: number = 0;
 
-  public static async create(order: IOrder): Promise<Order> {
+  public static create(order: IOrder): Order {
 
     let orderEntity = new Order;
 

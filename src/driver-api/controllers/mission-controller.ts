@@ -1,9 +1,9 @@
 import {Path, GET, QueryParam} from "typescript-rest";
 import {BaseController} from "../../common/controller/base-controller";
-import { RepositoryFactory } from "../../common/repositories/factory";
+import { RepositoryFactory } from "../../common/repository/factory";
 import { Tags, Produces, Security } from "typescript-rest-swagger";
 import { JSONEndpoint, Authenticate } from "../../common/annotations";
-import { IOrderMissionRepository } from "../../common/repositories/order-mission-repository";
+import { IOrderMissionRepository } from "../../common/repository/order-mission-repository";
 import { Driver } from "../../common/model/entity/users/driver/driver";
 import { OrderMissionDto } from "../../common/model/dto/order/order-mission";
 import { SigningCategory } from "../../services/crypto";

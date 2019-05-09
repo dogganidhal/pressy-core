@@ -5,8 +5,8 @@ import {Authenticate, JSONEndpoint} from "../../common/annotations";
 import {SigningCategory} from "../../services/crypto";
 import {AssignOrderDriverRequestDto, OrderDto, EditOrderRequestDto} from '../../common/model/dto';
 import {JSONBody} from "../../common/annotations/json-body";
-import { IOrderRepository } from "../../common/repositories/order-repository";
-import { RepositoryFactory } from "../../common/repositories/factory";
+import { IOrderRepository } from "../../common/repository/order-repository";
+import { RepositoryFactory } from "../../common/repository/factory";
 import { OrderMissionType } from "../../common/model/entity/order";
 import { NotFoundError } from "typescript-rest/dist/server-errors";
 

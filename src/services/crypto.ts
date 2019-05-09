@@ -6,7 +6,7 @@ import {User} from "../common/model/entity/users";
 import {Member} from "../common/model/entity/users/member";
 import {Admin} from "../common/model/entity/users/admin/admin";
 import {Driver} from "../common/model/entity/users/driver/driver";
-import { RepositoryFactory } from "../common/repositories/factory";
+import { RepositoryFactory } from "../common/repository/factory";
 
 export enum SigningCategory {
 	MEMBER = 0,

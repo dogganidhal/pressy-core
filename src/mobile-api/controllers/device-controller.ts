@@ -6,8 +6,8 @@ import {Security, Produces, Tags} from "typescript-rest-swagger";
 import {MobileDeviceDto} from "../../common/model/dto";
 import {JSONBody} from "../../common/annotations/json-body";
 import {Member} from "../../common/model/entity/users/member";
-import { IMemberRepository } from "../../common/repositories/member-repository";
-import { RepositoryFactory } from "../../common/repositories/factory";
+import { IMemberRepository } from "../../common/repository/member-repository";
+import { RepositoryFactory } from "../../common/repository/factory";
 
 
 @Produces("application/json")

@@ -3,8 +3,8 @@ import { CreatePersonRequestDto } from "../../model/dto";
 import { Member } from "../../model/entity/users/member";
 import { exception } from "../../errors";
 import { validation } from "../../utils";
-import { IMemberRepository } from "../../repositories";
-import { RepositoryFactory } from "../../repositories/factory";
+import { IMemberRepository } from "../../repository";
+import { RepositoryFactory } from "../../repository/factory";
 import { getConfig } from "../../../config";
 import Stripe from "stripe";
 

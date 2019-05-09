@@ -4,8 +4,8 @@ import { JSONEndpoint, Authenticate } from "../../common/annotations";
 import {SigningCategory} from "../../services/crypto";
 import {Tags, Produces, Security} from "typescript-rest-swagger";
 import {JSONBody} from "../../common/annotations/json-body";
-import {RepositoryFactory} from "../../common/repositories/factory";
-import {IOrderStatusRepository} from "../../common/repositories";
+import {RepositoryFactory} from "../../common/repository/factory";
+import {IOrderStatusRepository} from "../../common/repository";
 import {UpdateOrderRequestDto} from "../../common/model/dto/order/update-order";
 import {Driver} from "../../common/model/entity/users/driver/driver";
 
