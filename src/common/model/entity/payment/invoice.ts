@@ -9,7 +9,7 @@ export class Invoice {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
-	@Column({nullable: false})
+	@Column({nullable: false, type: "float"})
 	public amount: number;
 
 	@JoinColumn()

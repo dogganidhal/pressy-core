@@ -20,4 +20,8 @@ export class ArticleRepositoryImpl extends BaseRepository implements IArticleRep
 	  return this._articleRepository.findOne(articleId);
   }
 
+  public async getWeightedArticle(): Promise<Article | undefined> {
+    return this._articleRepository.findOne({id: -1});
+  }
+
 }

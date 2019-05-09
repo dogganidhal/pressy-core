@@ -6,6 +6,6 @@ import {Invoice} from "../../model/entity/payment/invoice";
 export interface IInvoiceRepository {
 
 	createInvoice(order: Order, items?: OrderItem[], weight?: number): Promise<Invoice>;
-	getInvoicesByOrder(order: Order): Promise<Invoice[]>;
+	getInvoicesByOrderId(orderId: number): Promise<Invoice[]>;
 
 }

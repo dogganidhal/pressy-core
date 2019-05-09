@@ -8,6 +8,16 @@ interface IArticle {
   stripeSkuId?: string;
 }
 
+/* TODO: Handle this properly
+  // SQL Query to create the weighted Article
+  
+  INSERT INTO "article"
+  SELECT -1, 'Sac de 5 KG', 3.99, 'https://www.containerstore.com/catalogimages/110918/LaundryBagPolyCottonWhite_x.jpg?width=1200&height=1200&align=center', null, 'sku_F2F6Z31pHm0n70'
+  WHERE NOT EXISTS (
+    SELECT "id" FROM "article" WHERE "id" = -1
+  );
+*/
+
 @Entity()
 export class Article {
 
