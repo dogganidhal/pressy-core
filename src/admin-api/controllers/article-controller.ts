@@ -8,6 +8,9 @@ import { JSONBody } from "../../common/annotations/json-body";
 import { RepositoryFactory } from "../../common/repositories/factory";
 import { CreateArticleRequestDto } from "../../common/model/dto/order/create-article";
 import { IArticleRepository } from "../../common/repositories/article-repository";
+import Stripe from "stripe";
+import { getConfig } from "../../config";
+import { Article } from "../../common/model/entity/order";
 
 
 @Produces("application/json")
@@ -21,8 +24,17 @@ export class ArticleController extends BaseController {
 	@JSONEndpoint
 	@Authenticate(SigningCategory.ADMIN)
 	@POST
-	public async createArticle(@JSONBody(CreateArticleRequestDto) request: CreateArticleRequestDto): Promise<void> {
-    await this._articleRepository.createArticle(request);		
+	public async createArticle(@JSONBody(CreateArticleRequestDto) request: CreateArticleRequestDto): Promise<ArticleDto> {
+		let stripeApiKey = getConfig().stripeConfig[process.env.NODE_ENV || "production"].apiKey;
+		let stripe = new Stripe(stripeApiKey);
+		let stripeProduct = await stripe.products.create({ name: request.name, type: "good" });
+		let stripeSku = await stripe.skus.create({ product: stripeProduct.id, price: request.laundryPrice * 100, currency: "eur", inventory: { type: "infinite" }});
+		let article = new Article({
+			...request,
+			stripeSkuId: stripeSku.id
+		});
+		article = await this._articleRepository.createArticle(article);
+		return new ArticleDto(article);
   }
   
   @Security("Bearer")

@@ -5,6 +5,7 @@ interface IArticle {
   laundryPrice: number;
   photoUrl: string; 
   comment?: string;
+  stripeSkuId?: string;
 }
 
 @Entity()
@@ -27,6 +28,9 @@ export class Article {
   @Column({nullable: true})
   public comment?: string;
 
+  @Column({ nullable: true, unique: true })
+  public stripeSkuId?: string;
+
   public constructor();
   public constructor(article: IArticle);
   public constructor(article?: IArticle) {
@@ -35,6 +39,7 @@ export class Article {
       this.name = article.name;
       this.photoUrl = article.photoUrl;
       this.comment = article.comment;
+      this.stripeSkuId = article.stripeSkuId;
     }
   }
 

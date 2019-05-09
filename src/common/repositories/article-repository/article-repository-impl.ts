@@ -1,7 +1,6 @@
 import { BaseRepository } from "../base-repository";
 import { IArticleRepository } from ".";
 import { Article } from "../../model/entity/order";
-import { CreateArticleRequestDto } from "../../model/dto/order/create-article";
 import { Repository } from "typeorm";
 
 
@@ -13,11 +12,8 @@ export class ArticleRepositoryImpl extends BaseRepository implements IArticleRep
     return await this._articleRepository.find();
   }  
   
-  public async createArticle(request: CreateArticleRequestDto): Promise<void> {
-    
-    let article = new Article(request);
-    await this._articleRepository.save(article);
-    
+  public async createArticle(article: Article): Promise<Article> {
+    return await this._articleRepository.save(article);
   }
 
   public async getArticleById(articleId: number): Promise<Article | undefined> {

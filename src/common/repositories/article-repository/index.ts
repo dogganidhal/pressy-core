@@ -1,11 +1,10 @@
 import { Article } from "../../model/entity/order";
-import { CreateArticleRequestDto } from "../../model/dto/order/create-article";
 
 
 export interface IArticleRepository {
 
   getArticles(): Promise<Article[]>;
-  createArticle(request: CreateArticleRequestDto): Promise<void>;
+  createArticle(request: Article): Promise<Article>;
 	getArticleById(articleId: number): Promise<Article | undefined>;
 
 }

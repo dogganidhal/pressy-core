@@ -15,6 +15,8 @@ import {IArticleRepository} from "../../common/repositories/article-repository";
 import {InvoiceDto} from "../../common/model/dto/invoice/invoice";
 import { OrderDto } from "../../common/model/dto";
 import { Laundrer } from "../../common/model/entity/users/laundry/laundrer";
+import Stripe from "stripe";
+import { getConfig } from "../../config";
 
 
 @Produces("application/json")
@@ -34,6 +36,8 @@ export class OrderController extends BaseController {
   @POST
   public async createInvoice(@JSONBody(TerminateOrderRequest) request: TerminateOrderRequest): Promise<InvoiceDto> {
 
+    let stripeApiKey = getConfig().stripeConfig[process.env.NODE_ENV || "production"].apiKey;
+    let stripe = new Stripe(stripeApiKey);
     let order = await this._orderRepository.getOrderById(request.orderId);
 
     if (!order)
