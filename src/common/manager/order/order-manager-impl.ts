@@ -13,6 +13,8 @@ import { Invoice } from "../../model/entity/payment/invoice";
 import { getConfig } from "../../../config";
 import Stripe from "stripe";
 import { IPaymentAccountRepository } from "../../repository/payment-account-repository";
+import { HttpClientResponse } from "typed-rest-client/HttpClient";
+import { runInThisContext } from "vm";
 
 
 export class OrderManagerImpl implements IOrderManager {
@@ -101,6 +103,27 @@ export class OrderManagerImpl implements IOrderManager {
 
     return await this._invoiceRepository.createInvoice(order, items, weight);
 
+  }
+
+  public async applyAbsencePenalty(orderId: number): Promise<void> {
+    let stripeApiKey = getConfig().stripeConfig[process.env.NODE_ENV || "production"].apiKey;
+    let stripe = new Stripe(stripeApiKey);
+    let penaltyArticle = await this._articleRepository.getPenaltyArticle();
+    if (penaltyArticle) {
+      let stripeOrder = await stripe.orders.create({
+        currency: "eur",
+        items: [
+          {
+            currency: "eur",
+            amount: penaltyArticle.laundryPrice * 100,
+            quantity: 1,
+            parent: penaltyArticle.stripeSkuId!
+          }
+        ]
+      });
+      let order = await this._orderRepository.getOrderById(orderId);
+      await stripe.orders.pay(stripeOrder.id, {source: order!.paymentAccount.cardToken});
+    }
   }
 
   private async createStripeOrder(memberFullName: string, orderAddress: string, items?: OrderItem[], weight?: number): Promise<Stripe.orders.IOrder | null> {

@@ -16,6 +16,12 @@ interface IArticle {
   WHERE NOT EXISTS (
     SELECT "id" FROM "article" WHERE "id" = -1
   );
+
+  INSERT INTO "article"
+  SELECT -2, 'Penalité Absence', 5.00, '', null, 'sku_F2cOzggwTLFk6Q'
+  WHERE NOT EXISTS (
+    SELECT "id" FROM "article" WHERE "id" = -2
+  );
 */
 
 @Entity()

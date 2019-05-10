@@ -24,4 +24,8 @@ export class ArticleRepositoryImpl extends BaseRepository implements IArticleRep
     return this._articleRepository.findOne({id: -1});
   }
 
+  public async getPenaltyArticle(): Promise<Article | undefined> {
+    return this._articleRepository.findOne({id: -2});
+  }
+
 }
