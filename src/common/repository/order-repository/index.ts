@@ -5,7 +5,9 @@ import { LaundryPartner } from "../../model/entity/users/laundry";
 
 
 export interface IOrderRepository {
-
+	
+	orderExists(id: number): Promise<boolean>;
+	saveOrder(order: Order): Promise<Order>;
 	getOrderById(id: number): Promise<Order | undefined>;
 	getOrdersForMember(member: Member): Promise<Order[]>;
 	createOrder(order: Order): Promise<Order>;

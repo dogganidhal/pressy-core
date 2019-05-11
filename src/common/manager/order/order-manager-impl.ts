@@ -13,8 +13,6 @@ import { Invoice } from "../../model/entity/payment/invoice";
 import { getConfig } from "../../../config";
 import Stripe from "stripe";
 import { IPaymentAccountRepository } from "../../repository/payment-account-repository";
-import { HttpClientResponse } from "typed-rest-client/HttpClient";
-import { runInThisContext } from "vm";
 
 
 export class OrderManagerImpl implements IOrderManager {
@@ -99,7 +97,8 @@ export class OrderManagerImpl implements IOrderManager {
       weight = request.weight;
 
     let stripeOrder = await this.createStripeOrder(order.member.fullName, order.address.formattedAddress, items, weight);
-    console.log({ stripeOrder });
+    order.stripeOrderId = stripeOrder!.id;
+    this._orderRepository.saveOrder(order);
 
     return await this._invoiceRepository.createInvoice(order, items, weight);
 
@@ -129,12 +128,31 @@ export class OrderManagerImpl implements IOrderManager {
     }
   }
 
-  private async createStripeOrder(memberFullName: string, orderAddress: string, items?: OrderItem[], weight?: number): Promise<Stripe.orders.IOrder | null> {
+  public async payOrder(orderId: number): Promise<void> {
+
+    let order = await this._orderRepository.getOrderById(orderId);
+    if (!order)
+      throw new exception.OrderNotFoundException(orderId);
+
+    if (!order.stripeOrderId)
+      throw new exception.OrderNotValidatedException(orderId);
 
     let stripeApiKey = getConfig().stripeConfig[process.env.NODE_ENV || "production"].apiKey;
     let stripe = new Stripe(stripeApiKey);
 
-    let stripeOrder: Stripe.orders.IOrder | null = null;
+    await stripe.orders.pay(order.stripeOrderId, {
+      customer: order.paymentAccount.stripeCustomerId,
+      email: order.member.person.email
+    });
+    
+  }
+
+  private async createStripeOrder(memberFullName: string, orderAddress: string, items?: OrderItem[], weight?: number): Promise<Stripe.orders.IOrder | undefined> {
+
+    let stripeApiKey = getConfig().stripeConfig[process.env.NODE_ENV || "production"].apiKey;
+    let stripe = new Stripe(stripeApiKey);
+
+    let stripeOrder: Stripe.orders.IOrder | undefined = undefined;
 
     if (items) {
       stripeOrder = await stripe.orders.create({

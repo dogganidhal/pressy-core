@@ -59,6 +59,9 @@ export class Order {
   @Column({nullable: false, default: 0})
   public itemCount: number = 0;
 
+  @Column({nullable: true, unique: true})
+  public stripeOrderId?: string;
+
   public static create(order: IOrder): Order {
 
     let orderEntity = new Order;

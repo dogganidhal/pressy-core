@@ -2,7 +2,7 @@ import { Required } from "../../../annotations";
 
 export enum UpdateOrderReason {
   CLIENT_ABSENT = "absent",
-  GENERAL = "general"
+  DELIVERED = "delivered"
 }
 
 export class UpdateOrderRequestDto {

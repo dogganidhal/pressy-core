@@ -9,4 +9,5 @@ export interface IOrderManager {
   order(member: Member, request: CreateOrderRequestDto): Promise<Order>;
   terminateOrder(request: TerminateOrderRequest): Promise<Invoice>;
   applyAbsencePenalty(orderId: number): Promise<void>;
+  payOrder(orderId: number): Promise<void>;
 }

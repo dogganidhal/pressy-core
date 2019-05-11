@@ -177,6 +177,14 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		return await this._orderRepository.save(order);
 	}
 
+	public async orderExists(id: number): Promise<boolean> {
+		return (await this._orderRepository.count({id: id})) > 0
+	}
+
+	public async saveOrder(order: Order): Promise<Order> {
+		return await this._orderRepository.save(order);
+	}
+
 	public async getOrderById(id: number): Promise<Order | undefined> {
 		return this._orderRepository.findOne(id, {
 			relations: [

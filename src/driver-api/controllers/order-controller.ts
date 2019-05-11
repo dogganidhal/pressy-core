@@ -12,6 +12,7 @@ import Stripe from "stripe";
 import { getConfig } from "../../config";
 import { IOrderManager } from "../../common/manager/order";
 import { ManagerFactory } from "../../common/manager";
+import { exception } from "../../common/errors";
 
 
 @Produces("application/json")
@@ -19,6 +20,7 @@ import { ManagerFactory } from "../../common/manager";
 @Path("/order")
 export class OrderController extends BaseController {
 
+  private _orderRepository: IOrderRepository = RepositoryFactory.instance.orderRepository;
   private _orderStatusRepository: IOrderStatusRepository = RepositoryFactory.instance.orderStatusRepository;
   private _orderManager: IOrderManager = ManagerFactory.instance.orderManager;
 
@@ -39,6 +41,19 @@ export class OrderController extends BaseController {
   public async reportAbsent(@PathParam("id") orderId: number): Promise<void> {
     let driver = <Driver>this.pendingUser;
     await this._orderStatusRepository.updateOrderStatus(driver, {id: orderId, reason: UpdateOrderReason.CLIENT_ABSENT});
+  }
+
+  @Security("Bearer")
+  @Authenticate(SigningCategory.DRIVER)
+  @JSONEndpoint
+  @POST
+  @Path("/report-delivered/:id")
+  public async reportDelivered(@PathParam("id") orderId: number): Promise<void> {
+    let driver = <Driver>this.pendingUser;
+    if (!await this._orderRepository.orderExists(orderId))
+      throw new exception.OrderNotFoundException(orderId);
+    await this._orderStatusRepository.updateOrderStatus(driver, { id: orderId, reason: UpdateOrderReason.DELIVERED });
+    await this._orderManager.payOrder(orderId);
   }
 
 }

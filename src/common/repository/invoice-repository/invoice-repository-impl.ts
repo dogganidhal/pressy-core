@@ -28,7 +28,13 @@ export class InvoiceRepositoryImpl extends BaseRepository implements IInvoiceRep
 	}
 
 	public async getInvoicesByOrderId(orderId: number): Promise<Invoice[]> {
-		return this._invoiceRepository.find({order: {id: orderId}});
+		return this._invoiceRepository.find({
+			where: {
+				order: { 
+					id: orderId 
+				}
+			}
+		});
 	}
 
 }

@@ -209,7 +209,13 @@ export namespace exception {
 		constructor(orderId: number) {
 			super('OrderNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `No order with id ${orderId} was found`);
 		}
-  }
+	}
+	
+	export class OrderNotValidatedException extends APIException {
+		constructor(orderId: number) {
+			super('OrderNotFoundException', http.HttpStatus.HTTP_STATUS_NOT_FOUND, `Order with id ${orderId} has not been validated by the laundrer`);
+		}
+	}
 
 	export class MobileDeviceNotFoundException extends APIException {
 	 constructor(deviceId: string) {
