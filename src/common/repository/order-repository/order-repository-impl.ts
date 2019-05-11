@@ -181,7 +181,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 		return this._orderRepository.findOne(id, {
 			relations: [
 				"pickupSlot", "deliverySlot", "address", "member",
-				"member.person", "member.addresses"
+				"member.person", "member.addresses", "paymentAccount"
 			]
 		});
 	}

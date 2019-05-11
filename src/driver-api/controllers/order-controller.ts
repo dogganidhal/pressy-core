@@ -39,7 +39,6 @@ export class OrderController extends BaseController {
   public async reportAbsent(@PathParam("id") orderId: number): Promise<void> {
     let driver = <Driver>this.pendingUser;
     await this._orderStatusRepository.updateOrderStatus(driver, {id: orderId, reason: UpdateOrderReason.CLIENT_ABSENT});
-    await this._orderManager.applyAbsencePenalty(orderId);
   }
 
 }

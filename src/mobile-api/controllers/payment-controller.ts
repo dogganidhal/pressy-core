@@ -1,5 +1,3 @@
-
-
 import {GET, Path, POST, Accept, DELETE, PathParam} from "typescript-rest";
 import {BaseController} from "../../common/controller/base-controller";
 import {SigningCategory} from "../../services/crypto";
@@ -13,8 +11,8 @@ import { IPaymentAccountRepository } from "../../common/repository/payment-accou
 import { PaymentAccountDto } from "../../common/model/dto/payment/payment-account";
 import { CreatePaymentAccountDto } from "../../common/model/dto/payment/create-payment-account";
 import { IPaymentManager } from "../../common/manager/payment";
-import { PaymentManagerImpl } from "../../common/manager/payment/payment-manager-impl";
 import { ManagerFactory } from "../../common/manager";
+
 
 @Produces("application/json")
 @Tags("Payments")

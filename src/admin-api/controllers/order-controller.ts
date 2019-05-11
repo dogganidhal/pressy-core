@@ -9,6 +9,8 @@ import { IOrderRepository } from "../../common/repository/order-repository";
 import { RepositoryFactory } from "../../common/repository/factory";
 import { OrderMissionType } from "../../common/model/entity/order";
 import { NotFoundError } from "typescript-rest/dist/server-errors";
+import { IOrderManager } from "../../common/manager/order";
+import { ManagerFactory } from "../../common/manager";
 
 
 @Produces("application/json")
@@ -16,7 +18,8 @@ import { NotFoundError } from "typescript-rest/dist/server-errors";
 @Path("/order")
 export class OrderController extends BaseController {
 
-  private _orderRepository: IOrderRepository = RepositoryFactory.instance.orderRepository;
+	private _orderRepository: IOrderRepository = RepositoryFactory.instance.orderRepository;
+	private _orderManager: IOrderManager = ManagerFactory.instance.orderManager;
 
 	@Security("Bearer")
   @Path("/assign-driver/:orderMissionType")
@@ -52,6 +55,15 @@ export class OrderController extends BaseController {
 	public async editOrder(@JSONBody(EditOrderRequestDto) request: EditOrderRequestDto): Promise<OrderDto> {
 		let order = await this._orderRepository.editOrder(request);
 		return new OrderDto(order);
+	}
+
+	@Security("Bearer")
+	@Authenticate(SigningCategory.ADMIN)
+	@JSONEndpoint
+	@POST
+	@Path("/apply-absent-penalty/:id")
+	public async reportAbsent(@PathParam("id") orderId: number): Promise<void> {
+		return await this._orderManager.applyAbsencePenalty(orderId);
 	}
 
 }

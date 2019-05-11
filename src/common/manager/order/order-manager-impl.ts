@@ -122,7 +122,10 @@ export class OrderManagerImpl implements IOrderManager {
         ]
       });
       let order = await this._orderRepository.getOrderById(orderId);
-      await stripe.orders.pay(stripeOrder.id, {source: order!.paymentAccount.cardToken});
+      await stripe.orders.pay(stripeOrder.id, {
+        customer: order!.paymentAccount.stripeCustomerId,
+        email: order!.member.person.email
+      });
     }
   }
 

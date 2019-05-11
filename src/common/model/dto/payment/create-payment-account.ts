@@ -3,7 +3,7 @@ import { Required } from "../../../../common/annotations";
 
 
 export interface ICreatePaymentAccount {
-  cardToken: string;
+  stripeCustomerId: string;
   cardAlias: string;
   holderName: string;
   expiryMonth: number;

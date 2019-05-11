@@ -23,7 +23,7 @@
     "laundry-api-dev": "NODE_ENV=local node scripts/launch laundry-api",
     "laundry-api-staging": "NODE_ENV=staging node scripts/launch laundry-api",
     "laundry-api-prod": "NODE_ENV=production node scripts/launch laundry-api",
-    "sync": "node scripts/sync.js",
+    "sync": "ts-node scripts/sync.ts",
     "generate-docs": "ts-node scripts/generate-docs.ts",
     "test": "alsatian ./tests"
   },

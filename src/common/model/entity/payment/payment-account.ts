@@ -14,7 +14,7 @@ export class PaymentAccount {
   public member: Member;
 
   @Column({unique: true, nullable: false})
-  public cardToken: string;
+  public stripeCustomerId: string;
 
   @Column({nullable: false})
   public cardAlias: string;
@@ -38,7 +38,7 @@ export class PaymentAccount {
     paymentAccount.expiryYear = account.expiryYear;
     paymentAccount.expiryMonth = account.expiryMonth;
     paymentAccount.cardAlias = account.cardAlias;
-    paymentAccount.cardToken = account.cardToken;
+    paymentAccount.stripeCustomerId = account.stripeCustomerId;
     paymentAccount.cvc = account.cvc;
     paymentAccount.holderName = account.holderName;
 

@@ -28,7 +28,7 @@ export class PaymentAccountRepositoryImpl extends BaseRepository implements IPay
   }
 
   public async getPaymentAccountByToken(token: string): Promise<PaymentAccount | undefined> {
-    return await this._repository.findOne({ cardToken: token });
+    return await this._repository.findOne({ stripeCustomerId: token });
   }
 
   public async getPaymentAccountById(id: string): Promise<PaymentAccount | undefined> {

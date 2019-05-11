@@ -17,16 +17,10 @@ export class Member extends User {
   @JoinColumn()
   public paymentAccounts: PaymentAccount[];
 
-  @Column({ unique: true, nullable: true })
-  public stripeCustomerId?: string;
-
-  public static create(createPersonRequest: CreatePersonRequestDto, stripeCustomerId?: string): Member {
+  public static create(createPersonRequest: CreatePersonRequestDto): Member {
     
     let member: Member = new Member();
     member.person = Person.create(createPersonRequest);
-    if (stripeCustomerId) {
-      member.stripeCustomerId = stripeCustomerId;
-    }
 
     return member;
 
