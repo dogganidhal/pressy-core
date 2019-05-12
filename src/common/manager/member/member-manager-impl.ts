@@ -42,7 +42,7 @@ export class MemberManagerImpl implements IMemberManager {
       throw new exception.PhoneAlreadyExists(phone);
 
     let stripeCustomer = await this.createStripeCustomer(email, `${createMemberRequest.firstName} ${createMemberRequest.lastName}`);
-    let member = this._memberRepository.insertMember(Member.create(createMemberRequest, stripeCustomer.id));
+    let member = this._memberRepository.insertMember(Member.create(createMemberRequest));
 
     return member;
     
