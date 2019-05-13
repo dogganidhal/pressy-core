@@ -11,6 +11,7 @@ import { IArticleRepository } from "../../common/repository/article-repository";
 import Stripe from "stripe";
 import { getConfig } from "../../config";
 import { Article } from "../../common/model/entity/order";
+import { getStripeInstance } from "../../utils/stripe";
 
 
 @Produces("application/json")
@@ -25,8 +26,7 @@ export class ArticleController extends BaseController {
 	@Authenticate(SigningCategory.ADMIN)
 	@POST
 	public async createArticle(@JSONBody(CreateArticleRequestDto) request: CreateArticleRequestDto): Promise<ArticleDto> {
-		let stripeApiKey = getConfig().stripeConfig[process.env.NODE_ENV || "production"].apiKey;
-		let stripe = new Stripe(stripeApiKey);
+		let stripe = getStripeInstance();
 		let stripeProduct = await stripe.products.create({ name: request.name, type: "good" });
 		let stripeSku = await stripe.skus.create({ product: stripeProduct.id, price: request.laundryPrice * 100, currency: "eur", inventory: { type: "infinite" }});
 		let article = new Article({

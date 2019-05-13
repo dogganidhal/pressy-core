@@ -7,6 +7,7 @@ import { IMemberRepository } from "../../repository";
 import { RepositoryFactory } from "../../repository/factory";
 import { getConfig } from "../../../config";
 import Stripe from "stripe";
+import { getStripeInstance } from "../../../utils/stripe";
 
 
 export class MemberManagerImpl implements IMemberManager {
@@ -49,8 +50,7 @@ export class MemberManagerImpl implements IMemberManager {
   }
 
   private createStripeCustomer(email: string, fullName: string): Promise<Stripe.customers.ICustomer> {
-    let stripeApiKey = getConfig().stripeConfig[process.env.NODE_ENV || "production"].apiKey
-    let stripe = new Stripe(stripeApiKey);
+    let stripe = getStripeInstance();
     return stripe.customers.create({email: email, description: fullName});
   }
 

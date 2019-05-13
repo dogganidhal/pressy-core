@@ -7,6 +7,7 @@ import { getConfig } from "../../../config";
 import { IPaymentAccountRepository } from "../../repository/payment-account-repository";
 import { RepositoryFactory } from "../../repository/factory";
 import { exception } from "../../errors";
+import { getStripeInstance } from "../../../utils/stripe";
 
 
 
@@ -31,8 +32,7 @@ export class PaymentManagerImpl implements IPaymentManager {
 
   private async createStripeCustomer(member: Member, cardToken: string): Promise<Stripe.customers.ICustomer> {
 
-    let stripeApiKey = getConfig().stripeConfig[process.env.NODE_ENV || "production"].apiKey
-    let stripe = new Stripe(stripeApiKey);
+    let stripe = getStripeInstance();
     let fullName = `${member.person.firstName} ${member.person.lastName}`;
     return await stripe.customers.create({ 
       email: member.person.email, 

@@ -50,7 +50,7 @@ export class APIV1 {
 			}
 		});
 		if (process.env.NODE_ENV === "local" && !process.env.TEST_ENV)
-      open(`http://localhost:${getConfig().runtime.port[this.config.serviceName]}/v1/docs`);
+			open(`http://localhost:${getConfig().runtime.port[this.config.serviceName]}/v1/docs`);
 	}
 
 	private _middleware() {
@@ -60,6 +60,7 @@ export class APIV1 {
 
 	public run(port: number | string) {
 		this._express.listen(port);
+		console.info(`App up and running at: ${port}`);
 	}
 
 	public getApp(): Application {

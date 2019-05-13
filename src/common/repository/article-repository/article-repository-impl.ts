@@ -1,7 +1,7 @@
 import { BaseRepository } from "../base-repository";
 import { IArticleRepository } from ".";
 import { Article } from "../../model/entity/order";
-import { Repository } from "typeorm";
+import { Repository, MoreThanOrEqual } from "typeorm";
 
 
 export class ArticleRepositoryImpl extends BaseRepository implements IArticleRepository {
@@ -9,7 +9,7 @@ export class ArticleRepositoryImpl extends BaseRepository implements IArticleRep
   private _articleRepository: Repository<Article> = this.connection.getRepository(Article);
   
   public async getArticles(): Promise<Article[]> {
-    return await this._articleRepository.find();
+    return await this._articleRepository.find({where: {id: MoreThanOrEqual(0)}});
   }  
   
   public async createArticle(article: Article): Promise<Article> {

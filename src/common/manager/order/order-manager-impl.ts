@@ -13,6 +13,7 @@ import { Invoice } from "../../model/entity/payment/invoice";
 import { getConfig } from "../../../config";
 import Stripe from "stripe";
 import { IPaymentAccountRepository } from "../../repository/payment-account-repository";
+import { getStripeInstance } from "../../../utils/stripe";
 
 
 export class OrderManagerImpl implements IOrderManager {
@@ -105,8 +106,7 @@ export class OrderManagerImpl implements IOrderManager {
   }
 
   public async applyAbsencePenalty(orderId: number): Promise<void> {
-    let stripeApiKey = getConfig().stripeConfig[process.env.NODE_ENV || "production"].apiKey;
-    let stripe = new Stripe(stripeApiKey);
+    let stripe = getStripeInstance();
     let penaltyArticle = await this._articleRepository.getPenaltyArticle();
     if (penaltyArticle) {
       let stripeOrder = await stripe.orders.create({
@@ -137,8 +137,7 @@ export class OrderManagerImpl implements IOrderManager {
     if (!order.stripeOrderId)
       throw new exception.OrderNotValidatedException(orderId);
 
-    let stripeApiKey = getConfig().stripeConfig[process.env.NODE_ENV || "production"].apiKey;
-    let stripe = new Stripe(stripeApiKey);
+    let stripe = getStripeInstance();
 
     await stripe.orders.pay(order.stripeOrderId, {
       customer: order.paymentAccount.stripeCustomerId,
@@ -149,8 +148,7 @@ export class OrderManagerImpl implements IOrderManager {
 
   private async createStripeOrder(memberFullName: string, orderAddress: string, items?: OrderItem[], weight?: number): Promise<Stripe.orders.IOrder | undefined> {
 
-    let stripeApiKey = getConfig().stripeConfig[process.env.NODE_ENV || "production"].apiKey;
-    let stripe = new Stripe(stripeApiKey);
+    let stripe = getStripeInstance();
 
     let stripeOrder: Stripe.orders.IOrder | undefined = undefined;
 
