@@ -30,7 +30,7 @@ export class OrderRepositoryImpl extends BaseRepository implements IOrderReposit
 	    where: {member: member},
 	    relations: [
 		    "address", "pickupSlot", "deliverySlot",
-		    "member", "member.person", "items"
+		    "member", "member.person"
 	    ]
     });
     
