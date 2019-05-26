@@ -43,6 +43,10 @@ export class MemberRepositoryImpl extends BaseRepository implements IMemberRepos
 
   }
 
+  public async getAllMembers(): Promise<Member[]> {
+    return await this._memberRepository.find({ relations: ["person", "addresses", "paymentAccounts"] });
+  }
+
   public async insertMember(member: Member): Promise<Member> {
     await this._personRepository.insert(member.person);
     return await this._memberRepository.save(member);

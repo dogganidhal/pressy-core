@@ -6,6 +6,7 @@ import { Person } from "../../model/entity/users/person";
 
 export interface IMemberRepository {
 
+  getAllMembers(): Promise<Member[]>;
   insertMember(member: Member): Promise<Member>;
   getMemberById(id: number): Promise<Member | undefined>;
   getMemberByEmail(email: string): Promise<Member | undefined>;
