@@ -12,6 +12,7 @@ export class MemberMailSender {
 
     let sendActivationCodeTemplate = this._mailingService.getMailTemplate(MailTemplateName.SEND_ACTIVATION_CODE, {
       html: {
+        host: Config.getHost(),
         memberName: `${member.person.firstName} ${member.person.lastName}`,
         activationCode: activationCode
       }

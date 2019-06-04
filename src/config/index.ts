@@ -1,4 +1,3 @@
-import { Config } from './index';
 import { readFileSync } from 'fs';
 
 interface MultiEnvSetting<T> {
@@ -33,6 +32,7 @@ interface RuntimeConfig {
     "laundry-api": number;
   },
   hosts: {
+    [key: string]: ServiceHost;
     "mobile-api": ServiceHost;
     "driver-api": ServiceHost;
     "admin-api": ServiceHost;
@@ -54,6 +54,19 @@ export interface Config {
   mailingServiceOptions: MailingOptions;
   runtime: RuntimeConfig;
   stripeConfig: MultiEnvSetting<StripeConfig>;
+
+}
+
+export namespace Config {
+
+  export function getHost(): string | undefined {
+    let config = getConfig();
+    let service = process.env.SERVICE;
+    if (!service) {
+      return undefined;
+    }
+    return getConfig().runtime.hosts[service][process.env.NODE_ENV || "local"];
+  }
 
 }
 

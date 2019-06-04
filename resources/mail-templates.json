@@ -10,6 +10,6 @@
   },
   "sendActivationCode": {
     "subject": "Activez votre compte PRESSY",
-    "html": "{{memberName}},\nBienvenue à PRESSY, pour finaliser votre inscription, veuillez confirmer votre email en cliquant sur le lien suivant : http://localhost:3000/v1/member/activate/{{activationCode}}"
+    "html": "{{memberName}},\nBienvenue à PRESSY, pour finaliser votre inscription, veuillez confirmer votre email en cliquant sur le lien suivant : {{host}}/v1/member/activate/{{activationCode}}"
   }
 }
