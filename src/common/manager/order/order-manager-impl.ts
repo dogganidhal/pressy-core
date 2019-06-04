@@ -26,8 +26,9 @@ export class OrderManagerImpl implements IOrderManager {
 
   public async order(member: Member, request: CreateOrderRequestDto): Promise<Order> {
 
-    if (!member.isActive())
-      throw new exception.InactiveMemberException(member);
+    // TODO: Do the check later
+    // if (!member.isActive())
+    //   throw new exception.InactiveMemberException(member);
 
     let pickupSlot = await this._slotRepository.getSlotById(request.pickupSlotId);
 
