@@ -7,7 +7,7 @@ import { Database } from "../db";
 import { http } from "../utils/http";
 import { exception } from "../errors";
 import { getConfig } from "../../config";
-import cors from "cors";
+let cors = require("cors");
 
 interface APIConfig {
   serviceName: string;
@@ -29,6 +29,12 @@ export class APIV1 {
 
 	private async _config() {
 		await Database.createConnection();
+
+		this._express.use(function (req, res, next) {
+			res.header("Access-Control-Allow-Origin", "*");
+			res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+			next();
+		});
 		
 		Server.loadServices(this._apiRouter, this.config.contollers);
     if (this.config.swaggerResourceFile) {
@@ -50,7 +56,7 @@ export class APIV1 {
 					.send(JSON.stringify(new exception.MethodNotAllowedException(request.method)));
 			}
 		});
-		this._express.use(cors);
+		this._express.use(cors());
 		if (process.env.NODE_ENV === "local" && !process.env.TEST_ENV)
 			open(`http://localhost:${getConfig().runtime.port[this.config.serviceName]}/v1/docs`);
 	}
