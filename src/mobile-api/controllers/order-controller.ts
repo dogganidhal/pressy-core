@@ -76,24 +76,16 @@ export class OrderController extends BaseController {
   @Path("/articles")
   @GET
   public async getArticles(): Promise<ArticleDto[]> {
-
     var articles = await this._articleRepository.getArticles();
     return articles.map(article => new ArticleDto(article));
-    
   }
 
   @JSONEndpoint
   @Path("/weighted-article")
   @GET
   public async getWeightedArticles(): Promise<ArticleDto> {
-
-    return new ArticleDto({
-      id: -1,
-      name: "Sac de 5Kg",
-      laundryPrice: Article.WEIGHTED_ARTICLE_PRICE,
-      photoUrl: "https://www.containerstore.com/catalogimages/110918/LaundryBagPolyCottonWhite_x.jpg?width=1200&height=1200&align=center"
-    });
-
+    let weightedArticle = await this._articleRepository.getWeightedArticle();
+    return new ArticleDto(weightedArticle!);
   }
 
 }
