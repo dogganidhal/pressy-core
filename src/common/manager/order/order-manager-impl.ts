@@ -50,11 +50,7 @@ export class OrderManagerImpl implements IOrderManager {
     if (!paymentAccount || paymentAccount.member.id != member.id)
       throw new exception.PaymentAccountNotFoundException(request.paymentAccountId);
 
-    await Promise.all([
-      deliverySlot = await this._slotRepository.createSlot(deliverySlot),
-      pickupSlot = await this._slotRepository.createSlot(pickupSlot),
-    ]);
-
+      
     let order = Order.create({
       member, pickupSlot, deliverySlot,
       address: await addressRepository.duplicateAddress(addressEntity),

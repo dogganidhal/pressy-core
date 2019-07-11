@@ -1,5 +1,4 @@
-
-let {exec} = require("child_process");
+let { exec } = require("child_process");
 let config = require('../config');
 let service = process.env.SERVICE;
 let nodeEnv = process.env.NODE_ENV;
@@ -11,8 +10,8 @@ if (!npmCommand) {
 }
 
 let executable = exec(`npm run ${npmCommand}`, error => {
-    if (error) 
-     console.error(error);
+    if (error)
+        console.error(error);
 });
 
 executable.stdout.on("data", data => console.log(data));

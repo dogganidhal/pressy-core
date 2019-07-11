@@ -1,9 +1,9 @@
-import { Config, getConfig } from './../config';
+import { Config, getConfig } from "./../config";
 import Mailer from "nodemailer";
-import { readFileSync } from 'fs';
+import { readFileSync } from "fs";
 
 export type MailTemplateArgs = {
-  subject?: any,
+  subject?: any;
   text?: any;
   html?: any;
 };
@@ -12,7 +12,7 @@ export interface MailTemplate {
   subject: string;
   text?: string;
   html?: string;
-};
+}
 
 export enum MailTemplateName {
   ON_ORDER_CREATE = "onOrderCreate",
@@ -21,43 +21,47 @@ export enum MailTemplateName {
 }
 
 export class MailingService {
-
   private _config: Config = getConfig();
   private static _argumentRegex = /{{[a-zA-Z]+}}/gi;
   private static _templatesFilePath = "./resources/mail-templates.json";
 
-  public async sendMail(options: Mailer.SendMailOptions): Promise<Mailer.SentMessageInfo> {
-
+  public async sendMail(
+    options: Mailer.SendMailOptions
+  ): Promise<Mailer.SentMessageInfo> {
     let transporter = this._createMailTransporter();
     let info = await transporter.sendMail(options);
     return info;
-
   }
 
   public async sendTestMail(file: string): Promise<Mailer.SentMessageInfo> {
-    
     let testTemplate = this.getMailTemplate(MailTemplateName.TEST, {
-      text: {message: "Text"}, html: {message: "HTML"}
+      text: { message: "Text" },
+      html: { message: "HTML" }
     });
 
     let info = await this.sendMail({
       ...testTemplate,
       from: this._config.mailingServiceOptions.defaultSender,
-      to: "dogga.nidhal@gmail.com",
-      attachments: [{
-        filename: "Commande nº 95737156134.xlsx",
-        content: readFileSync(file),
-        path: file
-      }]
+      to: "rohanmtkr@gmail.com",
+      attachments: [
+        {
+          filename: "Commande nº 95737156134.xlsx",
+          content: readFileSync(file),
+          path: file
+        }
+      ]
     });
-    
-    return info;
 
+    return info;
   }
 
-  public getMailTemplate(templateName: MailTemplateName, args: MailTemplateArgs = {}): MailTemplate {
-    
-    let templatesString = readFileSync(MailingService._templatesFilePath).toString();
+  public getMailTemplate(
+    templateName: MailTemplateName,
+    args: MailTemplateArgs = {}
+  ): MailTemplate {
+    let templatesString = readFileSync(
+      MailingService._templatesFilePath
+    ).toString();
     let templates = JSON.parse(templatesString);
     let template: MailTemplate = templates[templateName];
 
@@ -74,7 +78,6 @@ export class MailingService {
       template.subject = this._replaceArguments(template.subject, args.subject);
 
     return template;
-
   }
 
   private _createMailTransporter(): Mailer.Transporter {
@@ -82,23 +85,18 @@ export class MailingService {
   }
 
   private _replaceArguments(templateString: string, args: any): string {
-
     let templateArgs = templateString.match(MailingService._argumentRegex);
     let resultString = templateString.slice();
 
     if (templateArgs != null) {
       for (let templateArg of templateArgs) {
-
         let argumentKey = templateArg.substring(2, templateArg.length - 2);
         let argumentValue = args[argumentKey];
 
         resultString = resultString.replace(templateArg, argumentValue);
-
       }
     }
 
     return resultString;
-
   }
-
 }

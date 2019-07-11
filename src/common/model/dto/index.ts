@@ -4,3 +4,4 @@ export * from "./slot";
 export * from "./order";
 export * from "./driver";
 export * from "./member";
+export * from "./promo-code";

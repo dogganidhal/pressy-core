@@ -1,5 +1,5 @@
 {
-  "serviceName": "laundry-api",
-  "contollers": "src/laundry-api/controllers/*",
-  "swaggerResourceFile": "./dist/docs/laundry-api/swagger.json"
+    "serviceName": "laundry-api",
+    "contollers": "src/laundry-api/controllers/*",
+    "swaggerResourceFile": "./dist/docs/laundry-api/swagger.json"
 }

@@ -4,10 +4,13 @@ import { Member } from "../../model/entity/users/member";
 import { TerminateOrderRequest } from "../../model/dto/order/terminate-order-request";
 import { Invoice } from "../../model/entity/payment/invoice";
 
-
 export interface IOrderManager {
   order(member: Member, request: CreateOrderRequestDto): Promise<Order>;
   terminateOrder(request: TerminateOrderRequest): Promise<Invoice>;
   applyAbsencePenalty(orderId: number): Promise<void>;
   payOrder(orderId: number): Promise<void>;
+}
+
+export interface ICouponManager {
+  ouponExists(id: string): Promise<boolean>;
 }

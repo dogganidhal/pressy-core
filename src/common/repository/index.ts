@@ -6,3 +6,4 @@ export * from "./order-status-repository";
 export * from "./slot-repository";
 export * from "./driver-repository";
 export * from "./order-repository";
+export * from "./coupon-repository";

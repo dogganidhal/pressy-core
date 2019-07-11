@@ -3,15 +3,12 @@ import { PaymentManagerImpl } from "./payment/payment-manager-impl";
 import { IMemberManager } from "./member";
 import { MemberManagerImpl } from "./member/member-manager-impl";
 import { OrderManagerImpl } from "./order/order-manager-impl";
-import { IOrderManager } from "./order";
-
-
+import { IOrderManager, ICouponManager } from "./order";
 
 export class ManagerFactory {
-
   public static instance: ManagerFactory = new ManagerFactory();
-  
-  private constructor() { }
+
+  private constructor() {}
 
   public get paymentManager(): IPaymentManager {
     return new PaymentManagerImpl();
@@ -24,5 +21,4 @@ export class ManagerFactory {
   public get orderManager(): IOrderManager {
     return new OrderManagerImpl();
   }
-
 }

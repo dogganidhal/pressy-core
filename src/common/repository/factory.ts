@@ -1,5 +1,5 @@
 import { IAddressRepository } from "./address-repository";
-import {Connection} from "typeorm";
+import { Connection } from "typeorm";
 import { Database } from "../db";
 import { AddressRepositoryImpl } from "./address-repository/address-repository-impl";
 import { IAdminRepository } from "./admin-repository";
@@ -22,14 +22,14 @@ import { IArticleRepository } from "./article-repository";
 import { ArticleRepositoryImpl } from "./article-repository/article-repository-impl";
 import { IPaymentAccountRepository } from "./payment-account-repository";
 import { PaymentAccountRepositoryImpl } from "./payment-account-repository/payment-account-repository-impl";
-import {ILaundryRepository} from "./laundry-repository";
-import {LaundryRepositoryImpl} from "./laundry-repository/laundry-repository-impl";
-import {IInvoiceRepository} from "./invoice-repository";
-import {InvoiceRepositoryImpl} from "./invoice-repository/invoice-repository-impl";
-
+import { ILaundryRepository } from "./laundry-repository";
+import { LaundryRepositoryImpl } from "./laundry-repository/laundry-repository-impl";
+import { IInvoiceRepository } from "./invoice-repository";
+import { InvoiceRepositoryImpl } from "./invoice-repository/invoice-repository-impl";
+import { ICouponRepository } from "./coupon-repository";
+import { CouponRepositoryImpl } from "./coupon-repository/coupon-repository-impl";
 
 export class RepositoryFactory {
-
   private static _instance: RepositoryFactory;
 
   public static get instance(): RepositoryFactory {
@@ -90,7 +90,9 @@ export class RepositoryFactory {
   }
 
   public get invoiceRepository(): IInvoiceRepository {
-    return new InvoiceRepositoryImpl(this._connection)
+    return new InvoiceRepositoryImpl(this._connection);
   }
-
+  public get CouponRepository(): ICouponRepository {
+    return new CouponRepositoryImpl(this._connection);
+  }
 }

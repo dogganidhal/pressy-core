@@ -8,7 +8,7 @@ export class InvoiceDto {
 	public amount: number;
 	public order: OrderDto;
 	public items: OrderItemDto[];
-
+	
 	public static create(invoice: Invoice): InvoiceDto {
 		let dto = new InvoiceDto;
 		dto.amount = invoice.amount;

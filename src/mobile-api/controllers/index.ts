@@ -5,3 +5,4 @@ export * from "./member-controller";
 export * from "./address-controller";
 export * from "./device-controller";
 export * from "./payment-controller";
+export * from "./promo-controller";
