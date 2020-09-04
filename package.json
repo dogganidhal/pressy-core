@@ -92,7 +92,7 @@
     "@types/yargs-parser": "^11.0.2",
     "alsatian": "^2.4.0",
     "nodemon": "^1.18.4",
-    "open": "0.0.5",
+    "open": "6.0.0",
     "readline-sync": "^1.4.9",
     "typescript": "^3.4.3",
     "yargs-parser": "^11.1.1"
