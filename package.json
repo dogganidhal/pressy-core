@@ -57,7 +57,7 @@
     "dateformat": "^3.0.3",
     "debug": "^4.0.0",
     "dotenv": "^6.0.0",
-    "excel4node": "^1.7.0",
+    "excel4node": "^1.8.0",
     "express": "^4.16.3",
     "googleapis": "^27.0.0",
     "jest": "^23.6.0",
